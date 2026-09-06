@@ -1,0 +1,2505 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOVA REACH ACADÉMIE</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/index.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .admin-lock {
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .admin-lock:hover {
+            opacity: 1;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.blue { background: #e0f2fe; color: #0284c7; }
+        .stat-icon.green { background: #d1fae5; color: #059669; }
+        .stat-icon.purple { background: #ede9fe; color: #7c3aed; }
+        .stat-icon.orange { background: #fed7aa; color: #ea580c; }
+        .stat-icon.pink { background: #fce7f3; color: #db2777; }
+
+        .stat-info h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info p {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        /* Course Cards */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .course-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .course-info {
+            padding: 1.5rem;
+        }
+
+        .course-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+        }
+
+        .course-teacher {
+            color: #718096;
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .course-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .course-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-free {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .badge-paid {
+            background: #fed7aa;
+            color: #ea580c;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f7fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 2rem 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 99;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-menu li:hover {
+            background: #f7fafc;
+            color: #667eea;
+        }
+
+        .sidebar-menu li.active {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        /* Video/Audio Player */
+        .video-player, .audio-player {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .video-player video, .audio-player audio {
+            width: 100%;
+            display: block;
+        }
+
+        /* Certificate */
+        .certificate {
+            background: linear-gradient(135deg, #fef5e7 0%, #fff 100%);
+            border: 20px solid #d4af37;
+            border-radius: 12px;
+            padding: 3rem;
+            max-width: 800px;
+            margin: 2rem auto;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .certificate::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 2px solid #d4af37;
+            border-radius: 12px;
+            pointer-events: none;
+        }
+
+        .certificate-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .certificate-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .certificate-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .certificate-subtitle {
+            font-size: 1.25rem;
+            color: #718096;
+            margin-bottom: 2rem;
+        }
+
+        .certificate-body {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .certificate-student {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin: 1rem 0;
+            border-bottom: 2px solid #d4af37;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+
+        .certificate-course {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin: 1rem 0;
+        }
+
+        .certificate-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #d4af37;
+        }
+
+        .certificate-signature {
+            text-align: center;
+        }
+
+        .certificate-signature-name {
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .certificate-signature-title {
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .certificate-id {
+            text-align: center;
+            margin-top: 2rem;
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .certificate {
+                padding: 1.5rem;
+            }
+
+            .certificate-title {
+                font-size: 1.5rem;
+            }
+
+            .certificate-student {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #718096;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Notifications */
+        .notification-item {
+            padding: 1rem;
+            border-left: 4px solid #667eea;
+            background: #f7fafc;
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .notification-item.unread {
+            background: #e0f2fe;
+            border-left-color: #0284c7;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: #718096;
+        }
+
+        /* Stars Rating */
+        .stars {
+            display: inline-flex;
+            gap: 0.25rem;
+        }
+
+        .star {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #e2e8f0;
+            transition: color 0.3s;
+        }
+
+        .star.active, .star:hover {
+            color: #fbbf24;
+        }
+
+        /* Search & Filter */
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-filter input, .search-filter select {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background: #fed7aa;
+            color: #ea580c;
+        }
+
+        .status-approved {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-published {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-draft {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: #667eea;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // Database Management
+        class Database {
+            constructor() {
+                this.storageKey = 'novaReachAcademieDB';
+                this.init();
+            }
+
+            init() {
+                if (!localStorage.getItem(this.storageKey)) {
+                    const defaultDB = {
+                        users: [],
+                        courses: [],
+                        lessons: [],
+                        enrollments: [],
+                        payments: [],
+                        paymentProofs: [],
+                        withdrawals: [],
+                        wallets: [],
+                        certificates: [],
+                        notifications: [],
+                        affiliates: [],
+                        affiliateLinks: [],
+                        affiliateSales: [],
+                        affiliateCommissions: [],
+                        reviews: [],
+                        questions: [],
+                        answers: [],
+                        announcements: [],
+                        activityLogs: [],
+                        settings: {
+                            platformName: 'NOVA REACH ACADÉMIE',
+                            platformCommission: 10,
+                            supportedCurrencies: ['HTG', 'USD', 'EUR'],
+                            moncashInfo: { number: '', name: '' },
+                            natcashInfo: { number: '33461451', name: 'Darlene George' }
+                        },
+                        sessions: {}
+                    };
+                    localStorage.setItem(this.storageKey, JSON.stringify(defaultDB));
+                }
+            }
+
+            getDB() {
+                return JSON.parse(localStorage.getItem(this.storageKey));
+            }
+
+            saveDB(db) {
+                localStorage.setItem(this.storageKey, JSON.stringify(db));
+            }
+
+            // Users
+            createUser(userData) {
+                const db = this.getDB();
+                if (db.users.find(u => u.email === userData.email)) {
+                    throw new Error('Email already exists');
+                }
+                const user = {
+                    id: this.generateId(),
+                    ...userData,
+                    status: 'active',
+                    createdAt: new Date().toISOString()
+                };
+                db.users.push(user);
+                if (userData.role === 'teacher') {
+                    db.wallets.push({
+                        id: this.generateId(),
+                        userId: user.id,
+                        totalEarned: 0,
+                        availableBalance: 0,
+                        pendingBalance: 0,
+                        totalWithdrawn: 0
+                    });
+                }
+                this.saveDB(db);
+                return user;
+            }
+
+            getUser(id) {
+                const db = this.getDB();
+                return db.users.find(u => u.id === id);
+            }
+
+            getUserByEmail(email) {
+                const db = this.getDB();
+                return db.users.find(u => u.email === email);
+            }
+
+            updateUser(id, updates) {
+                const db = this.getDB();
+                const index = db.users.findIndex(u => u.id === id);
+                if (index !== -1) {
+                    db.users[index] = { ...db.users[index], ...updates };
+                    this.saveDB(db);
+                    return db.users[index];
+                }
+                return null;
+            }
+
+            deleteUser(id) {
+                const db = this.getDB();
+                db.users = db.users.filter(u => u.id !== id);
+                this.saveDB(db);
+            }
+
+            getUsersByRole(role) {
+                const db = this.getDB();
+                return db.users.filter(u => u.role === role);
+            }
+
+            // Courses
+            createCourse(courseData) {
+                const db = this.getDB();
+                const course = {
+                    id: this.generateId(),
+                    ...courseData,
+                    status: 'draft',
+                    rating: 0,
+                    studentsCount: 0,
+                    createdAt: new Date().toISOString()
+                };
+                db.courses.push(course);
+                this.saveDB(db);
+                return course;
+            }
+
+            getCourse(id) {
+                const db = this.getDB();
+                return db.courses.find(c => c.id === id);
+            }
+
+            updateCourse(id, updates) {
+                const db = this.getDB();
+                const index = db.courses.findIndex(c => c.id === id);
+                if (index !== -1) {
+                    db.courses[index] = { ...db.courses[index], ...updates };
+                    this.saveDB(db);
+                    return db.courses[index];
+                }
+                return null;
+            }
+
+            deleteCourse(id) {
+                const db = this.getDB();
+                db.courses = db.courses.filter(c => c.id !== id);
+                db.lessons = db.lessons.filter(l => l.courseId !== id);
+                this.saveDB(db);
+            }
+
+            getCoursesByTeacher(teacherId) {
+                const db = this.getDB();
+                return db.courses.filter(c => c.teacherId === teacherId);
+            }
+
+            getPublishedCourses() {
+                const db = this.getDB();
+                return db.courses.filter(c => c.status === 'published');
+            }
+
+            // Lessons
+            createLesson(lessonData) {
+                const db = this.getDB();
+                const lesson = {
+                    id: this.generateId(),
+                    ...lessonData,
+                    createdAt: new Date().toISOString()
+                };
+                db.lessons.push(lesson);
+                this.saveDB(db);
+                return lesson;
+            }
+
+            getLessonsByCourse(courseId) {
+                const db = this.getDB();
+                return db.lessons.filter(l => l.courseId === courseId);
+            }
+
+            updateLesson(id, updates) {
+                const db = this.getDB();
+                const index = db.lessons.findIndex(l => l.id === id);
+                if (index !== -1) {
+                    db.lessons[index] = { ...db.lessons[index], ...updates };
+                    this.saveDB(db);
+                    return db.lessons[index];
+                }
+                return null;
+            }
+
+            deleteLesson(id) {
+                const db = this.getDB();
+                db.lessons = db.lessons.filter(l => l.id !== id);
+                this.saveDB(db);
+            }
+
+            // Enrollments
+            createEnrollment(enrollmentData) {
+                const db = this.getDB();
+                if (db.enrollments.find(e => e.studentId === enrollmentData.studentId && e.courseId === enrollmentData.courseId)) {
+                    throw new Error('Already enrolled');
+                }
+                const enrollment = {
+                    id: this.generateId(),
+                    ...enrollmentData,
+                    progress: 0,
+                    completedLessons: [],
+                    lastLessonId: null,
+                    completed: false,
+                    enrolledAt: new Date().toISOString()
+                };
+                db.enrollments.push(enrollment);
+                const course = this.getCourse(enrollmentData.courseId);
+                if (course) {
+                    this.updateCourse(course.id, { studentsCount: course.studentsCount + 1 });
+                }
+                this.saveDB(db);
+                return enrollment;
+            }
+
+            getEnrollment(studentId, courseId) {
+                const db = this.getDB();
+                return db.enrollments.find(e => e.studentId === studentId && e.courseId === courseId);
+            }
+
+            getEnrollmentsByStudent(studentId) {
+                const db = this.getDB();
+                return db.enrollments.filter(e => e.studentId === studentId);
+            }
+
+            getEnrollmentsByCourse(courseId) {
+                const db = this.getDB();
+                return db.enrollments.filter(e => e.courseId === courseId);
+            }
+
+            updateEnrollment(id, updates) {
+                const db = this.getDB();
+                const index = db.enrollments.findIndex(e => e.id === id);
+                if (index !== -1) {
+                    db.enrollments[index] = { ...db.enrollments[index], ...updates };
+                    this.saveDB(db);
+                    return db.enrollments[index];
+                }
+                return null;
+            }
+
+            // Payments
+            createPayment(paymentData) {
+                const db = this.getDB();
+                if (db.payments.find(p => p.transactionId === paymentData.transactionId)) {
+                    throw new Error('Transaction ID already exists');
+                }
+                const payment = {
+                    id: this.generateId(),
+                    ...paymentData,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                };
+                db.payments.push(payment);
+                this.saveDB(db);
+                return payment;
+            }
+
+            getPayment(id) {
+                const db = this.getDB();
+                return db.payments.find(p => p.id === id);
+            }
+
+            updatePayment(id, updates) {
+                const db = this.getDB();
+                const index = db.payments.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    db.payments[index] = { ...db.payments[index], ...updates };
+                    this.saveDB(db);
+                    return db.payments[index];
+                }
+                return null;
+            }
+
+            getPaymentsByStudent(studentId) {
+                const db = this.getDB();
+                return db.payments.filter(p => p.studentId === studentId);
+            }
+
+            // Payment Proofs
+            createPaymentProof(proofData) {
+                const db = this.getDB();
+                const proof = {
+                    id: this.generateId(),
+                    ...proofData,
+                    createdAt: new Date().toISOString()
+                };
+                db.paymentProofs.push(proof);
+                this.saveDB(db);
+                return proof;
+            }
+
+            getPaymentProofByPayment(paymentId) {
+                const db = this.getDB();
+                return db.paymentProofs.find(p => p.paymentId === paymentId);
+            }
+
+            // Withdrawals
+            createWithdrawal(withdrawalData) {
+                const db = this.getDB();
+                const wallet = db.wallets.find(w => w.userId === withdrawalData.teacherId);
+                if (!wallet || wallet.availableBalance < withdrawalData.amount) {
+                    throw new Error('Insufficient balance');
+                }
+                const withdrawal = {
+                    id: this.generateId(),
+                    ...withdrawalData,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                };
+                db.withdrawals.push(withdrawal);
+                wallet.availableBalance -= withdrawalData.amount;
+                wallet.pendingBalance += withdrawalData.amount;
+                this.saveDB(db);
+                return withdrawal;
+            }
+
+            updateWithdrawal(id, updates) {
+                const db = this.getDB();
+                const index = db.withdrawals.findIndex(w => w.id === id);
+                if (index !== -1) {
+                    const withdrawal = db.withdrawals[index];
+                    const wallet = db.wallets.find(w => w.userId === withdrawal.teacherId);
+                    
+                    if (updates.status === 'approved') {
+                        wallet.pendingBalance -= withdrawal.amount;
+                        wallet.totalWithdrawn += withdrawal.amount;
+                    } else if (updates.status === 'rejected') {
+                        wallet.pendingBalance -= withdrawal.amount;
+                        wallet.availableBalance += withdrawal.amount;
+                    }
+                    
+                    db.withdrawals[index] = { ...withdrawal, ...updates };
+                    this.saveDB(db);
+                    return db.withdrawals[index];
+                }
+                return null;
+            }
+
+            getWithdrawalsByTeacher(teacherId) {
+                const db = this.getDB();
+                return db.withdrawals.filter(w => w.teacherId === teacherId);
+            }
+
+            // Wallets
+            getWallet(userId) {
+                const db = this.getDB();
+                return db.wallets.find(w => w.userId === userId);
+            }
+
+            updateWallet(userId, updates) {
+                const db = this.getDB();
+                const index = db.wallets.findIndex(w => w.userId === userId);
+                if (index !== -1) {
+                    db.wallets[index] = { ...db.wallets[index], ...updates };
+                    this.saveDB(db);
+                    return db.wallets[index];
+                }
+                return null;
+            }
+
+            // Certificates
+            createCertificate(certData) {
+                const db = this.getDB();
+                const certificate = {
+                    id: this.generateId(),
+                    certificateId: this.generateCertificateId(),
+                    ...certData,
+                    issuedAt: new Date().toISOString()
+                };
+                db.certificates.push(certificate);
+                this.saveDB(db);
+                return certificate;
+            }
+
+            getCertificate(id) {
+                const db = this.getDB();
+                return db.certificates.find(c => c.id === id);
+            }
+
+            getCertificateByCertificateId(certId) {
+                const db = this.getDB();
+                return db.certificates.find(c => c.certificateId === certId);
+            }
+
+            getCertificatesByStudent(studentId) {
+                const db = this.getDB();
+                return db.certificates.filter(c => c.studentId === studentId);
+            }
+
+            // Notifications
+            createNotification(notifData) {
+                const db = this.getDB();
+                const notification = {
+                    id: this.generateId(),
+                    ...notifData,
+                    read: false,
+                    createdAt: new Date().toISOString()
+                };
+                db.notifications.push(notification);
+                this.saveDB(db);
+                return notification;
+            }
+
+            getNotificationsByUser(userId) {
+                const db = this.getDB();
+                return db.notifications.filter(n => n.userId === userId).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            }
+
+            markNotificationRead(id) {
+                const db = this.getDB();
+                const index = db.notifications.findIndex(n => n.id === id);
+                if (index !== -1) {
+                    db.notifications[index].read = true;
+                    this.saveDB(db);
+                }
+            }
+
+            markAllNotificationsRead(userId) {
+                const db = this.getDB();
+                db.notifications.forEach(n => {
+                    if (n.userId === userId) n.read = true;
+                });
+                this.saveDB(db);
+            }
+
+            // Reviews
+            createReview(reviewData) {
+                const db = this.getDB();
+                const existing = db.reviews.find(r => r.studentId === reviewData.studentId && r.courseId === reviewData.courseId);
+                if (existing) {
+                    throw new Error('Review already exists');
+                }
+                const review = {
+                    id: this.generateId(),
+                    ...reviewData,
+                    createdAt: new Date().toISOString()
+                };
+                db.reviews.push(review);
+                this.updateCourseRating(reviewData.courseId);
+                this.saveDB(db);
+                return review;
+            }
+
+            updateReview(id, updates) {
+                const db = this.getDB();
+                const index = db.reviews.findIndex(r => r.id === id);
+                if (index !== -1) {
+                    db.reviews[index] = { ...db.reviews[index], ...updates };
+                    this.updateCourseRating(db.reviews[index].courseId);
+                    this.saveDB(db);
+                    return db.reviews[index];
+                }
+                return null;
+            }
+
+            getReviewsByCourse(courseId) {
+                const db = this.getDB();
+                return db.reviews.filter(r => r.courseId === courseId);
+            }
+
+            updateCourseRating(courseId) {
+                const db = this.getDB();
+                const reviews = db.reviews.filter(r => r.courseId === courseId);
+                if (reviews.length > 0) {
+                    const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+                    this.updateCourse(courseId, { rating: avgRating });
+                }
+            }
+
+            // Questions & Answers
+            createQuestion(questionData) {
+                const db = this.getDB();
+                const question = {
+                    id: this.generateId(),
+                    ...questionData,
+                    createdAt: new Date().toISOString()
+                };
+                db.questions.push(question);
+                this.saveDB(db);
+                return question;
+            }
+
+            createAnswer(answerData) {
+                const db = this.getDB();
+                const answer = {
+                    id: this.generateId(),
+                    ...answerData,
+                    createdAt: new Date().toISOString()
+                };
+                db.answers.push(answer);
+                this.saveDB(db);
+                return answer;
+            }
+
+            getQuestionsByCourse(courseId) {
+                const db = this.getDB();
+                return db.questions.filter(q => q.courseId === courseId);
+            }
+
+            getAnswersByQuestion(questionId) {
+                const db = this.getDB();
+                return db.answers.filter(a => a.questionId === questionId);
+            }
+
+            // Affiliates
+            createAffiliateLink(affiliateData) {
+                const db = this.getDB();
+                const link = {
+                    id: this.generateId(),
+                    affiliateCode: this.generateAffiliateCode(),
+                    ...affiliateData,
+                    sales: 0,
+                    totalCommission: 0,
+                    createdAt: new Date().toISOString()
+                };
+                db.affiliateLinks.push(link);
+                this.saveDB(db);
+                return link;
+            }
+
+            getAffiliateLinksByTeacher(teacherId) {
+                const db = this.getDB();
+                return db.affiliateLinks.filter(l => l.teacherId === teacherId);
+            }
+
+            createAffiliateSale(saleData) {
+                const db = this.getDB();
+                const sale = {
+                    id: this.generateId(),
+                    ...saleData,
+                    createdAt: new Date().toISOString()
+                };
+                db.affiliateSales.push(sale);
+                
+                const link = db.affiliateLinks.find(l => l.id === saleData.affiliateLinkId);
+                if (link) {
+                    link.sales += 1;
+                    link.totalCommission += saleData.commission;
+                }
+                
+                this.saveDB(db);
+                return sale;
+            }
+
+            // Announcements
+            createAnnouncement(announcementData) {
+                const db = this.getDB();
+                const announcement = {
+                    id: this.generateId(),
+                    ...announcementData,
+                    createdAt: new Date().toISOString()
+                };
+                db.announcements.push(announcement);
+                
+                const targetUsers = announcementData.audience === 'all' 
+                    ? db.users 
+                    : db.users.filter(u => u.role === announcementData.audience);
+                
+                targetUsers.forEach(user => {
+                    this.createNotification({
+                        userId: user.id,
+                        type: 'announcement',
+                        title: announcementData.title,
+                        message: announcementData.content
+                    });
+                });
+                
+                this.saveDB(db);
+                return announcement;
+            }
+
+            // Activity Logs
+            createActivityLog(logData) {
+                const db = this.getDB();
+                const log = {
+                    id: this.generateId(),
+                    ...logData,
+                    timestamp: new Date().toISOString()
+                };
+                db.activityLogs.push(log);
+                this.saveDB(db);
+                return log;
+            }
+
+            getActivityLogs() {
+                const db = this.getDB();
+                return db.activityLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            }
+
+            // Settings
+            getSettings() {
+                const db = this.getDB();
+                return db.settings;
+            }
+
+            updateSettings(updates) {
+                const db = this.getDB();
+                db.settings = { ...db.settings, ...updates };
+                this.saveDB(db);
+                return db.settings;
+            }
+
+            // Sessions
+            createSession(userId, role) {
+                const db = this.getDB();
+                const sessionId = this.generateId();
+                db.sessions[sessionId] = {
+                    userId,
+                    role,
+                    createdAt: new Date().toISOString()
+                };
+                this.saveDB(db);
+                return sessionId;
+            }
+
+            getSession(sessionId) {
+                const db = this.getDB();
+                return db.sessions[sessionId];
+            }
+
+            deleteSession(sessionId) {
+                const db = this.getDB();
+                delete db.sessions[sessionId];
+                this.saveDB(db);
+            }
+
+            // Utility Functions
+            generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            }
+
+            generateCertificateId() {
+                return 'NRA-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            }
+
+            generateAffiliateCode() {
+                return 'AFF-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+            }
+
+            // Export/Import
+            exportData() {
+                const db = this.getDB();
+                const dataStr = JSON.stringify(db, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                const exportFileDefaultName = 'nova-reach-backup-' + new Date().toISOString().split('T')[0] + '.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+            }
+
+            importData(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        this.saveDB(data);
+                        return true;
+                    } catch (error) {
+                        throw new Error('Invalid backup file');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Authentication
+        class Auth {
+            constructor(db) {
+                this.db = db;
+                this.sessionKey = 'novaReachSession';
+            }
+
+            login(email, password) {
+                const user = this.db.getUserByEmail(email);
+                if (!user) {
+                    throw new Error('User not found');
+                }
+                if (user.password !== password) {
+                    throw new Error('Invalid password');
+                }
+                if (user.status !== 'active') {
+                    throw new Error('Account is suspended');
+                }
+                const sessionId = this.db.createSession(user.id, user.role);
+                localStorage.setItem(this.sessionKey, sessionId);
+                return user;
+            }
+
+            adminLogin(accessCode) {
+                if (accessCode !== 'Bendy509') {
+                    throw new Error('Invalid admin access code');
+                }
+                const adminUser = this.db.getUserByEmail('admin@novareach.com');
+                if (!adminUser) {
+                    const admin = this.db.createUser({
+                        role: 'admin',
+                        name: 'Admin',
+                        email: 'admin@novareach.com',
+                        password: 'admin123'
+                    });
+                    const sessionId = this.db.createSession(admin.id, 'admin');
+                    localStorage.setItem(this.sessionKey, sessionId);
+                    return admin;
+                }
+                const sessionId = this.db.createSession(adminUser.id, 'admin');
+                localStorage.setItem(this.sessionKey, sessionId);
+                return adminUser;
+            }
+
+            logout() {
+                const sessionId = localStorage.getItem(this.sessionKey);
+                if (sessionId) {
+                    this.db.deleteSession(sessionId);
+                    localStorage.removeItem(this.sessionKey);
+                }
+            }
+
+            getCurrentUser() {
+                const sessionId = localStorage.getItem(this.sessionKey);
+                if (!sessionId) return null;
+                const session = this.db.getSession(sessionId);
+                if (!session) {
+                    localStorage.removeItem(this.sessionKey);
+                    return null;
+                }
+                return this.db.getUser(session.userId);
+            }
+
+            isAdmin() {
+                const user = this.getCurrentUser();
+                return user && user.role === 'admin';
+            }
+
+            isTeacher() {
+                const user = this.getCurrentUser();
+                return user && user.role === 'teacher';
+            }
+
+            isStudent() {
+                const user = this.getCurrentUser();
+                return user && user.role === 'student';
+            }
+        }
+
+        // Initialize
+        const db = new Database();
+        const auth = new Auth(db);
+
+        // Router
+        class Router {
+            constructor() {
+                this.routes = {};
+                this.currentRoute = null;
+            }
+
+            addRoute(path, handler) {
+                this.routes[path] = handler;
+            }
+
+            navigate(path) {
+                window.location.hash = path;
+            }
+
+            getCurrentRoute() {
+                return window.location.hash.slice(1) || '/';
+            }
+
+            start() {
+                window.addEventListener('hashchange', () => this.render());
+                this.render();
+            }
+
+            render() {
+                const path = this.getCurrentRoute();
+                const user = auth.getCurrentUser();
+                
+                // Route protection
+                if (path.startsWith('/admin') && !auth.isAdmin()) {
+                    this.navigate('/admin-login');
+                    return;
+                }
+                
+                if (path.startsWith('/student') && !auth.isStudent()) {
+                    this.navigate('/login');
+                    return;
+                }
+                
+                if (path.startsWith('/teacher') && !auth.isTeacher()) {
+                    this.navigate('/login');
+                    return;
+                }
+
+                const handler = this.routes[path] || this.routes['/'];
+                if (handler) {
+                    handler();
+                }
+            }
+        }
+
+        const router = new Router();
+
+        // UI Helpers
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+
+        function formatCurrency(amount, currency) {
+            const symbols = { HTG: 'HTG', USD: '$', EUR: '€' };
+            return `${amount} ${symbols[currency] || currency}`;
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('fr-FR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function formatDateTime(dateString) {
+            return new Date(dateString).toLocaleString('fr-FR');
+        }
+
+        // Render Functions
+        function renderHeader() {
+            const user = auth.getCurrentUser();
+            const isAdmin = auth.isAdmin();
+            
+            return `
+                <header class="header">
+                    <div class="container">
+                        <div class="header-content">
+                            <div class="logo">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>NOVA REACH ACADÉMIE</span>
+                            </div>
+                            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <nav class="nav-links" id="navLinks">
+                                ${user ? `
+                                    <a href="#/${user.role}" onclick="closeMobileMenu()">Dashboard</a>
+                                    <a href="#/profile" onclick="closeMobileMenu()">Profile</a>
+                                    <a href="#" onclick="handleLogout(); return false;">Logout</a>
+                                ` : `
+                                    <a href="#/login" onclick="closeMobileMenu()">Login</a>
+                                    <a href="#/register" onclick="closeMobileMenu()">Register</a>
+                                `}
+                                <span class="admin-lock" onclick="handleAdminLock()" title="Admin Access">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                            </nav>
+                        </div>
+                    </div>
+                </header>
+            `;
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            document.getElementById('navLinks').classList.remove('active');
+        }
+
+        function handleLogout() {
+            auth.logout();
+            router.navigate('/');
+            showAlert('Logged out successfully', 'success');
+        }
+
+        function handleAdminLock() {
+            router.navigate('/admin-login');
+        }
+
+        // Pages
+        function renderHomePage() {
+            const courses = db.getPublishedCourses();
+            document.getElementById('app').innerHTML = `
+                ${renderHeader()}
+                <div class="container" style="padding: 2rem 20px;">
+                    <div style="text-align: center; padding: 4rem 0;">
+                        <h1 style="font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            Welcome to NOVA REACH ACADÉMIE
+                        </h1>
+                        <p style="font-size: 1.25rem; color: #718096; margin-bottom: 2rem;">
+                            Transform your future with professional online courses
+                        </p>
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <a href="#/register" class="btn btn-primary">Get Started</a>
+                            <a href="#/courses" class="btn btn-secondary">Browse Courses</a>
+                        </div>
+                    </div>
+                    
+                    <h2 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">Featured Courses</h2>
+                    <div class="courses-grid">
+                        ${courses.length > 0 ? courses.slice(0, 6).map(course => renderCourseCard(course)).join('') : '<div class="empty-state"><i class="fas fa-book"></i><p>No courses available yet</p></div>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCourseCard(course) {
+            const teacher = db.getUser(course.teacherId);
+            return `
+                <div class="course-card" onclick="viewCourse('${course.id}')">
+                    <div class="course-thumbnail">
+                        ${course.thumbnail ? `<img src="${course.thumbnail}" style="width:100%;height:100%;object-fit:cover;">` : '<i class="fas fa-book"></i>'}
+                    </div>
+                    <div class="course-info">
+                        <h3 class="course-title">${course.title}</h3>
+                        <p class="course-teacher">By ${teacher ? teacher.name : 'Unknown'}</p>
+                        <p style="color: #718096; font-size: 0.875rem; margin-bottom: 1rem;">${course.description.substring(0, 100)}...</p>
+                        <div class="course-meta">
+                            <span class="course-price">${course.accessType === 'free' ? 'FREE' : formatCurrency(course.price, course.currency)}</span>
+                            <span class="course-badge ${course.accessType === 'free' ? 'badge-free' : 'badge-paid'}">
+                                ${course.accessType === 'free' ? 'FREE' : 'PAID'}
+                            </span>
+                        </div>
+                        <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <div class="stars">
+                                ${renderStars(course.rating)}
+                            </div>
+                            <span style="font-size: 0.875rem; color: #718096;">(${course.studentsCount} students)</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<i class="fas fa-star star ${i <= rating ? 'active' : ''}"></i>`;
+            }
+            return stars;
+        }
+
+        function viewCourse(courseId) {
+            router.navigate(`/course/${courseId}`);
+        }
+
+        function renderLoginPage() {
+            document.getElementById('app').innerHTML = `
+                ${renderHeader()}
+                <div class="container" style="max-width: 500px; margin: 4rem auto; padding: 0 20px;">
+                    <div class="card">
+                        <h2 style="text-align: center; margin-bottom: 2rem;">Login to Your Account</h2>
+                        <form onsubmit="handleLogin(event)">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" class="form-control" id="loginEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control" id="loginPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                        </form>
+                        <p style="text-align: center; margin-top: 1rem;">
+                            Don't have an account? <a href="#/register">Register here</a>
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                const user = auth.login(email, password);
+                showAlert('Login successful', 'success');
+                router.navigate(`/${user.role}`);
+            } catch (error) {
+                showAlert(error.message, 'error');
+            }
+        }
+
+        function renderRegisterPage() {
+            document.getElementById('app').innerHTML = `
+                ${renderHeader()}
+                <div class="container" style="max-width: 500px; margin: 4rem auto; padding: 0 20px;">
+                    <div class="card">
+                        <h2 style="text-align: center; margin-bottom: 2rem;">Create Your Account</h2>
+                        <form onsubmit="handleRegister(event)">
+                            <div class="form-group">
+                                <label>Role</label>
+                                <select class="form-control" id="registerRole" required>
+                                    <option value="student">Student</option>
+                                    <option value="teacher">Teacher</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" class="form-control" id="registerName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" class="form-control" id="registerEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" class="form-control" id="registerPhone">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control" id="registerPassword" required minlength="6">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
+                        </form>
+                        <p style="text-align: center; margin-top: 1rem;">
+                            Already have an account? <a href="#/login">Login here</a>
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const role = document.getElementById('registerRole').value;
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const phone = document.getElementById('registerPhone').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            try {
+                const user = db.createUser({ role, name, email, phone, password });
+                showAlert('Registration successful', 'success');
+                auth.login(email, password);
+                router.navigate(`/${role}`);
+            } catch (error) {
+                showAlert(error.message, 'error');
+            }
+        }
+
+        function renderAdminLoginPage() {
+            document.getElementById('app').innerHTML = `
+                ${renderHeader()}
+                <div class="container" style="max-width: 500px; margin: 4rem auto; padding: 0 20px;">
+                    <div class="card">
+                        <h2 style="text-align: center; margin-bottom: 2rem;">
+                            <i class="fas fa-lock"></i> Admin Access
+                        </h2>
+                        <form onsubmit="handleAdminLogin(event)">
+                            <div class="form-group">
+                                <label>Admin Access Code</label>
+                                <input type="password" class="form-control" id="adminCode" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Access Admin Panel</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const code = document.getElementById('adminCode').value;
+            
+            try {
+                const admin = auth.adminLogin(code);
+                showAlert('Admin access granted', 'success');
+                router.navigate('/admin');
+            } catch (error) {
+                showAlert('Access Denied', 'error');
+            }
+        }
+
+        function renderStudentDashboard() {
+            const user = auth.getCurrentUser();
+            const enrollments = db.getEnrollmentsByStudent(user.id);
+            const notifications = db.getNotificationsByUser(user.id);
+            const unreadCount = notifications.filter(n => !n.read).length;
+            
+            document.getElementById('app').innerHTML = `
+                ${renderHeader()}
+                <div class="container" style="padding: 2rem 20px;">
+                    <h1 style="margin-bottom: 2rem;">Student Dashboard</h1>
+                    
+                    <div class="dashboard-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue"><i class="fas fa-book"></i></div>
+                            <div class="stat-info">
+                                <h3>${enrollments.length}</h3>
+                                <p>My Courses</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                            <div class="stat-info">
+                                <h3>${enrollments.filter(e => e.completed).length}</h3>
+                                <p>Completed</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple"><i class="fas fa-certificate"></i></div>
+                            <div class="stat-info">
+                                <h3>${db.getCertificatesByStudent(user.id).length}</h3>
+                                <p>Certificates</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange"><i class="fas fa-bell"></i></div>
+                            <div class="stat-info">
+                                <h3>${unreadCount}</h3>
+                                <p>Notifications</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">My Courses</h2>
+                        <div class="courses-grid">
+                            ${enrollments.length > 0 ? enrollments.map(enrollment => {
+                                const course = db.getCourse(enrollment.courseId);
+                                if (!course) return '';
+                                return `
+                                    <div class="course-card" onclick="viewCourse('${course.id}')">
+                                        <div class="course-thumbnail">
+                                            ${course.thumbnail ? `<img src="${course.thumbnail}" style="width:100%;height:100%;object-fit:cover;">` : '<i class="fas fa-book"></i>'}
+                                        </div>
+                                        <div class="course-info">
+                                            <h3 class="course-title">${course.title}</h3>
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: ${enrollment.progress}%"></div>
+                                            </div>
+                                            <p style="font-size: 0.875rem; color: #718096;">${enrollment.progress}% completed</p>
+                                            <button class="btn btn-primary btn-sm" style="width: 100%; margin-top: 1rem;" onclick="continueLearning('${enrollment.id}')">
+                                                ${enrollment.completed ? 'View Certificate' : 'Continue Learning'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('') : '<div class="empty-state"><i class="fas fa-book"></i><p>No courses yet. Browse courses to enroll!</p></div>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function continueLearning(enrollmentId) {
+            const db2 = new Database();
+            const enrollment = db2.getDB().enrollments.find(e => e.id === enrollmentId);
+            if (enrollment.completed) {
+                router.navigate(`/certificate/${enrollment.courseId}`);
+            } else {
+                router.navigate(`/course/${enrollment.courseId}/learn`);
+            }
+        }
+
+        function renderTeacherDashboard() {
+            const user = auth.getCurrentUser();
+            const courses = db.getCoursesByTeacher(user.id);
+            const wallet = db.getWallet(user.id);
+            const notifications = db.getNotificationsByUser(user.id);
+            
+            document.getElementById('app').innerHTML = `
+                ${renderHeader()}
+                <div class="container" style="padding: 2rem 20px;">
+                    <h1 style="margin-bottom: 2rem;">Teacher Dashboard</h1>
+                    
+                    <div class="dashboard-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue"><i class="fas fa-book"></i></div>
+                            <div class="stat-info">
+                                <h3>${courses.length}</h3>
+                                <p>My Courses</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green"><i class="fas fa-users"></i></div>
+                            <div class="stat-info">
+                                <h3>${courses.reduce((sum, c) => sum + c.studentsCount, 0)}</h3>
+                                <p>Total Students</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple"><i class="fas fa-wallet"></i></div>
+                            <div class="stat-info">
+                                <h3>${wallet ? formatCurrency(wallet.availableBalance, 'USD') : '$0'}</h3>
+                                <p>Available Balance</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange"><i class="fas fa-bell"></i></div>
+                            <div class="stat-info">
+                                <h3>${notifications.filter(n => !n.read).length}</h3>
+                                <p>Notifications</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h2 class="card-title" style="margin: 0;">My Courses</h2>
+                            <button class="btn btn-primary" onclick="router.navigate('/teacher/course/create')">
+                                <i class="fas fa-plus"></i> Create Course
+                            </button>
+                        </div>
+                        <div class="courses-grid">
+                            ${courses.length > 0 ? courses.map(course => `
+                                <div class="course-card" onclick="router.navigate('/teacher/course/${course.id}')">
+                                    <div class="course-thumbnail">
+                                        ${course.thumbnail ? `<img src="${course.thumbnail}" style="width:100%;height:100%;object-fit:cover;">` : '<i class="fas fa-book"></i>'}
+                                    </div>
+                                    <div class="course-info">
+                                        <h3 class="course-title">${course.title}</h3>
+                                        <span class="status-badge status-${course.status}">${course.status.toUpperCase()}</span>
+                                        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                                            <span style="font-size: 0.875rem; color: #718096;">${course.studentsCount} students</span>
+                                            <span class="course-price">${course.accessType === 'free' ? 'FREE' : formatCurrency(course.price, course.currency)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('') : '<div class="empty-state"><i class="fas fa-book"></i><p>No courses yet. Create your first course!</p></div>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminDashboard() {
+            const users = db.getDB().users;
+            const courses = db.getDB().courses;
+            const payments = db.getDB().payments;
+            const enrollments = db.getDB().enrollments;
+            
+            const students = users.filter(u => u.role === 'student');
+            const teachers = users.filter(u => u.role === 'teacher');
+            const totalRevenue = payments.filter(p => p.status === 'approved').reduce((sum, p) => sum + p.amount, 0);
+            
+            document.getElementById('app').innerHTML = `
+                ${renderHeader()}
+                <div style="display: flex;">
+                    <div class="sidebar" id="adminSidebar">
+                        <ul class="sidebar-menu">
+                            <li class="active" onclick="showAdminSection('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</li>
+                            <li onclick="showAdminSection('students')"><i class="fas fa-user-graduate"></i> Students</li>
+                            <li onclick="showAdminSection('teachers')"><i class="fas fa-chalkboard-teacher"></i> Teachers</li>
+                            <li onclick="showAdminSection('courses')"><i class="fas fa-book"></i> All Courses</li>
+                            <li onclick="showAdminSection('payments')"><i class="fas fa-credit-card"></i> Payments</li>
+                            <li onclick="showAdminSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</li>
+                            <li onclick="showAdminSection('certificates')"><i class="fas fa-certificate"></i> Certificates</li>
+                            <li onclick="showAdminSection('notifications')"><i class="fas fa-bell"></i> Notifications</li>
+                            <li onclick="showAdminSection('settings')"><i class="fas fa-cog"></i> Settings</li>
+                            <li onclick="showAdminSection('logs')"><i class="fas fa-history"></i> Activity Logs</li>
+                        </ul>
+                    </div>
+                    <div class="main-content" id="adminContent">
+                        ${renderAdminDashboardContent(students, teachers, courses, payments, enrollments, totalRevenue)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminDashboardContent(students, teachers, courses, payments, enrollments, totalRevenue) {
+            return `
+                <h1 style="margin-bottom: 2rem;">Admin Dashboard</h1>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-user-graduate"></i></div>
+                        <div class="stat-info">
+                            <h3>${students.length}</h3>
+                            <p>Total Students</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <div class="stat-info">
+                            <h3>${teachers.length}</h3>
+                            <p>Total Teachers</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fas fa-book"></i></div>
+                        <div class="stat-info">
+                            <h3>${courses.length}</h3>
+                            <p>Total Courses</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="stat-info">
+                            <h3>${formatCurrency(totalRevenue, 'USD')}</h3>
+                            <p>Total Revenue</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pink"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3>${enrollments.length}</h3>
+                            <p>Total Enrollments</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-clock"></i></div>
+                        <div class="stat-info">
+                            <h3>${payments.filter(p => p.status === 'pending').length}</h3>
+                            <p>Pending Payments</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Recent Activity</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Action</th>
+                                    <th>User</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${db.getActivityLogs().slice(0, 10).map(log => `
+                                    <tr>
+                                        <td>${log.action}</td>
+                                        <td>${log.userName || 'System'}</td>
+                                        <td>${formatDateTime(log.timestamp)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showAdminSection(section) {
+            const menuItems = document.querySelectorAll('.sidebar-menu li');
+            menuItems.forEach(item => item.classList.remove('active'));
+            event.target.closest('li').classList.add('active');
+            
+            const content = document.getElementById('adminContent');
+            
+            switch(section) {
+                case 'dashboard':
+                    renderAdminDashboard();
+                    break;
+                case 'students':
+                    renderAdminStudents(content);
+                    break;
+                case 'teachers':
+                    renderAdminTeachers(content);
+                    break;
+                case 'courses':
+                    renderAdminCourses(content);
+                    break;
+                case 'payments':
+                    renderAdminPayments(content);
+                    break;
+                case 'withdrawals':
+                    renderAdminWithdrawals(content);
+                    break;
+                case 'certificates':
+                    renderAdminCertificates(content);
+                    break;
+                case 'notifications':
+                    renderAdminNotifications(content);
+                    break;
+                case 'settings':
+                    renderAdminSettings(content);
+                    break;
+                case 'logs':
+                    renderAdminLogs(content);
+                    break;
+            }
+        }
+
+        function renderAdminStudents(content) {
+            const students = db.getUsersByRole('student');
+            content.innerHTML = `
+                <h1 style="margin-bottom: 2rem;">Manage Students</h1>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Courses</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${students.map(student => {
+                                const enrollments = db.getEnrollmentsByStudent(student.id);
+                                return `
+                                    <tr>
+                                        <td>${student.name}</td>
+                                        <td>${student.email}</td>
+                                        <td><span class="status-badge status-${student.status}">${student.status}</span></td>
+                                        <td>${enrollments.length}</td>
+                                        <td>${formatDate(student.createdAt)}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-secondary" onclick="editStudent('${student.id}')">Edit</button>
+                                            <button class="btn btn-sm ${student.status === 'active' ? 'btn-warning' : 'btn-success'}" onclick="toggleStudentStatus('${student.id}')">
+                                                ${student.status === 'active' ? 'Suspend' : 'Activate'}
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteStudent('${student.id}')">Delete</button>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function editStudent(studentId) {
+            const student = db.getUser(studentId);
+            const newName = prompt('Enter new name:', student.name);
+            if (newName) {
+                db.updateUser(studentId, { name: newName });
+                showAlert('Student updated', 'success');
+                renderAdminStudents(document.getElementById('adminContent'));
+            }
+        }
+
+        function toggleStudentStatus(studentId) {
+            const student = db.getUser(studentId);
+            const newStatus = student.status === 'active' ? 'suspended' : 'active';
+            db.updateUser(studentId, { status: newStatus });
+            showAlert(`Student ${newStatus}`, 'success');
+            renderAdminStudents(document.getElementById('adminContent'));
+        }
+
+        function deleteStudent(studentId) {
+            if (confirm('Are you sure you want to delete this student?')) {
+                db.deleteUser(studentId);
+                showAlert('Student deleted', 'success');
+                renderAdminStudents(document.getElementById('adminContent'));
+            }
+        }
+
+        function renderAdminTeachers(content) {
+            const teachers = db.getUsersByRole('teacher');
+            content.innerHTML = `
+                <h1 style="margin-bottom: 2rem;">Manage Teachers</h1>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Courses</th>
+                                <th>Students</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${teachers.map(teacher => {
+                                const courses = db.getCoursesByTeacher(teacher.id);
+                                const totalStudents = courses.reduce((sum, c) => sum + c.studentsCount, 0);
+                                return `
+                                    <tr>
+                                        <td>${teacher.name}</td>
+                                        <td>${teacher.email}</td>
+                                        <td><span class="status-badge status-${teacher.status}">${teacher.status}</span></td>
+                                        <td>${courses.length}</td>
+                                        <td>${totalStudents}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-secondary" onclick="editTeacher('${teacher.id}')">Edit</button>
+                                            <button class="btn btn-sm ${teacher.status === 'active' ? 'btn-warning' : 'btn-success'}" onclick="toggleTeacherStatus('${teacher.id}')">
+                                                ${teacher.status === 'active' ? 'Suspend' : 'Activate'}
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteTeacher('${teacher.id}')">Delete</button>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function editTeacher(teacherId) {
+            const teacher = db.getUser(teacherId);
+            const newName = prompt('Enter new name:', teacher.name);
+            if (newName) {
+                db.updateUser(teacherId, { name: newName });
+                showAlert('Teacher updated', 'success');
+                renderAdminTeachers(document.getElementById('adminContent'));
+            }
+        }
+
+        function toggleTeacherStatus(teacherId) {
+            const teacher = db.getUser(teacherId);
+            const newStatus = teacher.status === 'active' ? 'suspended' : 'active';
+            db.updateUser(teacherId, { status: newStatus });
+            showAlert(`Teacher ${newStatus}`, 'success');
+            renderAdminTeachers(document.getElementById('adminContent'));
+        }
+
+        function deleteTeacher(teacherId) {
+            if (confirm('Are you sure you want to delete this teacher?')) {
+                db.deleteUser(teacherId);
+                showAlert('Teacher deleted', 'success');
+                renderAdminTeachers(document.getElementById('adminContent'));
+            }
+        }
+
+        function renderAdminCourses(content) {
+            const courses = db.getDB().courses;
+            content.innerHTML = `
+                <h1 style="margin-bottom: 2rem;">All Courses</h1>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Teacher</th>
+                                <th>Price</th>
+                                <th>Students</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${courses.map(course => {
+                                const teacher = db.getUser(course.teacherId);
+                                return `
+                                    <tr>
+                                        <td>${course.title}</td>
+                                        <td>${teacher ? teacher.name : 'Unknown'}</td>
+                                        <td>${course.accessType === 'free' ? 'FREE' : formatCurrency(course.price, course.currency)}</td>
+                                        <td>${course.studentsCount}</td>
+                                        <td><span class="status-badge status-${course.status}">${course.status}</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-secondary" onclick="viewCourseAdmin('${course.id}')">View</button>
+                                            ${course.status === 'pending_review' ? `
+                                                <button class="btn btn-sm btn-success" onclick="approveCourse('${course.id}')">Approve</button>
+                                                <button class="btn btn-sm btn-danger" onclick="rejectCourse('${course.id}')">Reject</button>
+                                            ` : ''}
+                                            ${course.status === 'approved' ? `
+                                                <button class="btn btn-sm btn-primary" onclick="publishCourse('${course.id}')">Publish</button>
+                                            ` : ''}
+                                            ${course.status === 'published' ? `
+                                                <button class="btn btn-sm btn-warning" onclick="unpublishCourse('${course.id}')">Unpublish</button>
+                                            ` : ''}
+                                            <button class="btn btn-sm btn-danger" onclick="deleteCourseAdmin('${course.id}')">Delete</button>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function viewCourseAdmin(courseId) {
+            router.navigate(`/course/${courseId}`);
+        }
+
+        function approveCourse(courseId) {
+            db.updateCourse(courseId, { status: 'approved' });
+            const course = db.getCourse(courseId);
+            db.createNotification({
+                userId: course.teacherId,
+                type: 'course_approved',
+                title: 'Course Approved',
+                message: `Your course "${course.title}" has been approved`
+            });
+            showAlert('Course approved', 'success');
+            renderAdminCourses(document.getElementById('adminContent'));
+        }
+
+        function rejectCourse(courseId) {
+            db.updateCourse(courseId, { status: 'rejected' });
+            const course = db.getCourse(courseId);
+            db.createNotification({
+                userId: course.teacherId,
+                type: 'course_rejected',
+                title: 'Course Rejected',
+                message: `Your course "${course.title}" has been rejected`
+            });
+            showAlert('Course rejected', 'success');
+            renderAdminCourses(document.getElementById('adminContent'));
+        }
+
+        function publishCourse(courseId) {
+            db.updateCourse(courseId, { status: 'published' });
+            showAlert('Course published', 'success');
+            renderAdminCourses(document.getElementById('adminContent'));
+        }
+
+        function unpublishCourse(courseId) {
+            db.updateCourse(courseId, { status: 'unpublished' });
+            showAlert('Course unpublished', 'success');
+            renderAdminCourses(document.getElementById('adminContent'));
+        }
+
+        function deleteCourseAdmin(courseId) {
+            if (confirm('Are you sure you want to delete this course?')) {
+                db.deleteCourse(courseId);
+                showAlert('Course deleted', 'success');
+                renderAdminCourses(document.getElementById('adminContent'));
+            }
+        }
+
+        function renderAdminPayments(content) {
+            const payments = db.getDB().payments;
+            content.innerHTML = `
+                <h1 style="margin-bottom: 2rem;">Payments</h1>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Course</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${payments.map(payment => {
+                                const student = db.getUser(payment.studentId);
+                                const course = db.getCourse(payment.courseId);
+                                return `
+                                    <tr>
+                                        <td>${student ? student.name : 'Unknown'}</td>
+                                        <td>${course ? course.title : 'Unknown'}</td>
+                                        <td>${formatCurrency(payment.amount, payment.currency)}</td>
+                                        <td>${payment.method}</td>
+                                        <td><span class="status-badge status-${payment.status}">${payment.status}</span></td>
+                                        <td>${formatDate(payment.createdAt)}</td>
+                                        <td>
+                                            ${payment.status === 'pending' ? `
+                                                <button class="btn btn-sm btn-success" onclick="approvePayment('${payment.id}')">Approve</button>
+                                                <button class="btn btn-sm btn-danger" onclick="rejectPayment('${payment.id}')">Reject</button>
+                                            ` : ''}
+                                            <button class="btn btn-sm btn-secondary" onclick="viewPaymentProof('${payment.id}')">View Proof</button>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function approvePayment(paymentId) {
+            const payment = db.getPayment(paymentId);
+            db.updatePayment(paymentId, { status: 'approved' });
+            
+            // Create enrollment
+            try {
+                db.createEnrollment({
+                    studentId: payment.studentId,
+                    courseId: payment.courseId,
+                    paymentId: payment.id
+                });
+            } catch (e) {
+                // Already enrolled
+            }
+            
+            // Update teacher wallet
+            const course = db.getCourse(payment.courseId);
+            const settings = db.getSettings();
+            const platformFee = (payment.amount * settings.platformCommission) / 100;
+            const teacherEarnings = payment.amount - platformFee;
+            
+            const wallet = db.getWallet(course.teacherId);
+            if (wallet) {
+                db.updateWallet(course.teacherId, {
+                    totalEarned: wallet.totalEarned + teacherEarnings,
+                    availableBalance: wallet.availableBalance + teacherEarnings
+                });
+            }
+            
+            // Notifications
+            db.createNotification({
+                userId: payment.studentId,
+                type: 'payment_approved',
+                title: 'Payment Approved',
+                message: `Your payment for "${course.title}" has been approved`
+            });
+            
+            db.createNotification({
+                userId: course.teacherId,
+                type:
