@@ -1,2505 +1,754 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOVA REACH ACADÉMIE</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/index.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f5f7fa;
-            color: #2d3748;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            transition: opacity 0.3s;
-        }
-
-        .nav-links a:hover {
-            opacity: 0.8;
-        }
-
-        .admin-lock {
-            cursor: pointer;
-            font-size: 1.2rem;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-
-        .admin-lock:hover {
-            opacity: 1;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: #e2e8f0;
-            color: #2d3748;
-        }
-
-        .btn-secondary:hover {
-            background: #cbd5e0;
-        }
-
-        .btn-success {
-            background: #48bb78;
-            color: white;
-        }
-
-        .btn-danger {
-            background: #f56565;
-            color: white;
-        }
-
-        .btn-warning {
-            background: #ed8936;
-            color: white;
-        }
-
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        /* Forms */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #4a5568;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        select.form-control {
-            cursor: pointer;
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #2d3748;
-        }
-
-        /* Dashboard */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .stat-icon.blue { background: #e0f2fe; color: #0284c7; }
-        .stat-icon.green { background: #d1fae5; color: #059669; }
-        .stat-icon.purple { background: #ede9fe; color: #7c3aed; }
-        .stat-icon.orange { background: #fed7aa; color: #ea580c; }
-        .stat-icon.pink { background: #fce7f3; color: #db2777; }
-
-        .stat-info h3 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-info p {
-            color: #718096;
-            font-size: 0.875rem;
-        }
-
-        /* Course Cards */
-        .courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .course-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
-
-        .course-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-        }
-
-        .course-thumbnail {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-        }
-
-        .course-info {
-            padding: 1.5rem;
-        }
-
-        .course-title {
-            font-size: 1.125rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #2d3748;
-        }
-
-        .course-teacher {
-            color: #718096;
-            font-size: 0.875rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .course-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-        }
-
-        .course-price {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .course-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge-free {
-            background: #d1fae5;
-            color: #059669;
-        }
-
-        .badge-paid {
-            background: #fed7aa;
-            color: #ea580c;
-        }
-
-        /* Tables */
-        .table-container {
-            overflow-x: auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: #f7fafc;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #4a5568;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        td {
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        tr:hover {
-            background: #f7fafc;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #718096;
-        }
-
-        /* Alerts */
-        .alert {
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border-left: 4px solid #10b981;
-        }
-
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border-left: 4px solid #ef4444;
-        }
-
-        .alert-info {
-            background: #dbeafe;
-            color: #1e40af;
-            border-left: 4px solid #3b82f6;
-        }
-
-        /* Progress Bar */
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 0.5rem 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.3s;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            background: white;
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            padding: 2rem 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            overflow-y: auto;
-            z-index: 99;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu li {
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .sidebar-menu li:hover {
-            background: #f7fafc;
-            color: #667eea;
-        }
-
-        .sidebar-menu li.active {
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .main-content {
-            margin-left: 250px;
-            padding: 2rem;
-            min-height: 100vh;
-        }
-
-        /* Video/Audio Player */
-        .video-player, .audio-player {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .video-player video, .audio-player audio {
-            width: 100%;
-            display: block;
-        }
-
-        /* Certificate */
-        .certificate {
-            background: linear-gradient(135deg, #fef5e7 0%, #fff 100%);
-            border: 20px solid #d4af37;
-            border-radius: 12px;
-            padding: 3rem;
-            max-width: 800px;
-            margin: 2rem auto;
-            position: relative;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-
-        .certificate::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            border: 2px solid #d4af37;
-            border-radius: 12px;
-            pointer-events: none;
-        }
-
-        .certificate-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .certificate-logo {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-
-        .certificate-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 0.5rem;
-        }
-
-        .certificate-subtitle {
-            font-size: 1.25rem;
-            color: #718096;
-            margin-bottom: 2rem;
-        }
-
-        .certificate-body {
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .certificate-student {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #667eea;
-            margin: 1rem 0;
-            border-bottom: 2px solid #d4af37;
-            display: inline-block;
-            padding-bottom: 0.5rem;
-        }
-
-        .certificate-course {
-            font-size: 1.5rem;
-            color: #2d3748;
-            margin: 1rem 0;
-        }
-
-        .certificate-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 2px solid #d4af37;
-        }
-
-        .certificate-signature {
-            text-align: center;
-        }
-
-        .certificate-signature-name {
-            font-weight: 700;
-            font-size: 1.125rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .certificate-signature-title {
-            color: #718096;
-            font-size: 0.875rem;
-        }
-
-        .certificate-id {
-            text-align: center;
-            margin-top: 2rem;
-            color: #718096;
-            font-size: 0.875rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 1rem;
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .courses-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .certificate {
-                padding: 1.5rem;
-            }
-
-            .certificate-title {
-                font-size: 1.5rem;
-            }
-
-            .certificate-student {
-                font-size: 1.25rem;
-            }
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            border: 3px solid #f3f4f6;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 2rem auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #718096;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .tab {
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-            transition: all 0.3s;
-        }
-
-        .tab.active {
-            border-bottom-color: #667eea;
-            color: #667eea;
-            font-weight: 600;
-        }
-
-        /* Notifications */
-        .notification-item {
-            padding: 1rem;
-            border-left: 4px solid #667eea;
-            background: #f7fafc;
-            margin-bottom: 0.75rem;
-            border-radius: 8px;
-        }
-
-        .notification-item.unread {
-            background: #e0f2fe;
-            border-left-color: #0284c7;
-        }
-
-        .notification-title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .notification-time {
-            font-size: 0.75rem;
-            color: #718096;
-        }
-
-        /* Stars Rating */
-        .stars {
-            display: inline-flex;
-            gap: 0.25rem;
-        }
-
-        .star {
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: #e2e8f0;
-            transition: color 0.3s;
-        }
-
-        .star.active, .star:hover {
-            color: #fbbf24;
-        }
-
-        /* Search & Filter */
-        .search-filter {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .search-filter input, .search-filter select {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        /* Status Badge */
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .status-pending {
-            background: #fed7aa;
-            color: #ea580c;
-        }
-
-        .status-approved {
-            background: #d1fae5;
-            color: #059669;
-        }
-
-        .status-rejected {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .status-published {
-            background: #d1fae5;
-            color: #059669;
-        }
-
-        .status-draft {
-            background: #e2e8f0;
-            color: #4a5568;
-        }
-
-        /* Mobile Menu Toggle */
-        .mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu-toggle {
-                display: block;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .nav-links.active {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: #667eea;
-                padding: 1rem;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NOVA REACH ACADÉMIE</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1a1a2e;line-height:1.6}
+a{color:#6c5ce7;text-decoration:none}
+.container{max-width:1200px;margin:0 auto;padding:0 16px}
+.hdr{background:linear-gradient(135deg,#6c5ce7,#a855f7);color:#fff;padding:12px 0;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.hdr-inner{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;padding:0 16px}
+.logo{font-size:1.3rem;font-weight:800;letter-spacing:1px;cursor:pointer}
+.logo i{margin-right:6px}
+.nav{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.nav a,.nav span{color:#fff;cursor:pointer;font-size:.9rem;transition:.3s}
+.nav a:hover,.nav span:hover{opacity:.8}
+.lock-icon{opacity:.55;font-size:1rem;margin-left:8px}
+.lock-icon:hover{opacity:1}
+.btn{padding:8px 18px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85rem;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.bp{background:linear-gradient(135deg,#6c5ce7,#a855f7);color:#fff}
+.bs{background:#e2e8f0;color:#333}
+.bg{background:#10b981;color:#fff}
+.bd{background:#ef4444;color:#fff}
+.bw{background:#f59e0b;color:#fff}
+.bi{background:#3b82f6;color:#fff}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+.fg{margin-bottom:14px}
+.fg label{display:block;margin-bottom:4px;font-weight:600;font-size:.85rem;color:#555}
+.fc{width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:.9rem;transition:.2s}
+.fc:focus{outline:none;border-color:#6c5ce7}
+select.fc{cursor:pointer}
+textarea.fc{resize:vertical;min-height:80px}
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:16px}
+.card-t{font-size:1.15rem;font-weight:700;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.scard{background:#fff;padding:16px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:14px}
+.sicon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.sicon.b{background:#dbeafe;color:#2563eb}
+.sicon.g{background:#d1fae5;color:#059669}
+.sicon.p{background:#ede9fe;color:#7c3aed}
+.sicon.o{background:#fed7aa;color:#ea580c}
+.sicon.r{background:#fce7f3;color:#db2777}
+.sinfo h3{font-size:1.5rem;font-weight:700}
+.sinfo p{color:#718096;font-size:.8rem}
+.ccard{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:.3s;cursor:pointer}
+.ccard:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.cthumb{width:100%;height:160px;background:linear-gradient(135deg,#6c5ce7,#a855f7);display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.5rem;overflow:hidden}
+.cthumb img{width:100%;height:100%;object-fit:cover}
+.cinfo{padding:14px}
+.ctitle{font-size:1rem;font-weight:700;margin-bottom:4px}
+.cteacher{color:#718096;font-size:.8rem;margin-bottom:6px}
+.cmeta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.cprice{font-size:1.1rem;font-weight:700;color:#6c5ce7}
+.badge{padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600}
+.bf{background:#d1fae5;color:#059669}
+.bpa{background:#fed7aa;color:#ea580c}
+.sbp{background:#fed7aa;color:#ea580c}
+.sba{background:#d1fae5;color:#059669}
+.sbr{background:#fee2e2;color:#991b1b}
+.sbd{background:#e2e8f0;color:#555}
+.sbp2{background:#dbeafe;color:#2563eb}
+.tbl-wrap{overflow-x:auto;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse}
+th{background:#f8fafc;padding:10px 14px;text-align:left;font-weight:600;font-size:.82rem;color:#555;border-bottom:2px solid #e2e8f0}
+td{padding:10px 14px;border-bottom:1px solid #f1f1f1;font-size:.85rem}
+tr:hover{background:#fafbfc}
+.modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
+.modal-bg.on{display:flex}
+.modal{background:#fff;border-radius:14px;padding:24px;max-width:560px;width:92%;max-height:88vh;overflow-y:auto;position:relative}
+.modal-x{position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#888}
+.alert{padding:12px 16px;border-radius:8px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:.9rem;position:fixed;top:70px;right:16px;z-index:9999;min-width:280px;box-shadow:0 4px 16px rgba(0,0,0,.12);animation:slideIn .3s}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.alert-s{background:#d1fae5;color:#065f46;border-left:4px solid #10b981}
+.alert-e{background:#fee2e2;color:#991b1b;border-left:4px solid #ef4444}
+.alert-i{background:#dbeafe;color:#1e40af;border-left:4px solid #3b82f6}
+.pbar{width:100%;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin:6px 0}
+.pfill{height:100%;background:linear-gradient(90deg,#6c5ce7,#a855f7);transition:width .3s}
+.side{width:240px;background:#fff;height:100vh;position:fixed;left:0;top:52px;padding:16px 0;box-shadow:2px 0 10px rgba(0,0,0,.06);overflow-y:auto;z-index:98}
+.side ul{list-style:none}
+.side li{padding:10px 20px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:10px;font-size:.88rem;border-left:3px solid transparent}
+.side li:hover{background:#f8f9ff;color:#6c5ce7}
+.side li.act{background:linear-gradient(90deg,#6c5ce7,#a855f7);color:#fff;border-left-color:#fff}
+.main{margin-left:240px;padding:20px;min-height:calc(100vh - 52px)}
+.notif{padding:12px;border-left:4px solid #6c5ce7;background:#f8f9ff;margin-bottom:8px;border-radius:8px;font-size:.85rem}
+.notif.unread{background:#eff6ff;border-left-color:#2563eb}
+.stars{display:inline-flex;gap:2px}
+.star{cursor:pointer;font-size:1.3rem;color:#e2e8f0;transition:.2s}
+.star.on,.star:hover{color:#fbbf24}
+.sf{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.sf input,.sf select{flex:1;min-width:160px}
+.empty{text-align:center;padding:40px 20px;color:#999}
+.empty i{font-size:3rem;margin-bottom:12px;opacity:.4}
+.cert{background:linear-gradient(135deg,#fefce8,#fffbeb,#fff);border:16px solid #d4af37;border-radius:10px;padding:40px;max-width:800px;margin:20px auto;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.15)}
+.cert::before{content:'';position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;border:2px solid #d4af37;border-radius:10px;pointer-events:none}
+.cert-h{text-align:center;margin-bottom:24px}
+.cert-logo{font-size:1.6rem;font-weight:800;color:#6c5ce7;margin-bottom:8px}
+.cert-t{font-size:2rem;font-weight:700;color:#1a1a2e;margin-bottom:6px}
+.cert-sub{font-size:1.1rem;color:#666}
+.cert-body{text-align:center;margin:24px 0}
+.cert-name{font-size:1.8rem;font-weight:700;color:#6c5ce7;margin:12px 0;border-bottom:2px solid #d4af37;display:inline-block;padding-bottom:6px}
+.cert-course{font-size:1.3rem;color:#333;margin:10px 0}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:32px;padding-top:20px;border-top:2px solid #d4af37}
+.cert-sig{text-align:center;min-width:180px}
+.cert-sig-n{font-weight:700;font-size:1rem;margin-bottom:2px}
+.cert-sig-t{color:#777;font-size:.8rem}
+.cert-id{text-align:center;margin-top:16px;color:#999;font-size:.8rem}
+.mob-tog{display:none;background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer}
+.lesson-content{max-width:900px;margin:0 auto}
+.video-wrap{width:100%;max-width:800px;margin:0 auto;background:#000;border-radius:10px;overflow:hidden}
+.video-wrap video,.video-wrap iframe{width:100%;aspect-ratio:16/9;display:block}
+.audio-wrap{max-width:600px;margin:20px auto;background:#fff;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.audio-wrap audio{width:100%}
+.text-wrap{max-width:800px;margin:0 auto;background:#fff;padding:28px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);line-height:1.8;white-space:pre-wrap}
+.pdf-wrap{max-width:800px;margin:0 auto;text-align:center}
+.pdf-wrap iframe{width:100%;height:600px;border:none;border-radius:10px}
+.tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #e2e8f0;overflow-x:auto}
+.tab{padding:8px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;white-space:nowrap;font-size:.88rem}
+.tab.act{border-bottom-color:#6c5ce7;color:#6c5ce7;font-weight:600}
+@media(max-width:768px){
+.side{transform:translateX(-100%);transition:.3s;top:0;padding-top:60px}
+.side.open{transform:translateX(0)}
+.main{margin-left:0;padding:12px}
+.grid2,.grid3{grid-template-columns:1fr}
+.mob-tog{display:block}
+.nav{display:none}
+.nav.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:#6c5ce7;padding:12px;gap:10px}
+.cert{padding:20px}
+.cert-t{font-size:1.4rem}
+.cert-name{font-size:1.2rem}
+.cert-foot{flex-direction:column;gap:20px;align-items:center}
+}
+</style>
 </head>
 <body>
-    <div id="app"></div>
-
-    <script>
-        // Database Management
-        class Database {
-            constructor() {
-                this.storageKey = 'novaReachAcademieDB';
-                this.init();
-            }
-
-            init() {
-                if (!localStorage.getItem(this.storageKey)) {
-                    const defaultDB = {
-                        users: [],
-                        courses: [],
-                        lessons: [],
-                        enrollments: [],
-                        payments: [],
-                        paymentProofs: [],
-                        withdrawals: [],
-                        wallets: [],
-                        certificates: [],
-                        notifications: [],
-                        affiliates: [],
-                        affiliateLinks: [],
-                        affiliateSales: [],
-                        affiliateCommissions: [],
-                        reviews: [],
-                        questions: [],
-                        answers: [],
-                        announcements: [],
-                        activityLogs: [],
-                        settings: {
-                            platformName: 'NOVA REACH ACADÉMIE',
-                            platformCommission: 10,
-                            supportedCurrencies: ['HTG', 'USD', 'EUR'],
-                            moncashInfo: { number: '', name: '' },
-                            natcashInfo: { number: '33461451', name: 'Darlene George' }
-                        },
-                        sessions: {}
-                    };
-                    localStorage.setItem(this.storageKey, JSON.stringify(defaultDB));
-                }
-            }
-
-            getDB() {
-                return JSON.parse(localStorage.getItem(this.storageKey));
-            }
-
-            saveDB(db) {
-                localStorage.setItem(this.storageKey, JSON.stringify(db));
-            }
-
-            // Users
-            createUser(userData) {
-                const db = this.getDB();
-                if (db.users.find(u => u.email === userData.email)) {
-                    throw new Error('Email already exists');
-                }
-                const user = {
-                    id: this.generateId(),
-                    ...userData,
-                    status: 'active',
-                    createdAt: new Date().toISOString()
-                };
-                db.users.push(user);
-                if (userData.role === 'teacher') {
-                    db.wallets.push({
-                        id: this.generateId(),
-                        userId: user.id,
-                        totalEarned: 0,
-                        availableBalance: 0,
-                        pendingBalance: 0,
-                        totalWithdrawn: 0
-                    });
-                }
-                this.saveDB(db);
-                return user;
-            }
-
-            getUser(id) {
-                const db = this.getDB();
-                return db.users.find(u => u.id === id);
-            }
-
-            getUserByEmail(email) {
-                const db = this.getDB();
-                return db.users.find(u => u.email === email);
-            }
-
-            updateUser(id, updates) {
-                const db = this.getDB();
-                const index = db.users.findIndex(u => u.id === id);
-                if (index !== -1) {
-                    db.users[index] = { ...db.users[index], ...updates };
-                    this.saveDB(db);
-                    return db.users[index];
-                }
-                return null;
-            }
-
-            deleteUser(id) {
-                const db = this.getDB();
-                db.users = db.users.filter(u => u.id !== id);
-                this.saveDB(db);
-            }
-
-            getUsersByRole(role) {
-                const db = this.getDB();
-                return db.users.filter(u => u.role === role);
-            }
-
-            // Courses
-            createCourse(courseData) {
-                const db = this.getDB();
-                const course = {
-                    id: this.generateId(),
-                    ...courseData,
-                    status: 'draft',
-                    rating: 0,
-                    studentsCount: 0,
-                    createdAt: new Date().toISOString()
-                };
-                db.courses.push(course);
-                this.saveDB(db);
-                return course;
-            }
-
-            getCourse(id) {
-                const db = this.getDB();
-                return db.courses.find(c => c.id === id);
-            }
-
-            updateCourse(id, updates) {
-                const db = this.getDB();
-                const index = db.courses.findIndex(c => c.id === id);
-                if (index !== -1) {
-                    db.courses[index] = { ...db.courses[index], ...updates };
-                    this.saveDB(db);
-                    return db.courses[index];
-                }
-                return null;
-            }
-
-            deleteCourse(id) {
-                const db = this.getDB();
-                db.courses = db.courses.filter(c => c.id !== id);
-                db.lessons = db.lessons.filter(l => l.courseId !== id);
-                this.saveDB(db);
-            }
-
-            getCoursesByTeacher(teacherId) {
-                const db = this.getDB();
-                return db.courses.filter(c => c.teacherId === teacherId);
-            }
-
-            getPublishedCourses() {
-                const db = this.getDB();
-                return db.courses.filter(c => c.status === 'published');
-            }
-
-            // Lessons
-            createLesson(lessonData) {
-                const db = this.getDB();
-                const lesson = {
-                    id: this.generateId(),
-                    ...lessonData,
-                    createdAt: new Date().toISOString()
-                };
-                db.lessons.push(lesson);
-                this.saveDB(db);
-                return lesson;
-            }
-
-            getLessonsByCourse(courseId) {
-                const db = this.getDB();
-                return db.lessons.filter(l => l.courseId === courseId);
-            }
-
-            updateLesson(id, updates) {
-                const db = this.getDB();
-                const index = db.lessons.findIndex(l => l.id === id);
-                if (index !== -1) {
-                    db.lessons[index] = { ...db.lessons[index], ...updates };
-                    this.saveDB(db);
-                    return db.lessons[index];
-                }
-                return null;
-            }
-
-            deleteLesson(id) {
-                const db = this.getDB();
-                db.lessons = db.lessons.filter(l => l.id !== id);
-                this.saveDB(db);
-            }
-
-            // Enrollments
-            createEnrollment(enrollmentData) {
-                const db = this.getDB();
-                if (db.enrollments.find(e => e.studentId === enrollmentData.studentId && e.courseId === enrollmentData.courseId)) {
-                    throw new Error('Already enrolled');
-                }
-                const enrollment = {
-                    id: this.generateId(),
-                    ...enrollmentData,
-                    progress: 0,
-                    completedLessons: [],
-                    lastLessonId: null,
-                    completed: false,
-                    enrolledAt: new Date().toISOString()
-                };
-                db.enrollments.push(enrollment);
-                const course = this.getCourse(enrollmentData.courseId);
-                if (course) {
-                    this.updateCourse(course.id, { studentsCount: course.studentsCount + 1 });
-                }
-                this.saveDB(db);
-                return enrollment;
-            }
-
-            getEnrollment(studentId, courseId) {
-                const db = this.getDB();
-                return db.enrollments.find(e => e.studentId === studentId && e.courseId === courseId);
-            }
-
-            getEnrollmentsByStudent(studentId) {
-                const db = this.getDB();
-                return db.enrollments.filter(e => e.studentId === studentId);
-            }
-
-            getEnrollmentsByCourse(courseId) {
-                const db = this.getDB();
-                return db.enrollments.filter(e => e.courseId === courseId);
-            }
-
-            updateEnrollment(id, updates) {
-                const db = this.getDB();
-                const index = db.enrollments.findIndex(e => e.id === id);
-                if (index !== -1) {
-                    db.enrollments[index] = { ...db.enrollments[index], ...updates };
-                    this.saveDB(db);
-                    return db.enrollments[index];
-                }
-                return null;
-            }
-
-            // Payments
-            createPayment(paymentData) {
-                const db = this.getDB();
-                if (db.payments.find(p => p.transactionId === paymentData.transactionId)) {
-                    throw new Error('Transaction ID already exists');
-                }
-                const payment = {
-                    id: this.generateId(),
-                    ...paymentData,
-                    status: 'pending',
-                    createdAt: new Date().toISOString()
-                };
-                db.payments.push(payment);
-                this.saveDB(db);
-                return payment;
-            }
-
-            getPayment(id) {
-                const db = this.getDB();
-                return db.payments.find(p => p.id === id);
-            }
-
-            updatePayment(id, updates) {
-                const db = this.getDB();
-                const index = db.payments.findIndex(p => p.id === id);
-                if (index !== -1) {
-                    db.payments[index] = { ...db.payments[index], ...updates };
-                    this.saveDB(db);
-                    return db.payments[index];
-                }
-                return null;
-            }
-
-            getPaymentsByStudent(studentId) {
-                const db = this.getDB();
-                return db.payments.filter(p => p.studentId === studentId);
-            }
-
-            // Payment Proofs
-            createPaymentProof(proofData) {
-                const db = this.getDB();
-                const proof = {
-                    id: this.generateId(),
-                    ...proofData,
-                    createdAt: new Date().toISOString()
-                };
-                db.paymentProofs.push(proof);
-                this.saveDB(db);
-                return proof;
-            }
-
-            getPaymentProofByPayment(paymentId) {
-                const db = this.getDB();
-                return db.paymentProofs.find(p => p.paymentId === paymentId);
-            }
-
-            // Withdrawals
-            createWithdrawal(withdrawalData) {
-                const db = this.getDB();
-                const wallet = db.wallets.find(w => w.userId === withdrawalData.teacherId);
-                if (!wallet || wallet.availableBalance < withdrawalData.amount) {
-                    throw new Error('Insufficient balance');
-                }
-                const withdrawal = {
-                    id: this.generateId(),
-                    ...withdrawalData,
-                    status: 'pending',
-                    createdAt: new Date().toISOString()
-                };
-                db.withdrawals.push(withdrawal);
-                wallet.availableBalance -= withdrawalData.amount;
-                wallet.pendingBalance += withdrawalData.amount;
-                this.saveDB(db);
-                return withdrawal;
-            }
-
-            updateWithdrawal(id, updates) {
-                const db = this.getDB();
-                const index = db.withdrawals.findIndex(w => w.id === id);
-                if (index !== -1) {
-                    const withdrawal = db.withdrawals[index];
-                    const wallet = db.wallets.find(w => w.userId === withdrawal.teacherId);
-                    
-                    if (updates.status === 'approved') {
-                        wallet.pendingBalance -= withdrawal.amount;
-                        wallet.totalWithdrawn += withdrawal.amount;
-                    } else if (updates.status === 'rejected') {
-                        wallet.pendingBalance -= withdrawal.amount;
-                        wallet.availableBalance += withdrawal.amount;
-                    }
-                    
-                    db.withdrawals[index] = { ...withdrawal, ...updates };
-                    this.saveDB(db);
-                    return db.withdrawals[index];
-                }
-                return null;
-            }
-
-            getWithdrawalsByTeacher(teacherId) {
-                const db = this.getDB();
-                return db.withdrawals.filter(w => w.teacherId === teacherId);
-            }
-
-            // Wallets
-            getWallet(userId) {
-                const db = this.getDB();
-                return db.wallets.find(w => w.userId === userId);
-            }
-
-            updateWallet(userId, updates) {
-                const db = this.getDB();
-                const index = db.wallets.findIndex(w => w.userId === userId);
-                if (index !== -1) {
-                    db.wallets[index] = { ...db.wallets[index], ...updates };
-                    this.saveDB(db);
-                    return db.wallets[index];
-                }
-                return null;
-            }
-
-            // Certificates
-            createCertificate(certData) {
-                const db = this.getDB();
-                const certificate = {
-                    id: this.generateId(),
-                    certificateId: this.generateCertificateId(),
-                    ...certData,
-                    issuedAt: new Date().toISOString()
-                };
-                db.certificates.push(certificate);
-                this.saveDB(db);
-                return certificate;
-            }
-
-            getCertificate(id) {
-                const db = this.getDB();
-                return db.certificates.find(c => c.id === id);
-            }
-
-            getCertificateByCertificateId(certId) {
-                const db = this.getDB();
-                return db.certificates.find(c => c.certificateId === certId);
-            }
-
-            getCertificatesByStudent(studentId) {
-                const db = this.getDB();
-                return db.certificates.filter(c => c.studentId === studentId);
-            }
-
-            // Notifications
-            createNotification(notifData) {
-                const db = this.getDB();
-                const notification = {
-                    id: this.generateId(),
-                    ...notifData,
-                    read: false,
-                    createdAt: new Date().toISOString()
-                };
-                db.notifications.push(notification);
-                this.saveDB(db);
-                return notification;
-            }
-
-            getNotificationsByUser(userId) {
-                const db = this.getDB();
-                return db.notifications.filter(n => n.userId === userId).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            }
-
-            markNotificationRead(id) {
-                const db = this.getDB();
-                const index = db.notifications.findIndex(n => n.id === id);
-                if (index !== -1) {
-                    db.notifications[index].read = true;
-                    this.saveDB(db);
-                }
-            }
-
-            markAllNotificationsRead(userId) {
-                const db = this.getDB();
-                db.notifications.forEach(n => {
-                    if (n.userId === userId) n.read = true;
-                });
-                this.saveDB(db);
-            }
-
-            // Reviews
-            createReview(reviewData) {
-                const db = this.getDB();
-                const existing = db.reviews.find(r => r.studentId === reviewData.studentId && r.courseId === reviewData.courseId);
-                if (existing) {
-                    throw new Error('Review already exists');
-                }
-                const review = {
-                    id: this.generateId(),
-                    ...reviewData,
-                    createdAt: new Date().toISOString()
-                };
-                db.reviews.push(review);
-                this.updateCourseRating(reviewData.courseId);
-                this.saveDB(db);
-                return review;
-            }
-
-            updateReview(id, updates) {
-                const db = this.getDB();
-                const index = db.reviews.findIndex(r => r.id === id);
-                if (index !== -1) {
-                    db.reviews[index] = { ...db.reviews[index], ...updates };
-                    this.updateCourseRating(db.reviews[index].courseId);
-                    this.saveDB(db);
-                    return db.reviews[index];
-                }
-                return null;
-            }
-
-            getReviewsByCourse(courseId) {
-                const db = this.getDB();
-                return db.reviews.filter(r => r.courseId === courseId);
-            }
-
-            updateCourseRating(courseId) {
-                const db = this.getDB();
-                const reviews = db.reviews.filter(r => r.courseId === courseId);
-                if (reviews.length > 0) {
-                    const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
-                    this.updateCourse(courseId, { rating: avgRating });
-                }
-            }
-
-            // Questions & Answers
-            createQuestion(questionData) {
-                const db = this.getDB();
-                const question = {
-                    id: this.generateId(),
-                    ...questionData,
-                    createdAt: new Date().toISOString()
-                };
-                db.questions.push(question);
-                this.saveDB(db);
-                return question;
-            }
-
-            createAnswer(answerData) {
-                const db = this.getDB();
-                const answer = {
-                    id: this.generateId(),
-                    ...answerData,
-                    createdAt: new Date().toISOString()
-                };
-                db.answers.push(answer);
-                this.saveDB(db);
-                return answer;
-            }
-
-            getQuestionsByCourse(courseId) {
-                const db = this.getDB();
-                return db.questions.filter(q => q.courseId === courseId);
-            }
-
-            getAnswersByQuestion(questionId) {
-                const db = this.getDB();
-                return db.answers.filter(a => a.questionId === questionId);
-            }
-
-            // Affiliates
-            createAffiliateLink(affiliateData) {
-                const db = this.getDB();
-                const link = {
-                    id: this.generateId(),
-                    affiliateCode: this.generateAffiliateCode(),
-                    ...affiliateData,
-                    sales: 0,
-                    totalCommission: 0,
-                    createdAt: new Date().toISOString()
-                };
-                db.affiliateLinks.push(link);
-                this.saveDB(db);
-                return link;
-            }
-
-            getAffiliateLinksByTeacher(teacherId) {
-                const db = this.getDB();
-                return db.affiliateLinks.filter(l => l.teacherId === teacherId);
-            }
-
-            createAffiliateSale(saleData) {
-                const db = this.getDB();
-                const sale = {
-                    id: this.generateId(),
-                    ...saleData,
-                    createdAt: new Date().toISOString()
-                };
-                db.affiliateSales.push(sale);
-                
-                const link = db.affiliateLinks.find(l => l.id === saleData.affiliateLinkId);
-                if (link) {
-                    link.sales += 1;
-                    link.totalCommission += saleData.commission;
-                }
-                
-                this.saveDB(db);
-                return sale;
-            }
-
-            // Announcements
-            createAnnouncement(announcementData) {
-                const db = this.getDB();
-                const announcement = {
-                    id: this.generateId(),
-                    ...announcementData,
-                    createdAt: new Date().toISOString()
-                };
-                db.announcements.push(announcement);
-                
-                const targetUsers = announcementData.audience === 'all' 
-                    ? db.users 
-                    : db.users.filter(u => u.role === announcementData.audience);
-                
-                targetUsers.forEach(user => {
-                    this.createNotification({
-                        userId: user.id,
-                        type: 'announcement',
-                        title: announcementData.title,
-                        message: announcementData.content
-                    });
-                });
-                
-                this.saveDB(db);
-                return announcement;
-            }
-
-            // Activity Logs
-            createActivityLog(logData) {
-                const db = this.getDB();
-                const log = {
-                    id: this.generateId(),
-                    ...logData,
-                    timestamp: new Date().toISOString()
-                };
-                db.activityLogs.push(log);
-                this.saveDB(db);
-                return log;
-            }
-
-            getActivityLogs() {
-                const db = this.getDB();
-                return db.activityLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-            }
-
-            // Settings
-            getSettings() {
-                const db = this.getDB();
-                return db.settings;
-            }
-
-            updateSettings(updates) {
-                const db = this.getDB();
-                db.settings = { ...db.settings, ...updates };
-                this.saveDB(db);
-                return db.settings;
-            }
-
-            // Sessions
-            createSession(userId, role) {
-                const db = this.getDB();
-                const sessionId = this.generateId();
-                db.sessions[sessionId] = {
-                    userId,
-                    role,
-                    createdAt: new Date().toISOString()
-                };
-                this.saveDB(db);
-                return sessionId;
-            }
-
-            getSession(sessionId) {
-                const db = this.getDB();
-                return db.sessions[sessionId];
-            }
-
-            deleteSession(sessionId) {
-                const db = this.getDB();
-                delete db.sessions[sessionId];
-                this.saveDB(db);
-            }
-
-            // Utility Functions
-            generateId() {
-                return Date.now().toString(36) + Math.random().toString(36).substr(2);
-            }
-
-            generateCertificateId() {
-                return 'NRA-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-            }
-
-            generateAffiliateCode() {
-                return 'AFF-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-            }
-
-            // Export/Import
-            exportData() {
-                const db = this.getDB();
-                const dataStr = JSON.stringify(db, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                const exportFileDefaultName = 'nova-reach-backup-' + new Date().toISOString().split('T')[0] + '.json';
-                
-                const linkElement = document.createElement('a');
-                linkElement.setAttribute('href', dataUri);
-                linkElement.setAttribute('download', exportFileDefaultName);
-                linkElement.click();
-            }
-
-            importData(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const data = JSON.parse(e.target.result);
-                        this.saveDB(data);
-                        return true;
-                    } catch (error) {
-                        throw new Error('Invalid backup file');
-                    }
-                };
-                reader.readAsText(file);
-            }
-        }
-
-        // Authentication
-        class Auth {
-            constructor(db) {
-                this.db = db;
-                this.sessionKey = 'novaReachSession';
-            }
-
-            login(email, password) {
-                const user = this.db.getUserByEmail(email);
-                if (!user) {
-                    throw new Error('User not found');
-                }
-                if (user.password !== password) {
-                    throw new Error('Invalid password');
-                }
-                if (user.status !== 'active') {
-                    throw new Error('Account is suspended');
-                }
-                const sessionId = this.db.createSession(user.id, user.role);
-                localStorage.setItem(this.sessionKey, sessionId);
-                return user;
-            }
-
-            adminLogin(accessCode) {
-                if (accessCode !== 'Bendy509') {
-                    throw new Error('Invalid admin access code');
-                }
-                const adminUser = this.db.getUserByEmail('admin@novareach.com');
-                if (!adminUser) {
-                    const admin = this.db.createUser({
-                        role: 'admin',
-                        name: 'Admin',
-                        email: 'admin@novareach.com',
-                        password: 'admin123'
-                    });
-                    const sessionId = this.db.createSession(admin.id, 'admin');
-                    localStorage.setItem(this.sessionKey, sessionId);
-                    return admin;
-                }
-                const sessionId = this.db.createSession(adminUser.id, 'admin');
-                localStorage.setItem(this.sessionKey, sessionId);
-                return adminUser;
-            }
-
-            logout() {
-                const sessionId = localStorage.getItem(this.sessionKey);
-                if (sessionId) {
-                    this.db.deleteSession(sessionId);
-                    localStorage.removeItem(this.sessionKey);
-                }
-            }
-
-            getCurrentUser() {
-                const sessionId = localStorage.getItem(this.sessionKey);
-                if (!sessionId) return null;
-                const session = this.db.getSession(sessionId);
-                if (!session) {
-                    localStorage.removeItem(this.sessionKey);
-                    return null;
-                }
-                return this.db.getUser(session.userId);
-            }
-
-            isAdmin() {
-                const user = this.getCurrentUser();
-                return user && user.role === 'admin';
-            }
-
-            isTeacher() {
-                const user = this.getCurrentUser();
-                return user && user.role === 'teacher';
-            }
-
-            isStudent() {
-                const user = this.getCurrentUser();
-                return user && user.role === 'student';
-            }
-        }
-
-        // Initialize
-        const db = new Database();
-        const auth = new Auth(db);
-
-        // Router
-        class Router {
-            constructor() {
-                this.routes = {};
-                this.currentRoute = null;
-            }
-
-            addRoute(path, handler) {
-                this.routes[path] = handler;
-            }
-
-            navigate(path) {
-                window.location.hash = path;
-            }
-
-            getCurrentRoute() {
-                return window.location.hash.slice(1) || '/';
-            }
-
-            start() {
-                window.addEventListener('hashchange', () => this.render());
-                this.render();
-            }
-
-            render() {
-                const path = this.getCurrentRoute();
-                const user = auth.getCurrentUser();
-                
-                // Route protection
-                if (path.startsWith('/admin') && !auth.isAdmin()) {
-                    this.navigate('/admin-login');
-                    return;
-                }
-                
-                if (path.startsWith('/student') && !auth.isStudent()) {
-                    this.navigate('/login');
-                    return;
-                }
-                
-                if (path.startsWith('/teacher') && !auth.isTeacher()) {
-                    this.navigate('/login');
-                    return;
-                }
-
-                const handler = this.routes[path] || this.routes['/'];
-                if (handler) {
-                    handler();
-                }
-            }
-        }
-
-        const router = new Router();
-
-        // UI Helpers
-        function showAlert(message, type = 'info') {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                <span>${message}</span>
-            `;
-            document.body.appendChild(alertDiv);
-            setTimeout(() => alertDiv.remove(), 3000);
-        }
-
-        function formatCurrency(amount, currency) {
-            const symbols = { HTG: 'HTG', USD: '$', EUR: '€' };
-            return `${amount} ${symbols[currency] || currency}`;
-        }
-
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('fr-FR', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        }
-
-        function formatDateTime(dateString) {
-            return new Date(dateString).toLocaleString('fr-FR');
-        }
-
-        // Render Functions
-        function renderHeader() {
-            const user = auth.getCurrentUser();
-            const isAdmin = auth.isAdmin();
-            
-            return `
-                <header class="header">
-                    <div class="container">
-                        <div class="header-content">
-                            <div class="logo">
-                                <i class="fas fa-graduation-cap"></i>
-                                <span>NOVA REACH ACADÉMIE</span>
-                            </div>
-                            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                                <i class="fas fa-bars"></i>
-                            </button>
-                            <nav class="nav-links" id="navLinks">
-                                ${user ? `
-                                    <a href="#/${user.role}" onclick="closeMobileMenu()">Dashboard</a>
-                                    <a href="#/profile" onclick="closeMobileMenu()">Profile</a>
-                                    <a href="#" onclick="handleLogout(); return false;">Logout</a>
-                                ` : `
-                                    <a href="#/login" onclick="closeMobileMenu()">Login</a>
-                                    <a href="#/register" onclick="closeMobileMenu()">Register</a>
-                                `}
-                                <span class="admin-lock" onclick="handleAdminLock()" title="Admin Access">
-                                    <i class="fas fa-lock"></i>
-                                </span>
-                            </nav>
-                        </div>
-                    </div>
-                </header>
-            `;
-        }
-
-        function toggleMobileMenu() {
-            document.getElementById('navLinks').classList.toggle('active');
-        }
-
-        function closeMobileMenu() {
-            document.getElementById('navLinks').classList.remove('active');
-        }
-
-        function handleLogout() {
-            auth.logout();
-            router.navigate('/');
-            showAlert('Logged out successfully', 'success');
-        }
-
-        function handleAdminLock() {
-            router.navigate('/admin-login');
-        }
-
-        // Pages
-        function renderHomePage() {
-            const courses = db.getPublishedCourses();
-            document.getElementById('app').innerHTML = `
-                ${renderHeader()}
-                <div class="container" style="padding: 2rem 20px;">
-                    <div style="text-align: center; padding: 4rem 0;">
-                        <h1 style="font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                            Welcome to NOVA REACH ACADÉMIE
-                        </h1>
-                        <p style="font-size: 1.25rem; color: #718096; margin-bottom: 2rem;">
-                            Transform your future with professional online courses
-                        </p>
-                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                            <a href="#/register" class="btn btn-primary">Get Started</a>
-                            <a href="#/courses" class="btn btn-secondary">Browse Courses</a>
-                        </div>
-                    </div>
-                    
-                    <h2 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">Featured Courses</h2>
-                    <div class="courses-grid">
-                        ${courses.length > 0 ? courses.slice(0, 6).map(course => renderCourseCard(course)).join('') : '<div class="empty-state"><i class="fas fa-book"></i><p>No courses available yet</p></div>'}
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderCourseCard(course) {
-            const teacher = db.getUser(course.teacherId);
-            return `
-                <div class="course-card" onclick="viewCourse('${course.id}')">
-                    <div class="course-thumbnail">
-                        ${course.thumbnail ? `<img src="${course.thumbnail}" style="width:100%;height:100%;object-fit:cover;">` : '<i class="fas fa-book"></i>'}
-                    </div>
-                    <div class="course-info">
-                        <h3 class="course-title">${course.title}</h3>
-                        <p class="course-teacher">By ${teacher ? teacher.name : 'Unknown'}</p>
-                        <p style="color: #718096; font-size: 0.875rem; margin-bottom: 1rem;">${course.description.substring(0, 100)}...</p>
-                        <div class="course-meta">
-                            <span class="course-price">${course.accessType === 'free' ? 'FREE' : formatCurrency(course.price, course.currency)}</span>
-                            <span class="course-badge ${course.accessType === 'free' ? 'badge-free' : 'badge-paid'}">
-                                ${course.accessType === 'free' ? 'FREE' : 'PAID'}
-                            </span>
-                        </div>
-                        <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <div class="stars">
-                                ${renderStars(course.rating)}
-                            </div>
-                            <span style="font-size: 0.875rem; color: #718096;">(${course.studentsCount} students)</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderStars(rating) {
-            let stars = '';
-            for (let i = 1; i <= 5; i++) {
-                stars += `<i class="fas fa-star star ${i <= rating ? 'active' : ''}"></i>`;
-            }
-            return stars;
-        }
-
-        function viewCourse(courseId) {
-            router.navigate(`/course/${courseId}`);
-        }
-
-        function renderLoginPage() {
-            document.getElementById('app').innerHTML = `
-                ${renderHeader()}
-                <div class="container" style="max-width: 500px; margin: 4rem auto; padding: 0 20px;">
-                    <div class="card">
-                        <h2 style="text-align: center; margin-bottom: 2rem;">Login to Your Account</h2>
-                        <form onsubmit="handleLogin(event)">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" class="form-control" id="loginEmail" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" class="form-control" id="loginPassword" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
-                        </form>
-                        <p style="text-align: center; margin-top: 1rem;">
-                            Don't have an account? <a href="#/register">Register here</a>
-                        </p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            try {
-                const user = auth.login(email, password);
-                showAlert('Login successful', 'success');
-                router.navigate(`/${user.role}`);
-            } catch (error) {
-                showAlert(error.message, 'error');
-            }
-        }
-
-        function renderRegisterPage() {
-            document.getElementById('app').innerHTML = `
-                ${renderHeader()}
-                <div class="container" style="max-width: 500px; margin: 4rem auto; padding: 0 20px;">
-                    <div class="card">
-                        <h2 style="text-align: center; margin-bottom: 2rem;">Create Your Account</h2>
-                        <form onsubmit="handleRegister(event)">
-                            <div class="form-group">
-                                <label>Role</label>
-                                <select class="form-control" id="registerRole" required>
-                                    <option value="student">Student</option>
-                                    <option value="teacher">Teacher</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Full Name</label>
-                                <input type="text" class="form-control" id="registerName" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" class="form-control" id="registerEmail" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Phone</label>
-                                <input type="tel" class="form-control" id="registerPhone">
-                            </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" class="form-control" id="registerPassword" required minlength="6">
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
-                        </form>
-                        <p style="text-align: center; margin-top: 1rem;">
-                            Already have an account? <a href="#/login">Login here</a>
-                        </p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function handleRegister(e) {
-            e.preventDefault();
-            const role = document.getElementById('registerRole').value;
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const phone = document.getElementById('registerPhone').value;
-            const password = document.getElementById('registerPassword').value;
-            
-            try {
-                const user = db.createUser({ role, name, email, phone, password });
-                showAlert('Registration successful', 'success');
-                auth.login(email, password);
-                router.navigate(`/${role}`);
-            } catch (error) {
-                showAlert(error.message, 'error');
-            }
-        }
-
-        function renderAdminLoginPage() {
-            document.getElementById('app').innerHTML = `
-                ${renderHeader()}
-                <div class="container" style="max-width: 500px; margin: 4rem auto; padding: 0 20px;">
-                    <div class="card">
-                        <h2 style="text-align: center; margin-bottom: 2rem;">
-                            <i class="fas fa-lock"></i> Admin Access
-                        </h2>
-                        <form onsubmit="handleAdminLogin(event)">
-                            <div class="form-group">
-                                <label>Admin Access Code</label>
-                                <input type="password" class="form-control" id="adminCode" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">Access Admin Panel</button>
-                        </form>
-                    </div>
-                </div>
-            `;
-        }
-
-        function handleAdminLogin(e) {
-            e.preventDefault();
-            const code = document.getElementById('adminCode').value;
-            
-            try {
-                const admin = auth.adminLogin(code);
-                showAlert('Admin access granted', 'success');
-                router.navigate('/admin');
-            } catch (error) {
-                showAlert('Access Denied', 'error');
-            }
-        }
-
-        function renderStudentDashboard() {
-            const user = auth.getCurrentUser();
-            const enrollments = db.getEnrollmentsByStudent(user.id);
-            const notifications = db.getNotificationsByUser(user.id);
-            const unreadCount = notifications.filter(n => !n.read).length;
-            
-            document.getElementById('app').innerHTML = `
-                ${renderHeader()}
-                <div class="container" style="padding: 2rem 20px;">
-                    <h1 style="margin-bottom: 2rem;">Student Dashboard</h1>
-                    
-                    <div class="dashboard-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon blue"><i class="fas fa-book"></i></div>
-                            <div class="stat-info">
-                                <h3>${enrollments.length}</h3>
-                                <p>My Courses</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
-                            <div class="stat-info">
-                                <h3>${enrollments.filter(e => e.completed).length}</h3>
-                                <p>Completed</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon purple"><i class="fas fa-certificate"></i></div>
-                            <div class="stat-info">
-                                <h3>${db.getCertificatesByStudent(user.id).length}</h3>
-                                <p>Certificates</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon orange"><i class="fas fa-bell"></i></div>
-                            <div class="stat-info">
-                                <h3>${unreadCount}</h3>
-                                <p>Notifications</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h2 class="card-title">My Courses</h2>
-                        <div class="courses-grid">
-                            ${enrollments.length > 0 ? enrollments.map(enrollment => {
-                                const course = db.getCourse(enrollment.courseId);
-                                if (!course) return '';
-                                return `
-                                    <div class="course-card" onclick="viewCourse('${course.id}')">
-                                        <div class="course-thumbnail">
-                                            ${course.thumbnail ? `<img src="${course.thumbnail}" style="width:100%;height:100%;object-fit:cover;">` : '<i class="fas fa-book"></i>'}
-                                        </div>
-                                        <div class="course-info">
-                                            <h3 class="course-title">${course.title}</h3>
-                                            <div class="progress-bar">
-                                                <div class="progress-fill" style="width: ${enrollment.progress}%"></div>
-                                            </div>
-                                            <p style="font-size: 0.875rem; color: #718096;">${enrollment.progress}% completed</p>
-                                            <button class="btn btn-primary btn-sm" style="width: 100%; margin-top: 1rem;" onclick="continueLearning('${enrollment.id}')">
-                                                ${enrollment.completed ? 'View Certificate' : 'Continue Learning'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('') : '<div class="empty-state"><i class="fas fa-book"></i><p>No courses yet. Browse courses to enroll!</p></div>'}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function continueLearning(enrollmentId) {
-            const db2 = new Database();
-            const enrollment = db2.getDB().enrollments.find(e => e.id === enrollmentId);
-            if (enrollment.completed) {
-                router.navigate(`/certificate/${enrollment.courseId}`);
-            } else {
-                router.navigate(`/course/${enrollment.courseId}/learn`);
-            }
-        }
-
-        function renderTeacherDashboard() {
-            const user = auth.getCurrentUser();
-            const courses = db.getCoursesByTeacher(user.id);
-            const wallet = db.getWallet(user.id);
-            const notifications = db.getNotificationsByUser(user.id);
-            
-            document.getElementById('app').innerHTML = `
-                ${renderHeader()}
-                <div class="container" style="padding: 2rem 20px;">
-                    <h1 style="margin-bottom: 2rem;">Teacher Dashboard</h1>
-                    
-                    <div class="dashboard-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon blue"><i class="fas fa-book"></i></div>
-                            <div class="stat-info">
-                                <h3>${courses.length}</h3>
-                                <p>My Courses</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon green"><i class="fas fa-users"></i></div>
-                            <div class="stat-info">
-                                <h3>${courses.reduce((sum, c) => sum + c.studentsCount, 0)}</h3>
-                                <p>Total Students</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon purple"><i class="fas fa-wallet"></i></div>
-                            <div class="stat-info">
-                                <h3>${wallet ? formatCurrency(wallet.availableBalance, 'USD') : '$0'}</h3>
-                                <p>Available Balance</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon orange"><i class="fas fa-bell"></i></div>
-                            <div class="stat-info">
-                                <h3>${notifications.filter(n => !n.read).length}</h3>
-                                <p>Notifications</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <h2 class="card-title" style="margin: 0;">My Courses</h2>
-                            <button class="btn btn-primary" onclick="router.navigate('/teacher/course/create')">
-                                <i class="fas fa-plus"></i> Create Course
-                            </button>
-                        </div>
-                        <div class="courses-grid">
-                            ${courses.length > 0 ? courses.map(course => `
-                                <div class="course-card" onclick="router.navigate('/teacher/course/${course.id}')">
-                                    <div class="course-thumbnail">
-                                        ${course.thumbnail ? `<img src="${course.thumbnail}" style="width:100%;height:100%;object-fit:cover;">` : '<i class="fas fa-book"></i>'}
-                                    </div>
-                                    <div class="course-info">
-                                        <h3 class="course-title">${course.title}</h3>
-                                        <span class="status-badge status-${course.status}">${course.status.toUpperCase()}</span>
-                                        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
-                                            <span style="font-size: 0.875rem; color: #718096;">${course.studentsCount} students</span>
-                                            <span class="course-price">${course.accessType === 'free' ? 'FREE' : formatCurrency(course.price, course.currency)}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            `).join('') : '<div class="empty-state"><i class="fas fa-book"></i><p>No courses yet. Create your first course!</p></div>'}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderAdminDashboard() {
-            const users = db.getDB().users;
-            const courses = db.getDB().courses;
-            const payments = db.getDB().payments;
-            const enrollments = db.getDB().enrollments;
-            
-            const students = users.filter(u => u.role === 'student');
-            const teachers = users.filter(u => u.role === 'teacher');
-            const totalRevenue = payments.filter(p => p.status === 'approved').reduce((sum, p) => sum + p.amount, 0);
-            
-            document.getElementById('app').innerHTML = `
-                ${renderHeader()}
-                <div style="display: flex;">
-                    <div class="sidebar" id="adminSidebar">
-                        <ul class="sidebar-menu">
-                            <li class="active" onclick="showAdminSection('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</li>
-                            <li onclick="showAdminSection('students')"><i class="fas fa-user-graduate"></i> Students</li>
-                            <li onclick="showAdminSection('teachers')"><i class="fas fa-chalkboard-teacher"></i> Teachers</li>
-                            <li onclick="showAdminSection('courses')"><i class="fas fa-book"></i> All Courses</li>
-                            <li onclick="showAdminSection('payments')"><i class="fas fa-credit-card"></i> Payments</li>
-                            <li onclick="showAdminSection('withdrawals')"><i class="fas fa-money-bill-wave"></i> Withdrawals</li>
-                            <li onclick="showAdminSection('certificates')"><i class="fas fa-certificate"></i> Certificates</li>
-                            <li onclick="showAdminSection('notifications')"><i class="fas fa-bell"></i> Notifications</li>
-                            <li onclick="showAdminSection('settings')"><i class="fas fa-cog"></i> Settings</li>
-                            <li onclick="showAdminSection('logs')"><i class="fas fa-history"></i> Activity Logs</li>
-                        </ul>
-                    </div>
-                    <div class="main-content" id="adminContent">
-                        ${renderAdminDashboardContent(students, teachers, courses, payments, enrollments, totalRevenue)}
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderAdminDashboardContent(students, teachers, courses, payments, enrollments, totalRevenue) {
-            return `
-                <h1 style="margin-bottom: 2rem;">Admin Dashboard</h1>
-                
-                <div class="dashboard-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon blue"><i class="fas fa-user-graduate"></i></div>
-                        <div class="stat-info">
-                            <h3>${students.length}</h3>
-                            <p>Total Students</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon green"><i class="fas fa-chalkboard-teacher"></i></div>
-                        <div class="stat-info">
-                            <h3>${teachers.length}</h3>
-                            <p>Total Teachers</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon purple"><i class="fas fa-book"></i></div>
-                        <div class="stat-info">
-                            <h3>${courses.length}</h3>
-                            <p>Total Courses</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon orange"><i class="fas fa-dollar-sign"></i></div>
-                        <div class="stat-info">
-                            <h3>${formatCurrency(totalRevenue, 'USD')}</h3>
-                            <p>Total Revenue</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon pink"><i class="fas fa-users"></i></div>
-                        <div class="stat-info">
-                            <h3>${enrollments.length}</h3>
-                            <p>Total Enrollments</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon blue"><i class="fas fa-clock"></i></div>
-                        <div class="stat-info">
-                            <h3>${payments.filter(p => p.status === 'pending').length}</h3>
-                            <p>Pending Payments</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Recent Activity</h2>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Action</th>
-                                    <th>User</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${db.getActivityLogs().slice(0, 10).map(log => `
-                                    <tr>
-                                        <td>${log.action}</td>
-                                        <td>${log.userName || 'System'}</td>
-                                        <td>${formatDateTime(log.timestamp)}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-        }
-
-        function showAdminSection(section) {
-            const menuItems = document.querySelectorAll('.sidebar-menu li');
-            menuItems.forEach(item => item.classList.remove('active'));
-            event.target.closest('li').classList.add('active');
-            
-            const content = document.getElementById('adminContent');
-            
-            switch(section) {
-                case 'dashboard':
-                    renderAdminDashboard();
-                    break;
-                case 'students':
-                    renderAdminStudents(content);
-                    break;
-                case 'teachers':
-                    renderAdminTeachers(content);
-                    break;
-                case 'courses':
-                    renderAdminCourses(content);
-                    break;
-                case 'payments':
-                    renderAdminPayments(content);
-                    break;
-                case 'withdrawals':
-                    renderAdminWithdrawals(content);
-                    break;
-                case 'certificates':
-                    renderAdminCertificates(content);
-                    break;
-                case 'notifications':
-                    renderAdminNotifications(content);
-                    break;
-                case 'settings':
-                    renderAdminSettings(content);
-                    break;
-                case 'logs':
-                    renderAdminLogs(content);
-                    break;
-            }
-        }
-
-        function renderAdminStudents(content) {
-            const students = db.getUsersByRole('student');
-            content.innerHTML = `
-                <h1 style="margin-bottom: 2rem;">Manage Students</h1>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Courses</th>
-                                <th>Joined</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${students.map(student => {
-                                const enrollments = db.getEnrollmentsByStudent(student.id);
-                                return `
-                                    <tr>
-                                        <td>${student.name}</td>
-                                        <td>${student.email}</td>
-                                        <td><span class="status-badge status-${student.status}">${student.status}</span></td>
-                                        <td>${enrollments.length}</td>
-                                        <td>${formatDate(student.createdAt)}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-secondary" onclick="editStudent('${student.id}')">Edit</button>
-                                            <button class="btn btn-sm ${student.status === 'active' ? 'btn-warning' : 'btn-success'}" onclick="toggleStudentStatus('${student.id}')">
-                                                ${student.status === 'active' ? 'Suspend' : 'Activate'}
-                                            </button>
-                                            <button class="btn btn-sm btn-danger" onclick="deleteStudent('${student.id}')">Delete</button>
-                                        </td>
-                                    </tr>
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
-
-        function editStudent(studentId) {
-            const student = db.getUser(studentId);
-            const newName = prompt('Enter new name:', student.name);
-            if (newName) {
-                db.updateUser(studentId, { name: newName });
-                showAlert('Student updated', 'success');
-                renderAdminStudents(document.getElementById('adminContent'));
-            }
-        }
-
-        function toggleStudentStatus(studentId) {
-            const student = db.getUser(studentId);
-            const newStatus = student.status === 'active' ? 'suspended' : 'active';
-            db.updateUser(studentId, { status: newStatus });
-            showAlert(`Student ${newStatus}`, 'success');
-            renderAdminStudents(document.getElementById('adminContent'));
-        }
-
-        function deleteStudent(studentId) {
-            if (confirm('Are you sure you want to delete this student?')) {
-                db.deleteUser(studentId);
-                showAlert('Student deleted', 'success');
-                renderAdminStudents(document.getElementById('adminContent'));
-            }
-        }
-
-        function renderAdminTeachers(content) {
-            const teachers = db.getUsersByRole('teacher');
-            content.innerHTML = `
-                <h1 style="margin-bottom: 2rem;">Manage Teachers</h1>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Courses</th>
-                                <th>Students</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${teachers.map(teacher => {
-                                const courses = db.getCoursesByTeacher(teacher.id);
-                                const totalStudents = courses.reduce((sum, c) => sum + c.studentsCount, 0);
-                                return `
-                                    <tr>
-                                        <td>${teacher.name}</td>
-                                        <td>${teacher.email}</td>
-                                        <td><span class="status-badge status-${teacher.status}">${teacher.status}</span></td>
-                                        <td>${courses.length}</td>
-                                        <td>${totalStudents}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-secondary" onclick="editTeacher('${teacher.id}')">Edit</button>
-                                            <button class="btn btn-sm ${teacher.status === 'active' ? 'btn-warning' : 'btn-success'}" onclick="toggleTeacherStatus('${teacher.id}')">
-                                                ${teacher.status === 'active' ? 'Suspend' : 'Activate'}
-                                            </button>
-                                            <button class="btn btn-sm btn-danger" onclick="deleteTeacher('${teacher.id}')">Delete</button>
-                                        </td>
-                                    </tr>
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
-
-        function editTeacher(teacherId) {
-            const teacher = db.getUser(teacherId);
-            const newName = prompt('Enter new name:', teacher.name);
-            if (newName) {
-                db.updateUser(teacherId, { name: newName });
-                showAlert('Teacher updated', 'success');
-                renderAdminTeachers(document.getElementById('adminContent'));
-            }
-        }
-
-        function toggleTeacherStatus(teacherId) {
-            const teacher = db.getUser(teacherId);
-            const newStatus = teacher.status === 'active' ? 'suspended' : 'active';
-            db.updateUser(teacherId, { status: newStatus });
-            showAlert(`Teacher ${newStatus}`, 'success');
-            renderAdminTeachers(document.getElementById('adminContent'));
-        }
-
-        function deleteTeacher(teacherId) {
-            if (confirm('Are you sure you want to delete this teacher?')) {
-                db.deleteUser(teacherId);
-                showAlert('Teacher deleted', 'success');
-                renderAdminTeachers(document.getElementById('adminContent'));
-            }
-        }
-
-        function renderAdminCourses(content) {
-            const courses = db.getDB().courses;
-            content.innerHTML = `
-                <h1 style="margin-bottom: 2rem;">All Courses</h1>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Teacher</th>
-                                <th>Price</th>
-                                <th>Students</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${courses.map(course => {
-                                const teacher = db.getUser(course.teacherId);
-                                return `
-                                    <tr>
-                                        <td>${course.title}</td>
-                                        <td>${teacher ? teacher.name : 'Unknown'}</td>
-                                        <td>${course.accessType === 'free' ? 'FREE' : formatCurrency(course.price, course.currency)}</td>
-                                        <td>${course.studentsCount}</td>
-                                        <td><span class="status-badge status-${course.status}">${course.status}</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-secondary" onclick="viewCourseAdmin('${course.id}')">View</button>
-                                            ${course.status === 'pending_review' ? `
-                                                <button class="btn btn-sm btn-success" onclick="approveCourse('${course.id}')">Approve</button>
-                                                <button class="btn btn-sm btn-danger" onclick="rejectCourse('${course.id}')">Reject</button>
-                                            ` : ''}
-                                            ${course.status === 'approved' ? `
-                                                <button class="btn btn-sm btn-primary" onclick="publishCourse('${course.id}')">Publish</button>
-                                            ` : ''}
-                                            ${course.status === 'published' ? `
-                                                <button class="btn btn-sm btn-warning" onclick="unpublishCourse('${course.id}')">Unpublish</button>
-                                            ` : ''}
-                                            <button class="btn btn-sm btn-danger" onclick="deleteCourseAdmin('${course.id}')">Delete</button>
-                                        </td>
-                                    </tr>
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
-
-        function viewCourseAdmin(courseId) {
-            router.navigate(`/course/${courseId}`);
-        }
-
-        function approveCourse(courseId) {
-            db.updateCourse(courseId, { status: 'approved' });
-            const course = db.getCourse(courseId);
-            db.createNotification({
-                userId: course.teacherId,
-                type: 'course_approved',
-                title: 'Course Approved',
-                message: `Your course "${course.title}" has been approved`
-            });
-            showAlert('Course approved', 'success');
-            renderAdminCourses(document.getElementById('adminContent'));
-        }
-
-        function rejectCourse(courseId) {
-            db.updateCourse(courseId, { status: 'rejected' });
-            const course = db.getCourse(courseId);
-            db.createNotification({
-                userId: course.teacherId,
-                type: 'course_rejected',
-                title: 'Course Rejected',
-                message: `Your course "${course.title}" has been rejected`
-            });
-            showAlert('Course rejected', 'success');
-            renderAdminCourses(document.getElementById('adminContent'));
-        }
-
-        function publishCourse(courseId) {
-            db.updateCourse(courseId, { status: 'published' });
-            showAlert('Course published', 'success');
-            renderAdminCourses(document.getElementById('adminContent'));
-        }
-
-        function unpublishCourse(courseId) {
-            db.updateCourse(courseId, { status: 'unpublished' });
-            showAlert('Course unpublished', 'success');
-            renderAdminCourses(document.getElementById('adminContent'));
-        }
-
-        function deleteCourseAdmin(courseId) {
-            if (confirm('Are you sure you want to delete this course?')) {
-                db.deleteCourse(courseId);
-                showAlert('Course deleted', 'success');
-                renderAdminCourses(document.getElementById('adminContent'));
-            }
-        }
-
-        function renderAdminPayments(content) {
-            const payments = db.getDB().payments;
-            content.innerHTML = `
-                <h1 style="margin-bottom: 2rem;">Payments</h1>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Student</th>
-                                <th>Course</th>
-                                <th>Amount</th>
-                                <th>Method</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${payments.map(payment => {
-                                const student = db.getUser(payment.studentId);
-                                const course = db.getCourse(payment.courseId);
-                                return `
-                                    <tr>
-                                        <td>${student ? student.name : 'Unknown'}</td>
-                                        <td>${course ? course.title : 'Unknown'}</td>
-                                        <td>${formatCurrency(payment.amount, payment.currency)}</td>
-                                        <td>${payment.method}</td>
-                                        <td><span class="status-badge status-${payment.status}">${payment.status}</span></td>
-                                        <td>${formatDate(payment.createdAt)}</td>
-                                        <td>
-                                            ${payment.status === 'pending' ? `
-                                                <button class="btn btn-sm btn-success" onclick="approvePayment('${payment.id}')">Approve</button>
-                                                <button class="btn btn-sm btn-danger" onclick="rejectPayment('${payment.id}')">Reject</button>
-                                            ` : ''}
-                                            <button class="btn btn-sm btn-secondary" onclick="viewPaymentProof('${payment.id}')">View Proof</button>
-                                        </td>
-                                    </tr>
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
-
-        function approvePayment(paymentId) {
-            const payment = db.getPayment(paymentId);
-            db.updatePayment(paymentId, { status: 'approved' });
-            
-            // Create enrollment
-            try {
-                db.createEnrollment({
-                    studentId: payment.studentId,
-                    courseId: payment.courseId,
-                    paymentId: payment.id
-                });
-            } catch (e) {
-                // Already enrolled
-            }
-            
-            // Update teacher wallet
-            const course = db.getCourse(payment.courseId);
-            const settings = db.getSettings();
-            const platformFee = (payment.amount * settings.platformCommission) / 100;
-            const teacherEarnings = payment.amount - platformFee;
-            
-            const wallet = db.getWallet(course.teacherId);
-            if (wallet) {
-                db.updateWallet(course.teacherId, {
-                    totalEarned: wallet.totalEarned + teacherEarnings,
-                    availableBalance: wallet.availableBalance + teacherEarnings
-                });
-            }
-            
-            // Notifications
-            db.createNotification({
-                userId: payment.studentId,
-                type: 'payment_approved',
-                title: 'Payment Approved',
-                message: `Your payment for "${course.title}" has been approved`
-            });
-            
-            db.createNotification({
-                userId: course.teacherId,
-                type:
+<div id="app"></div>
+<script>
+// ==================== DATABASE ====================
+const SK='nova_reach_db';
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function certId(){return 'NRA-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase()}
+function affCode(){return 'AFF-'+Math.random().toString(36).slice(2,10).toUpperCase()}
+
+function getDB(){
+  let d=localStorage.getItem(SK);
+  if(!d){d={users:[],courses:[],lessons:[],enrollments:[],payments:[],paymentProofs:[],withdrawals:[],wallets:[],certificates:[],notifications:[],affiliateLinks:[],affiliateSales:[],reviews:[],questions:[],answers:[],announcements:[],activityLogs:[],refunds:[],settings:{platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'}};localStorage.setItem(SK,JSON.stringify(d))}
+  return JSON.parse(d);
+}
+function saveDB(d){localStorage.setItem(SK,JSON.stringify(d))}
+function dbOp(fn){let d=getDB();let r=fn(d);saveDB(d);return r}
+
+// ==================== AUTH ====================
+const SESS_KEY='nova_sess';
+function setSession(uid2,role){let s={uid:uid2,role,ts:Date.now()};localStorage.setItem(SESS_KEY,JSON.stringify(s));return s}
+function getSession(){let s=localStorage.getItem(SESS_KEY);if(!s)return null;try{return JSON.parse(s)}catch{return null}}
+function clearSession(){localStorage.removeItem(SESS_KEY)}
+function currentUser(){let s=getSession();if(!s)return null;let d=getDB();return d.users.find(u=>u.id===s.uid)||null}
+function isAdmin(){let u=currentUser();return u&&u.role==='admin'}
+function isTeacher(){let u=currentUser();return u&&u.role==='teacher'}
+function isStudent(){let u=currentUser();return u&&u.role==='student'}
+
+// ==================== HELPERS ====================
+function alert2(msg,type='s'){let el=document.createElement('div');el.className='alert alert-'+type;el.innerHTML='<i class="fas fa-'+(type==='s'?'check-circle':type==='e'?'exclamation-circle':'info-circle')+'"></i> '+msg;document.body.appendChild(el);setTimeout(()=>el.remove(),3500)}
+function fmtCur(a,c){let s={HTG:'HTG',USD:'$',EUR:'€'};return c==='USD'||c==='EUR'?(s[c]||c)+' '+a:a+' '+(s[c]||c)}
+function fmtDate(d){if(!d)return'-';return new Date(d).toLocaleDateString('fr-FR',{year:'numeric',month:'short',day:'numeric'})}
+function fmtDT(d){if(!d)return'-';return new Date(d).toLocaleString('fr-FR')}
+function starsH(r){let h='';for(let i=1;i<=5;i++)h+='<i class="fas fa-star star'+(i<=Math.round(r)?' on':'')+'"></i>';return h}
+function statusB(s){let m={pending:'sbp',approved:'sba',rejected:'sbr',draft:'sbd',pending_review:'sbp',published:'sba',unpublished:'sbp2',archived:'sbd',active:'sba',suspended:'sbr'};return'<span class="badge '+(m[s]||'sbd')+'">'+s+'</span>'}
+function esc(s){if(!s)return'';let d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+// ==================== ROUTER ====================
+function nav(p){window.location.hash=p}
+function getRoute(){return window.location.hash.slice(1)||'/'}
+function route(){
+  let p=getRoute(),u=currentUser();
+  if(p.startsWith('/admin')&&p!=='/admin-login'){if(!isAdmin()){nav('/admin-login');return}}
+  if(p.startsWith('/student')&&!isStudent()){nav(u?'/login':'/login');return}
+  if(p.startsWith('/teacher')&&!isTeacher()){nav(u?'/login':'/login');return}
+  render(p);
+}
+window.addEventListener('hashchange',route);
+window.addEventListener('load',route);
+
+// ==================== RENDER ENGINE ====================
+function render(p){
+  let app=document.getElementById('app');
+  let u=currentUser();
+  if(p==='/'||p==='')return renderHome(app,u);
+  if(p==='/login')return renderLogin(app);
+  if(p==='/register')return renderRegister(app);
+  if(p==='/admin-login')return renderAdminLogin(app);
+  if(p==='/admin')return renderAdmin(app);
+  if(p==='/student')return renderStudentDash(app);
+  if(p==='/teacher')return renderTeacherDash(app);
+  if(p==='/courses')return renderCourses(app,u);
+  if(p.startsWith('/course/'))return renderCourseDetail(app,p,u);
+  if(p.startsWith('/learn/'))return renderLearn(app,p,u);
+  if(p==='/profile')return renderProfile(app,u);
+  if(p==='/verify-cert')return renderVerifyCert(app);
+  if(p.startsWith('/certificate/'))return renderCertView(app,p,u);
+  if(p==='/teacher/create')return renderCreateCourse(app,u);
+  if(p.startsWith('/teacher/edit/'))return renderEditCourse(app,p,u);
+  if(p.startsWith('/teacher/wallet'))return renderWallet(app,u);
+  if(p.startsWith('/teacher/affiliates'))return renderAffiliates(app,u);
+  if(p.startsWith('/student/payments'))return renderStudentPayments(app,u);
+  if(p.startsWith('/student/certificates'))return renderStudentCerts(app,u);
+  if(p.startsWith('/student/notifications'))return renderStudentNotifs(app,u);
+  if(p.startsWith('/teacher/notifications'))return renderTeacherNotifs(app,u);
+  if(p.startsWith('/payment/'))return renderPaymentPage(app,p,u);
+  if(p.startsWith('/teacher/profile/'))return renderPublicProfile(app,p);
+  renderHome(app,u);
+}
+
+function headerH(u){
+  return`<header class="hdr"><div class="hdr-inner"><div class="logo" onclick="nav('/')"><i class="fas fa-graduation-cap"></i>NOVA REACH ACADÉMIE</div><button class="mob-tog" onclick="document.querySelector('.nav').classList.toggle('open')"><i class="fas fa-bars"></i></button><nav class="nav">${u?`<a href="#/${u.role}">Dashboard</a><a href="#/courses">Courses</a><a href="#/profile">Profile</a><a href="#" onclick="doLogout();return false">Logout</a>`:`<a href="#/login">Login</a><a href="#/register">Register</a><a href="#/courses">Courses</a>`}<span class="lock-icon" onclick="nav('/admin-login')" title="Admin"><i class="fas fa-lock"></i></span></nav></div></header>`
+}
+function doLogout(){clearSession();nav('/');alert2('Déconnecté','s')}
+
+// ==================== HOME ====================
+function renderHome(app,u){
+  let d=getDB();let courses=d.courses.filter(c=>c.status==='published');
+  app.innerHTML=headerH(u)+`<div class="container" style="padding:40px 16px"><div style="text-align:center;padding:40px 0"><h1 style="font-size:2.4rem;margin-bottom:12px;background:linear-gradient(135deg,#6c5ce7,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Bienvenue à NOVA REACH ACADÉMIE</h1><p style="font-size:1.1rem;color:#666;margin-bottom:24px">Transformez votre avenir avec des formations professionnelles en ligne</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><a href="#/courses" class="btn bp"><i class="fas fa-search"></i> Parcourir les cours</a>${!u?'<a href="#/register" class="btn bs">S\'inscrire</a>':''}</div></div><h2 style="margin-bottom:16px">Formations disponibles</h2><div class="grid2">${courses.length?courses.slice(0,6).map(c=>courseCardH(c,d)).join(''):'<div class="empty"><i class="fas fa-book-open"></i><p>Aucune formation disponible pour le moment</p></div>'}</div></div>`
+}
+function courseCardH(c,d){
+  let t=d.users.find(u=>u.id===c.teacherId);
+  return`<div class="ccard" onclick="nav('/course/${c.id}')"><div class="cthumb">${c.thumbnail?'<img src="'+esc(c.thumbnail)+'">':'<i class="fas fa-play-circle"></i>'}</div><div class="cinfo"><div class="ctitle">${esc(c.title)}</div><div class="cteacher">Par ${t?esc(t.name):'Inconnu'}</div><div style="font-size:.8rem;color:#888;margin-bottom:6px">${esc(c.description||'').slice(0,80)}...</div><div class="cmeta"><span class="cprice">${c.accessType==='free'?'GRATUIT':fmtCur(c.price,c.currency)}</span><span class="badge ${c.accessType==='free'?'bf':'bpa'}">${c.accessType==='free'?'GRATUIT':'PAYANT'}</span></div><div style="margin-top:6px;display:flex;align-items:center;gap:6px"><span class="stars">${starsH(c.rating||0)}</span><span style="font-size:.75rem;color:#999">(${c.studentsCount||0})</span></div></div></div>`
+}
+
+// ==================== LOGIN / REGISTER ====================
+function renderLogin(app){
+  app.innerHTML=headerH(null)+`<div class="container" style="max-width:440px;margin:60px auto"><div class="card"><h2 style="text-align:center;margin-bottom:20px">Connexion</h2><form onsubmit="doLogin(event)"><div class="fg"><label>Email</label><input type="email" class="fc" id="lEmail" required></div><div class="fg"><label>Mot de passe</label><input type="password" class="fc" id="lPass" required></div><button type="submit" class="btn bp" style="width:100%">Se connecter</button></form><p style="text-align:center;margin-top:14px;font-size:.85rem">Pas de compte? <a href="#/register">S'inscrire</a></p></div></div>`
+}
+function doLogin(e){
+  e.preventDefault();
+  let email=document.getElementById('lEmail').value.trim(),pass=document.getElementById('lPass').value;
+  let r=dbOp(d=>{let u=d.users.find(x=>x.email===email);if(!u)return{err:'Email ou mot de passe incorrect'};if(u.password!==pass)return{err:'Email ou mot de passe incorrect'};if(u.status==='suspended')return{err:'Compte suspendu'};u._id=u.id;u._role=u.role;return{ok:u}});
+  if(r.err)return alert2(r.err,'e');
+  setSession(r.ok._id,r.ok._role);
+  alert2('Connecté avec succès','s');
+  nav('/'+r.ok._role);
+}
+function renderRegister(app){
+  app.innerHTML=headerH(null)+`<div class="container" style="max-width:440px;margin:60px auto"><div class="card"><h2 style="text-align:center;margin-bottom:20px">Inscription</h2><form onsubmit="doRegister(event)"><div class="fg"><label>Rôle</label><select class="fc" id="rRole"><option value="student">Étudiant</option><option value="teacher">Formateur</option></select></div><div class="fg"><label>Nom complet</label><input type="text" class="fc" id="rName" required></div><div class="fg"><label>Email</label><input type="email" class="fc" id="rEmail" required></div><div class="fg"><label>Téléphone</label><input type="tel" class="fc" id="rPhone"></div><div class="fg"><label>Mot de passe (min 6)</label><input type="password" class="fc" id="rPass" required minlength="6"></div><button type="submit" class="btn bp" style="width:100%">S'inscrire</button></form><p style="text-align:center;margin-top:14px;font-size:.85rem">Déjà un compte? <a href="#/login">Se connecter</a></p></div></div>`
+}
+function doRegister(e){
+  e.preventDefault();
+  let role=document.getElementById('rRole').value,name=document.getElementById('rName').value.trim(),email=document.getElementById('rEmail').value.trim(),phone=document.getElementById('rPhone').value.trim(),pass=document.getElementById('rPass').value;
+  let r=dbOp(d=>{if(d.users.find(u=>u.email===email))return{err:'Cet email existe déjà'};let u={id:uid(),role,name,email,password:pass,status:'active',phone,profilePhoto:'',bio:'',createdAt:new Date().toISOString()};d.users.push(u);if(role==='teacher')d.wallets.push({id:uid(),userId:u.id,totalEarned:0,availableBalance:0,pendingBalance:0,totalWithdrawn:0});d.activityLogs.push({id:uid(),userName:name,userRole:role,action:'Inscription',desc:name+' s\'est inscrit(e) comme '+role,timestamp:new Date().toISOString()});u._id=u.id;return{ok:u}});
+  if(r.err)return alert2(r.err,'e');
+  setSession(r.ok._id,role);
+  alert2('Compte créé avec succès','s');
+  nav('/'+role);
+}
+
+// ==================== ADMIN LOGIN ====================
+function renderAdminLogin(app){
+  app.innerHTML=headerH(currentUser())+`<div class="container" style="max-width:400px;margin:80px auto"><div class="card"><h2 style="text-align:center;margin-bottom:20px"><i class="fas fa-lock"></i> Accès Admin</h2><form onsubmit="doAdminLogin(event)"><div class="fg"><label>Code d'accès administrateur</label><input type="password" class="fc" id="aCode" required></div><button type="submit" class="btn bp" style="width:100%">Accéder</button></form></div></div>`
+}
+function doAdminLogin(e){
+  e.preventDefault();let code=document.getElementById('aCode').value;
+  if(code!=='Bendy509'){return alert2('Accès refusé — Code incorrect','e')}
+  let r=dbOp(d=>{let a=d.users.find(u=>u.role==='admin');if(!a){a={id:uid(),role:'admin',name:'Administrateur',email:'admin@novareach.com',password:'__admin__',status:'active',phone:'',profilePhoto:'',bio:'',createdAt:new Date().toISOString()};d.users.push(a)}a._id=a.id;return{ok:a}});
+  setSession(r.ok._id,'admin');
+  alert2('Accès administrateur autorisé','s');
+  nav('/admin');
+}
+
+// ==================== COURSES LIST ====================
+function renderCourses(app,u){
+  let d=getDB();let allC=d.courses.filter(c=>c.status==='published');
+  app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px"><h2 style="margin-bottom:16px">Toutes les formations</h2><div class="sf"><input type="text" class="fc" id="searchQ" placeholder="Rechercher un cours..." oninput="filterCourses()"><select class="fc" id="fType" onchange="filterCourses()"><option value="">Tous</option><option value="free">Gratuit</option><option value="paid">Payant</option></select><select class="fc" id="fCat" onchange="filterCourses()"><option value="">Catégorie</option><option>Marketing</option><option>Programmation</option><option>Design</option><option>Business</option><option>Langues</option><option>Autre</option></select><select class="fc" id="fSort" onchange="filterCourses()"><option value="newest">Plus récent</option><option value="oldest">Plus ancien</option><option value="low">Prix croissant</option><option value="high">Prix décroissant</option><option value="rated">Mieux noté</option></select><select class="fc" id="fCur" onchange="filterCourses()"><option value="">Devise</option><option>HTG</option><option>USD</option><option>EUR</option></select></div><div class="grid2" id="coursesGrid">${allC.map(c=>courseCardH(c,d)).join('')||'<div class="empty"><i class="fas fa-search"></i><p>Aucun cours trouvé</p></div>'}</div></div>`
+}
+window.filterCourses=function(){
+  let q=(document.getElementById('searchQ').value||'').toLowerCase(),type=document.getElementById('fType').value,cat=document.getElementById('fCat').value,sort=document.getElementById('fSort').value,cur=document.getElementById('fCur').value;
+  let d=getDB();let cs=d.courses.filter(c=>c.status==='published');
+  if(q)cs=cs.filter(c=>c.title.toLowerCase().includes(q)||(c.description||'').toLowerCase().includes(q)||(d.users.find(u=>u.id===c.teacherId)||{}).name?.toLowerCase().includes(q));
+  if(type)cs=cs.filter(c=>c.accessType===type);
+  if(cat)cs=cs.filter(c=>(c.category||'')===cat);
+  if(cur)cs=cs.filter(c=>c.currency===cur);
+  if(sort==='newest')cs.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  if(sort==='oldest')cs.sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  if(sort==='low')cs.sort((a,b)=>(a.price||0)-(b.price||0));
+  if(sort==='high')cs.sort((a,b)=>(b.price||0)-(a.price||0));
+  if(sort==='rated')cs.sort((a,b)=>(b.rating||0)-(a.rating||0));
+  document.getElementById('coursesGrid').innerHTML=cs.length?cs.map(c=>courseCardH(c,d)).join(''):'<div class="empty"><i class="fas fa-search"></i><p>Aucun cours trouvé</p></div>';
+}
+
+// ==================== COURSE DETAIL ====================
+function renderCourseDetail(app,p,u){
+  let cid=p.split('/')[2];let d=getDB();let c=d.courses.find(x=>x.id===cid);
+  if(!c){app.innerHTML=headerH(u)+'<div class="container" style="padding:40px"><div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Cours introuvable</p></div></div>';return}
+  let t=d.users.find(x=>x.id===c.teacherId);
+  let lessons=d.lessons.filter(l=>l.courseId===cid);
+  let enrolled=u&&u.role==='student'?d.enrollments.find(e=>e.studentId===u.id&&e.courseId===cid):null;
+  let canAccess=enrolled||c.accessType==='free';
+  let reviews=d.reviews.filter(r=>r.courseId===cid);
+  let questions=d.questions.filter(q=>q.courseId===cid);
+  
+  let accessBtn='';
+  if(!u)accessBtn=`<a href="#/login" class="btn bp" style="width:100%">Connectez-vous pour accéder</a>`;
+  else if(u.role==='student'){
+    if(c.accessType==='free'&&!enrolled){
+      accessBtn=`<button class="btn bg" style="width:100%" onclick="enrollFree('${cid}')">Accéder au cours (Gratuit)</button>`;
+    }else if(c.accessType==='paid'&&!enrolled){
+      accessBtn=`<a href="#/payment/${cid}" class="btn bp" style="width:100%">Acheter — ${fmtCur(c.price,c.currency)}</a>`;
+    }else if(enrolled){
+      accessBtn=`<a href="#/learn/${cid}" class="btn bg" style="width:100%">Accéder au cours</a>`;
+    }
+  }else if(u.role==='teacher'&&u.id===c.teacherId){
+    accessBtn=`<a href="#/teacher/edit/${cid}" class="btn bw" style="width:100%">Modifier le cours</a>`;
+  }
+
+  app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px"><div class="card"><div style="display:grid;grid-template-columns:1fr 320px;gap:24px" class="course-detail-grid"><div><h1 style="font-size:1.6rem;margin-bottom:8px">${esc(c.title)}</h1><p style="color:#666;margin-bottom:12px">${esc(c.description)}</p><div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px"><span class="badge ${c.accessType==='free'?'bf':'bpa'}">${c.accessType==='free'?'GRATUIT':'PAYANT'}</span><span class="badge sbd">${esc(c.category||'Non classé')}</span><span class="badge sbd">${esc(c.currency)}</span>${statusB(c.status)}</div><p style="font-size:.9rem">Par <a href="#/teacher/profile/${c.teacherId}">${t?esc(t.name):'Inconnu'}</a></p><div style="margin-top:8px"><span class="stars">${starsH(c.rating||0)}</span> <span style="font-size:.85rem;color:#888">(${reviews.length} avis, ${c.studentsCount||0} étudiants)</span></div><h3 style="margin:20px 0 12px">Programme (${lessons.length} leçons)</h3>${lessons.map((l,i)=>{let locked=c.accessType==='paid'&&!canAccess&&!l.isPreview;return`<div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center"><div><strong>${i+1}. ${esc(l.title)}</strong> <span class="badge sbd" style="margin-left:6px">${l.type.toUpperCase()}</span>${l.isPreview?'<span class="badge bf" style="margin-left:4px">PREVIEW</span>':''}</div><div>${locked?'<i class="fas fa-lock" style="color:#ccc"></i>':'<i class="fas fa-'+(l.type==='video'?'play-circle':l.type==='audio'?'headphones':l.type==='pdf'?'file-pdf':'align-left')+'" style="color:#6c5ce7"></i>'}</div></div>`}).join('')||'<p style="color:#999">Aucune leçon</p>'}</div><div><div class="card" style="position:sticky;top:70px"><div style="text-align:center;margin-bottom:16px"><div style="font-size:2rem;font-weight:700;color:#6c5ce7">${c.accessType==='free'?'GRATUIT':fmtCur(c.price,c.currency)}</div></div>${accessBtn}${c.accessType==='paid'&&c.paymentInfo?`<div style="margin-top:12px;font-size:.8rem;color:#666"><p><strong>MonCash:</strong> ${esc(c.paymentInfo.moncash||'Non disponible')}</p><p><strong>NatCash:</strong> 33461451 (Darlene George)</p></div>`:''}</div></div></div></div>${reviews.length?`<div class="card"><h3 class="card-t">Avis</h3>${reviews.map(r=>{let s=d.users.find(x=>x.id===r.studentId);return`<div style="padding:10px;border-bottom:1px solid #f0f0f0"><div style="display:flex;justify-content:space-between"><strong>${s?esc(s.name):'Anonyme'}</strong><span class="stars">${starsH(r.rating)}</span></div><p style="margin-top:4px;font-size:.88rem">${esc(r.text)}</p><small style="color:#999">${fmtDate(r.createdAt)}</small></div>`}).join('')}</div>`:''}<div class="card"><h3 class="card-t">Questions & Réponses</h3><div id="qaList">${questions.map(q=>{let s=d.users.find(x=>x.id===q.studentId);let ans=d.answers.filter(a=>a.questionId===q.id);return`<div style="padding:10px;border-bottom:1px solid #f0f0f0"><strong>${s?esc(s.name):'Anonyme'}</strong>: ${esc(q.text)}<small style="color:#999;margin-left:8px">${fmtDate(q.createdAt)}</small>${ans.map(a=>{let au=d.users.find(x=>x.id===a.userId);return`<div style="margin-left:20px;margin-top:6px;padding:6px;background:#f8f9ff;border-radius:6px"><strong>${au?esc(au.name):''}</strong>: ${esc(a.text)}</div>`}).join('')}</div>`}).join('')||'<p style="color:#999">Aucune question</p>'}</div>${u&&u.role==='student'&&canAccess?`<form onsubmit="askQ(event,'${cid}')" style="margin-top:12px"><div class="fg"><input type="text" class="fc" id="qText" placeholder="Posez votre question..." required></div><button class="btn bp btn-sm">Poser</button></form>`:''}</div></div><style>.course-detail-grid{grid-template-columns:1fr 320px}@media(max-width:768px){.course-detail-grid{grid-template-columns:1fr!important}}</style>`
+}
+window.enrollFree=function(cid){
+  let u=currentUser();if(!u)return;
+  let r=dbOp(d=>{if(d.enrollments.find(e=>e.studentId===u.id&&e.courseId===cid))return{err:'Déjà inscrit'};d.enrollments.push({id:uid(),studentId:u.id,courseId:cid,progress:0,completedLessons:[],lastLessonId:null,completed:false,enrolledAt:new Date().toISOString()});let c=d.courses.find(x=>x.id===cid);if(c)c.studentsCount=(c.studentsCount||0)+1;return{ok:true}});
+  if(r.err)return alert2(r.err,'e');
+  alert2('Inscription réussie!','s');nav('/learn/'+cid);
+}
+window.askQ=function(e,cid){
+  e.preventDefault();let u=currentUser();if(!u)return;
+  let txt=document.getElementById('qText').value.trim();if(!txt)return;
+  dbOp(d=>{d.questions.push({id:uid(),courseId:cid,studentId:u.id,text:txt,createdAt:new Date().toISOString()})});
+  alert2('Question posée','s');renderCourseDetail(document.getElementById('app'),'/course/'+cid,u);
+}
+
+// ==================== PAYMENT PAGE ====================
+function renderPaymentPage(app,p,u){
+  if(!u||u.role!=='student'){nav('/login');return}
+  let cid=p.split('/')[2];let d=getDB();let c=d.courses.find(x=>x.id===cid);
+  if(!c){nav('/courses');return}
+  let settings=d.settings;
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:520px;margin:40px auto"><div class="card"><h2 style="text-align:center;margin-bottom:16px">Paiement — ${esc(c.title)}</h2><div style="text-align:center;margin-bottom:20px"><span style="font-size:1.8rem;font-weight:700;color:#6c5ce7">${fmtCur(c.price,c.currency)}</span></div><form onsubmit="submitPayment(event,'${cid}')"><div class="fg"><label>Méthode de paiement</label><select class="fc" id="payMethod" onchange="showPayInfo()"><option value="MONCASH">MonCash</option><option value="NATCASH">NatCash</option></select></div><div id="payInfo" class="card" style="background:#f8f9ff;border:1px solid #e0e0e0"><p><strong>Paiement par MonCash</strong></p><p>Numéro: ${esc(settings.moncash?.number||'Non disponible')}</p><p>Nom: ${esc(settings.moncash?.name||'Non disponible')}</p></div><div class="fg"><label>Montant payé</label><input type="number" class="fc" id="payAmt" value="${c.price}" required min="1"></div><div class="fg"><label>ID de transaction / Référence</label><input type="text" class="fc" id="payTxn" required></div><div class="fg"><label>Preuve de paiement (URL image ou description)</label><input type="text" class="fc" id="payProof" placeholder="Lien vers l'image ou description"></div><button type="submit" class="btn bp" style="width:100%">Soumettre le paiement</button></form></div></div>`
+}
+window.showPayInfo=function(){
+  let m=document.getElementById('payMethod').value;let d=getDB();let s=d.settings;
+  let info=m==='NATCASH'?`<p><strong>Paiement par NatCash</strong></p><p>Numéro: 33461451</p><p>Nom: Darlene George</p>`:`<p><strong>Paiement par MonCash</strong></p><p>Numéro: ${esc(s.moncash?.number||'Non disponible')}</p><p>Nom: ${esc(s.moncash?.name||'Non disponible')}</p>`;
+  document.getElementById('payInfo').innerHTML=info;
+}
+window.submitPayment=function(e,cid){
+  e.preventDefault();let u=currentUser();
+  let method=document.getElementById('payMethod').value,amt=parseFloat(document.getElementById('payAmt').value),txn=document.getElementById('payTxn').value.trim(),proof=document.getElementById('payProof').value.trim();
+  let d=getDB();let c=d.courses.find(x=>x.id===cid);
+  if(d.payments.find(p=>p.transactionId===txn)){return alert2('Cet ID de transaction existe déjà','e')}
+  dbOp(d=>{
+    let pay={id:uid(),studentId:u.id,courseId:cid,amount:amt,currency:c.currency,method,transactionId:txn,proof,status:'pending',createdAt:new Date().toISOString()};
+    d.payments.push(pay);
+    d.notifications.push({id:uid(),userId:u.id,type:'payment_submitted',title:'Paiement soumis',message:'Votre paiement pour "'+c.title+'" est en attente de vérification',read:false,createdAt:new Date().toISOString()});
+    let admins=d.users.filter(x=>x.role==='admin');
+    admins.forEach(a=>{d.notifications.push({id:uid(),userId:a.id,type:'payment_submitted',title:'Nouveau paiement',message:u.name+' a soumis un paiement pour "'+c.title+'"',read:false,createdAt:new Date().toISOString()})});
+    d.activityLogs.push({id:uid(),userName:u.name,userRole:'student',action:'Paiement soumis',desc:'Paiement de '+amt+' '+c.currency+' pour '+c.title,timestamp:new Date().toISOString()});
+  });
+  alert2('Paiement soumis avec succès. En attente de vérification.','s');
+  nav('/student');
+}
+
+// ==================== LEARN / LESSON VIEWER ====================
+function renderLearn(app,p,u){
+  if(!u||u.role!=='student'){nav('/login');return}
+  let cid=p.split('/')[2];let d=getDB();let c=d.courses.find(x=>x.id===cid);
+  let enr=d.enrollments.find(e=>e.studentId===u.id&&e.courseId===cid);
+  if(!c){nav('/student');return}
+  if(c.accessType==='paid'&&!enr){nav('/course/'+cid);return}
+  if(c.accessType==='free'&&!enr){
+    dbOp(d2=>{d2.enrollments.push({id:uid(),studentId:u.id,courseId:cid,progress:0,completedLessons:[],lastLessonId:null,completed:false,enrolledAt:new Date().toISOString()});let cc=d2.courses.find(x=>x.id===cid);if(cc)cc.studentsCount=(cc.studentsCount||0)+1});
+    enr=dbOp(d2=>d2.enrollments.find(e=>e.studentId===u.id&&e.courseId===cid));
+  }
+  let lessons=d.lessons.filter(l=>l.courseId===cid);
+  if(!lessons.length){app.innerHTML=headerH(u)+'<div class="container" style="padding:40px"><div class="empty"><i class="fas fa-book"></i><p>Aucune leçon disponible</p></div></div>';return}
+  let currentL=enr.lastLessonId?lessons.find(l=>l.id===enr.lastLessonId):lessons[0];
+  if(!currentL)currentL=lessons[0];
+  let pct=lessons.length?Math.round((enr.completedLessons.length/lessons.length)*100):0;
+
+  app.innerHTML=headerH(u)+`<div style="display:flex;min-height:calc(100vh - 52px)"><div style="width:280px;background:#fff;border-right:1px solid #eee;overflow-y:auto;padding:12px" class="lesson-side"><h3 style="font-size:.95rem;margin-bottom:8px">${esc(c.title)}</h3><div class="pbar"><div class="pfill" style="width:${pct}%"></div></div><p style="font-size:.75rem;color:#888;margin-bottom:12px">${enr.completedLessons.length}/${lessons.length} leçons (${pct}%)</p>${lessons.map((l,i)=>{let done=enr.completedLessons.includes(l.id);let active=currentL.id===l.id;return`<div onclick="loadLesson('${l.id}','${cid}')" style="padding:8px;border-radius:6px;margin-bottom:4px;cursor:pointer;font-size:.82rem;${active?'background:#6c5ce7;color:#fff':'background:'+(done?'#f0fdf4':'#f9f9f9')}"><i class="fas fa-${done?'check-circle':'circle'}" style="margin-right:6px"></i>${i+1}. ${esc(l.title)} <span style="font-size:.7rem;opacity:.7">${l.type.toUpperCase()}</span></div>`}).join('')}</div><div style="flex:1;padding:20px;overflow-y:auto" id="lessonArea">${renderLessonContent(currentL,enr)}</div></div><style>.lesson-side{position:fixed;top:52px;left:0;bottom:0;z-index:50}@media(max-width:768px){.lesson-side{width:100%;position:relative;top:0;border-right:none;border-bottom:1px solid #eee;max-height:200px}}</style>`
+}
+function renderLessonContent(l,enr){
+  let done=enr.completedLessons.includes(l.id);
+  let content='';
+  if(l.type==='video')content=`<div class="video-wrap">${l.content.includes('youtube')||l.content.includes('youtu.be')?`<iframe src="${l.content.includes('embed')?l.content:l.content.replace('watch?v=','embed/')}" frameborder="0" allowfullscreen></iframe>`:`<video controls src="${esc(l.content)}">Votre navigateur ne supporte pas la vidéo</video>`}</div>`;
+  else if(l.type==='audio')content=`<div class="audio-wrap"><h3 style="margin-bottom:12px"><i class="fas fa-headphones"></i> ${esc(l.title)}</h3><audio controls src="${esc(l.content)}">Votre navigateur ne supporte pas l'audio</audio></div>`;
+  else if(l.type==='text')content=`<div class="text-wrap">${esc(l.content)}</div>`;
+  else if(l.type==='pdf')content=`<div class="pdf-wrap"><h3 style="margin-bottom:12px"><i class="fas fa-file-pdf" style="color:#e74c3c"></i> ${esc(l.title)}</h3><iframe src="${esc(l.content)}"></iframe><br><a href="${esc(l.content)}" target="_blank" class="btn bs btn-sm" style="margin-top:8px"><i class="fas fa-download"></i> Télécharger</a></div>`;
+  return`<div class="lesson-content"><h2 style="margin-bottom:16px">${esc(l.title)} <span class="badge sbd">${l.type.toUpperCase()}</span></h2>${content}<div style="margin-top:20px;display:flex;gap:12px;align-items:center">${done?'<span style="color:#10b981;font-weight:600"><i class="fas fa-check-circle"></i> Complétée</span>':`<button class="btn bg" onclick="markDone('${l.id}','${l.courseId}')"><i class="fas fa-check"></i> Marquer comme complétée</button>`}</div></div>`
+}
+window.loadLesson=function(lid,cid){
+  let u=currentUser();let d=getDB();let l=d.lessons.find(x=>x.id===lid);let enr=d.enrollments.find(e=>e.studentId===u.id&&e.courseId===cid);
+  if(!l||!enr)return;
+  dbOp(d2=>{let e=d2.enrollments.find(x=>x.id===enr.id);if(e)e.lastLessonId=lid});
+  document.getElementById('lessonArea').innerHTML=renderLessonContent(l,enr);
+  document.querySelectorAll('.lesson-side > div').forEach(el=>{el.style.background=el.getAttribute('onclick')?.includes(lid)?'#6c5ce7':'';if(el.getAttribute('onclick')?.includes(lid))el.style.color='#fff'});
+}
+window.markDone=function(lid,cid){
+  let u=currentUser();
+  let r=dbOp(d=>{
+    let enr=d.enrollments.find(e=>e.studentId===u.id&&e.courseId===cid);
+    if(!enr)return{err:'Non inscrit'};
+    if(!enr.completedLessons.includes(lid))enr.completedLessons.push(lid);
+    let lessons=d.lessons.filter(l=>l.courseId===cid);
+    enr.progress=Math.round((enr.completedLessons.length/lessons.length)*100);
+    if(enr.completedLessons.length>=lessons.length&&!enr.completed){
+      enr.completed=true;
+      let c=d.courses.find(x=>x.id===cid);let s=d.users.find(x=>x.id===u.id);
+      let cert={id:uid(),certificateId:certId(),studentId:u.id,courseId:cid,studentName:s?s.name:'',courseName:c?c.title:'',issuedAt:new Date().toISOString()};
+      d.certificates.push(cert);
+      d.notifications.push({id:uid(),userId:u.id,type:'certificate',title:'Certificat obtenu!',message:'Félicitations! Vous avez terminé "'+cert.courseName+'". Votre certificat est disponible.',read:false,createdAt:new Date().toISOString()});
+      if(c)d.notifications.push({id:uid(),userId:c.teacherId,type:'course_completed',title:'Cours terminé',message:u.name+' a terminé "'+c.title+'"',read:false,createdAt:new Date().toISOString()});
+    }
+    enr.lastLessonId=lid;
+    return{ok:true,completed:enr.completed}
+  });
+  if(r.err)return alert2(r.err,'e');
+  alert2(r.completed?'Félicitations! Cours terminé! 🎉':'Leçon complétée!','s');
+  renderLearn(document.getElementById('app'),'/learn/'+cid,u);
+}
+
+// ==================== STUDENT DASHBOARD ====================
+function renderStudentDash(app){
+  let u=currentUser();let d=getDB();
+  let enrs=d.enrollments.filter(e=>e.studentId===u.id);
+  let notifs=d.notifications.filter(n=>n.userId===u.id);
+  let unread=notifs.filter(n=>!n.read).length;
+  let certs=d.certificates.filter(c=>c.studentId===u.id);
+  let payments=d.payments.filter(p=>p.studentId===u.id);
+  app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px"><h1 style="margin-bottom:16px">Tableau de bord Étudiant</h1><div class="grid3"><div class="scard"><div class="sicon b"><i class="fas fa-book"></i></div><div class="sinfo"><h3>${enrs.length}</h3><p>Mes cours</p></div></div><div class="scard"><div class="sicon g"><i class="fas fa-check-circle"></i></div><div class="sinfo"><h3>${enrs.filter(e=>e.completed).length}</h3><p>Terminés</p></div></div><div class="scard"><div class="sicon p"><i class="fas fa-certificate"></i></div><div class="sinfo"><h3>${certs.length}</h3><p>Certificats</p></div></div><div class="scard"><div class="sicon o"><i class="fas fa-bell"></i></div><div class="sinfo"><h3>${unread}</h3><p>Notifications</p></div></div><div class="scard"><div class="sicon r"><i class="fas fa-receipt"></i></div><div class="sinfo"><h3>${payments.length}</h3><p>Paiements</p></div></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0"><a href="#/student/payments" class="btn bs btn-sm">Mes paiements</a><a href="#/student/certificates" class="btn bs btn-sm">Mes certificats</a><a href="#/student/notifications" class="btn bs btn-sm">Notifications (${unread})</a></div><h2 style="margin-bottom:12px">Mes formations</h2><div class="grid2">${enrs.length?enrs.map(en=>{let c=d.courses.find(x=>x.id===en.courseId);if(!c)return'';return`<div class="ccard"><div class="cthumb" style="height:120px">${c.thumbnail?'<img src="'+esc(c.thumbnail)+'">':'<i class="fas fa-play-circle"></i>'}</div><div class="cinfo"><div class="ctitle">${esc(c.title)}</div><div class="pbar"><div class="pfill" style="width:${en.progress}%"></div></div><p style="font-size:.78rem;color:#888">${en.progress}% complété — ${en.completedLessons.length}/${d.lessons.filter(l=>l.courseId===c.id).length} leçons</p><div style="margin-top:8px;display:flex;gap:6px"><a href="#/learn/${c.id}" class="btn bp btn-sm" style="flex:1">${en.completed?'Voir certificat':'Continuer'}</a>${en.completed&&!d.reviews.find(r=>r.studentId===u.id&&r.courseId===c.id)?`<button class="btn bs btn-sm" onclick="showReviewModal('${c.id}')">Noter</button>`:''}</div></div></div>`}).join(''):'<div class="empty"><i class="fas fa-book-open"></i><p>Aucun cours. <a href="#/courses">Parcourir les formations</a></p></div>'}</div></div><div class="modal-bg" id="reviewModal"><div class="modal"><button class="modal-x" onclick="closeModal('reviewModal')">&times;</button><h3>Laisser un avis</h3><form onsubmit="submitReview(event)"><input type="hidden" id="revCid"><div class="fg"><label>Note</label><div class="stars" id="revStars">${[1,2,3,4,5].map(i=>`<i class="fas fa-star star" data-v="${i}" onclick="setRating(${i})"></i>`).join('')}</div><input type="hidden" id="revRating" value="0"></div><div class="fg"><label>Commentaire</label><textarea class="fc" id="revText" required></textarea></div><button class="btn bp" type="submit">Soumettre</button></form></div></div>`
+}
+window.showReviewModal=function(cid){document.getElementById('revCid').value=cid;document.getElementById('reviewModal').classList.add('on')}
+window.closeModal=function(id){document.getElementById(id).classList.remove('on')}
+window.setRating=function(v){document.getElementById('revRating').value=v;document.querySelectorAll('#revStars .star').forEach((s,i)=>{s.classList.toggle('on',i<v)})}
+window.submitReview=function(e){
+  e.preventDefault();let u=currentUser();let cid=document.getElementById('revCid').value,rating=parseInt(document.getElementById('revRating').value),text=document.getElementById('revText').value.trim();
+  if(!rating)return alert2('Sélectionnez une note','e');
+  let r=dbOp(d=>{if(d.reviews.find(r=>r.studentId===u.id&&r.courseId===cid))return{err:'Avis déjà soumis'};d.reviews.push({id:uid(),studentId:u.id,courseId:cid,rating,text,createdAt:new Date().toISOString()});let revs=d.reviews.filter(r=>r.courseId===cid);let avg=revs.reduce((s,r)=>s+r.rating,0)/revs.length;let c=d.courses.find(x=>x.id===cid);if(c)c.rating=Math.round(avg*10)/10;return{ok:true}});
+  if(r.err)return alert2(r.err,'e');
+  alert2('Avis soumis!','s');closeModal('reviewModal');renderStudentDash(document.getElementById('app'));
+}
+
+// ==================== TEACHER DASHBOARD ====================
+function renderTeacherDash(app){
+  let u=currentUser();let d=getDB();
+  let courses=d.courses.filter(c=>c.teacherId===u.id);
+  let w=d.wallets.find(x=>x.userId===u.id)||{totalEarned:0,availableBalance:0,pendingBalance:0,totalWithdrawn:0};
+  let notifs=d.notifications.filter(n=>n.userId===u.id);
+  let unread=notifs.filter(n=>!n.read).length;
+  app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px"><h1 style="margin-bottom:16px">Tableau de bord Formateur</h1><div class="grid3"><div class="scard"><div class="sicon b"><i class="fas fa-book"></i></div><div class="sinfo"><h3>${courses.length}</h3><p>Mes cours</p></div></div><div class="scard"><div class="sicon g"><i class="fas fa-users"></i></div><div class="sinfo"><h3>${courses.reduce((s,c)=>s+(c.studentsCount||0),0)}</h3><p>Étudiants</p></div></div><div class="scard"><div class="sicon p"><i class="fas fa-wallet"></i></div><div class="sinfo"><h3>${fmtCur(w.availableBalance,'USD')}</h3><p>Disponible</p></div></div><div class="scard"><div class="sicon o"><i class="fas fa-bell"></i></div><div class="sinfo"><h3>${unread}</h3><p>Notifications</p></div></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0"><a href="#/teacher/create" class="btn bp btn-sm"><i class="fas fa-plus"></i> Créer un cours</a><a href="#/teacher/wallet" class="btn bs btn-sm">Portefeuille</a><a href="#/teacher/affiliates" class="btn bs btn-sm">Affiliation</a><a href="#/teacher/notifications" class="btn bs btn-sm">Notifications (${unread})</a></div><h2 style="margin-bottom:12px">Mes formations</h2><div class="grid2">${courses.length?courses.map(c=>`<div class="ccard" onclick="nav('/teacher/edit/${c.id}')"><div class="cthumb" style="height:120px">${c.thumbnail?'<img src="'+esc(c.thumbnail)+'">':'<i class="fas fa-play-circle"></i>'}</div><div class="cinfo"><div class="ctitle">${esc(c.title)}</div>${statusB(c.status)}<div style="margin-top:8px;display:flex;justify-content:space-between;font-size:.82rem;color:#888"><span>${c.studentsCount||0} étudiants</span><span>${c.accessType==='free'?'Gratuit':fmtCur(c.price,c.currency)}</span></div></div></div>`).join(''):'<div class="empty"><i class="fas fa-plus-circle"></i><p>Aucun cours. <a href="#/teacher/create">Créez votre premier cours!</a></p></div>'}</div></div>`
+}
+
+// ==================== CREATE / EDIT COURSE ====================
+function renderCreateCourse(app,u){
+  if(!u||u.role!=='teacher'){nav('/login');return}
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:700px;margin:24px auto"><div class="card"><h2 class="card-t">Créer une formation</h2><form onsubmit="saveCourse(event,null)"><div class="fg"><label>Titre</label><input type="text" class="fc" id="cTitle" required></div><div class="fg"><label>Description</label><textarea class="fc" id="cDesc" required></textarea></div><div class="fg"><label>Catégorie</label><select class="fc" id="cCat"><option>Marketing</option><option>Programmation</option><option>Design</option><option>Business</option><option>Langues</option><option>Autre</option></select></div><div class="fg"><label>URL de la miniature</label><input type="text" class="fc" id="cThumb" placeholder="https://..."></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="fg"><label>Type d'accès</label><select class="fc" id="cAccess"><option value="free">Gratuit</option><option value="paid">Payant</option></select></div><div class="fg"><label>Prix</label><input type="number" class="fc" id="cPrice" value="0" min="0"></div><div class="fg"><label>Devise</label><select class="fc" id="cCur"><option>USD</option><option>HTG</option><option>EUR</option></select></div></div><button type="submit" class="btn bp" style="width:100%">Créer le cours</button></form></div></div>`
+}
+function renderEditCourse(app,p,u){
+  if(!u||u.role!=='teacher'){nav('/login');return}
+  let cid=p.split('/')[3];let d=getDB();let c=d.courses.find(x=>x.id===cid);
+  if(!c||c.teacherId!==u.id){nav('/teacher');return}
+  let lessons=d.lessons.filter(l=>l.courseId===cid);
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:800px;margin:24px auto"><div class="card"><h2 class="card-t">Modifier: ${esc(c.title)}</h2><form onsubmit="saveCourse(event,'${cid}')"><div class="fg"><label>Titre</label><input type="text" class="fc" id="cTitle" value="${esc(c.title)}" required></div><div class="fg"><label>Description</label><textarea class="fc" id="cDesc" required>${esc(c.description)}</textarea></div><div class="fg"><label>Catégorie</label><select class="fc" id="cCat"><option ${c.category==='Marketing'?'selected':''}>Marketing</option><option ${c.category==='Programmation'?'selected':''}>Programmation</option><option ${c.category==='Design'?'selected':''}>Design</option><option ${c.category==='Business'?'selected':''}>Business</option><option ${c.category==='Langues'?'selected':''}>Langues</option><option ${c.category==='Autre'?'selected':''}>Autre</option></select></div><div class="fg"><label>URL miniature</label><input type="text" class="fc" id="cThumb" value="${esc(c.thumbnail||'')}"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="fg"><label>Accès</label><select class="fc" id="cAccess"><option value="free" ${c.accessType==='free'?'selected':''}>Gratuit</option><option value="paid" ${c.accessType==='paid'?'selected':''}>Payant</option></select></div><div class="fg"><label>Prix</label><input type="number" class="fc" id="cPrice" value="${c.price||0}" min="0"></div><div class="fg"><label>Devise</label><select class="fc" id="cCur"><option ${c.currency==='USD'?'selected':''}>USD</option><option ${c.currency==='HTG'?'selected':''}>HTG</option><option ${c.currency==='EUR'?'selected':''}>EUR</option></select></div></div><button type="submit" class="btn bp" style="width:100%">Sauvegarder</button></form><hr style="margin:24px 0"><h3>Leçons (${lessons.length})</h3><div id="lessonsList">${lessons.map((l,i)=>`<div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><strong>${i+1}. ${esc(l.title)}</strong> <span class="badge sbd">${l.type.toUpperCase()}</span>${l.isPreview?' <span class="badge bf">Preview</span>':''}</div><button class="btn bd btn-sm" onclick="deleteLesson('${l.id}','${cid}')"><i class="fas fa-trash"></i></button></div>`).join('')||'<p style="color:#999">Aucune leçon</p>'}</div><div class="card" style="margin-top:16px;background:#f8f9ff"><h4 style="margin-bottom:12px">Ajouter une leçon</h4><div class="fg"><label>Titre</label><input type="text" class="fc" id="lTitle"></div><div class="fg"><label>Type</label><select class="fc" id="lType" onchange="toggleLContent()"><option value="video">Vidéo</option><option value="audio">Audio</option><option value="text">Texte</option><option value="pdf">PDF</option></select></div><div class="fg" id="lContentWrap"><label id="lContentLabel">URL Vidéo</label><textarea class="fc" id="lContent" placeholder="URL ou contenu..."></textarea></div><div class="fg"><label><input type="checkbox" id="lPreview"> Aperçu gratuit (Preview)</label></div><button class="btn bg" onclick="addLesson('${cid}')"><i class="fas fa-plus"></i> Ajouter</button></div><hr style="margin:24px 0"><div style="display:flex;gap:8px;flex-wrap:wrap">${c.status==='draft'||c.status==='rejected'?`<button class="btn bw" onclick="submitCourse('${cid}')">Soumettre pour révision</button>`:''}${c.status==='published'?`<span class="badge sba">Publié</span>`:''}${statusB(c.status)}</div></div></div>`
+}
+window.toggleLContent=function(){
+  let t=document.getElementById('lType').value;
+  let labels={video:'URL Vidéo (ou lien YouTube)',audio:'URL Audio',text:'Contenu texte',pdf:'URL du PDF'};
+  let ph={video:'https://www.youtube.com/watch?v=... ou URL fichier',audio:'https://...mp3',text:'Écrivez votre leçon ici...',pdf:'https://...pdf'};
+  document.getElementById('lContentLabel').textContent=labels[t];
+  document.getElementById('lContent').placeholder=ph[t];
+}
+window.addLesson=function(cid){
+  let title=document.getElementById('lTitle').value.trim(),type=document.getElementById('lType').value,content=document.getElementById('lContent').value.trim(),preview=document.getElementById('lPreview').checked;
+  if(!title||!content)return alert2('Remplissez tous les champs','e');
+  dbOp(d=>{d.lessons.push({id:uid(),courseId:cid,title,type,content,isPreview:preview,createdAt:new Date().toISOString()})});
+  alert2('Leçon ajoutée!','s');renderEditCourse(document.getElementById('app'),'/teacher/edit/'+cid,currentUser());
+}
+window.deleteLesson=function(lid,cid){
+  if(!confirm('Supprimer cette leçon?'))return;
+  dbOp(d=>{d.lessons=d.lessons.filter(l=>l.id!==lid)});
+  alert2('Leçon supprimée','s');renderEditCourse(document.getElementById('app'),'/teacher/edit/'+cid,currentUser());
+}
+window.saveCourse=function(e,cid){
+  e.preventDefault();let u=currentUser();
+  let title=document.getElementById('cTitle').value.trim(),desc=document.getElementById('cDesc').value.trim(),cat=document.getElementById('cCat').value,thumb=document.getElementById('cThumb').value.trim(),access=document.getElementById('cAccess').value,price=parseFloat(document.getElementById('cPrice').value)||0,cur=document.getElementById('cCur').value;
+  if(access==='paid'&&price<=0)return alert2('Un cours payant doit avoir un prix > 0','e');
+  if(cid){
+    dbOp(d=>{let c=d.courses.find(x=>x.id===cid);if(c){Object.assign(c,{title,description:desc,category:cat,thumbnail:thumb,accessType:access,price,currency:cur})}});
+    alert2('Cours mis à jour!','s');
+  }else{
+    let r=dbOp(d=>{let c={id:uid(),teacherId:u.id,title,description:desc,category:cat,thumbnail:thumb,accessType:access,price,currency:cur,status:'draft',rating:0,studentsCount:0,createdAt:new Date().toISOString()};d.courses.push(c);d.activityLogs.push({id:uid(),userName:u.name,userRole:'teacher',action:'Cours créé',desc:u.name+' a créé "'+title+'"',timestamp:new Date().toISOString()});c._id=c.id;return{ok:c}});
+    cid=r.ok._id;alert2('Cours créé!','s');
+  }
+  nav('/teacher/edit/'+cid);
+}
+window.submitCourse=function(cid){
+  let d=getDB();let c=d.courses.find(x=>x.id===cid);
+  let lessons=d.lessons.filter(l=>l.courseId===cid);
+  if(!lessons.length)return alert2('Ajoutez au moins une leçon avant de soumettre','e');
+  if(c.accessType==='paid'&&(!c.price||c.price<=0))return alert2('Définissez un prix valide','e');
+  dbOp(d=>{let cc=d.courses.find(x=>x.id===cid);if(cc)cc.status='pending_review'});
+  alert2('Cours soumis pour révision!','s');
+  renderEditCourse(document.getElementById('app'),'/teacher/edit/'+cid,currentUser());
+}
+
+// ==================== WALLET ====================
+function renderWallet(app,u){
+  if(!u||u.role!=='teacher'){nav('/login');return}
+  let d=getDB();let w=d.wallets.find(x=>x.userId===u.id)||{totalEarned:0,availableBalance:0,pendingBalance:0,totalWithdrawn:0};
+  let wds=d.withdrawals.filter(x=>x.teacherId===u.id);
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:800px;margin:24px auto"><h2 style="margin-bottom:16px">Portefeuille</h2><div class="grid3"><div class="scard"><div class="sicon g"><i class="fas fa-dollar-sign"></i></div><div class="sinfo"><h3>${fmtCur(w.totalEarned,'USD')}</h3><p>Total gagné</p></div></div><div class="scard"><div class="sicon b"><i class="fas fa-wallet"></i></div><div class="sinfo"><h3>${fmtCur(w.availableBalance,'USD')}</h3><p>Disponible</p></div></div><div class="scard"><div class="sicon o"><i class="fas fa-clock"></i></div><div class="sinfo"><h3>${fmtCur(w.pendingBalance,'USD')}</h3><p>En attente</p></div></div></div><div class="card"><h3 class="card-t">Demander un retrait</h3><form onsubmit="reqWithdrawal(event)"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="fg"><label>Montant (max: ${w.availableBalance})</label><input type="number" class="fc" id="wdAmt" max="${w.availableBalance}" required min="1"></div><div class="fg"><label>Méthode</label><select class="fc" id="wdMethod"><option>MONCASH</option><option>NATCASH</option></select></div></div><div class="fg"><label>Numéro</label><input type="text" class="fc" id="wdNum" required></div><button class="btn bp" type="submit">Demander le retrait</button></form></div><div class="card"><h3 class="card-t">Historique des retraits</h3><div class="tbl-wrap"><table><thead><tr><th>Montant</th><th>Méthode</th><th>Statut</th><th>Date</th></tr></thead><tbody>${wds.length?wds.map(w=>`<tr><td>${fmtCur(w.amount,'USD')}</td><td>${w.method}</td><td>${statusB(w.status)}</td><td>${fmtDate(w.createdAt)}</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;color:#999">Aucun retrait</td></tr>'}</tbody></table></div></div></div>`
+}
+window.reqWithdrawal=function(e){
+  e.preventDefault();let u=currentUser();let amt=parseFloat(document.getElementById('wdAmt').value),method=document.getElementById('wdMethod').value,num=document.getElementById('wdNum').value.trim();
+  let r=dbOp(d=>{let w=d.wallets.find(x=>x.userId===u.id);if(!w||w.availableBalance<amt)return{err:'Solde insuffisant'};w.availableBalance-=amt;w.pendingBalance+=amt;d.withdrawals.push({id:uid(),teacherId:u.id,amount:amt,method,number:num,status:'pending',createdAt:new Date().toISOString()});d.activityLogs.push({id:uid(),userName:u.name,userRole:'teacher',action:'Retrait demandé',desc:u.name+' a demandé un retrait de '+amt,timestamp:new Date().toISOString()});let admins=d.users.filter(x=>x.role==='admin');admins.forEach(a=>{d.notifications.push({id:uid(),userId:a.id,type:'withdrawal',title:'Nouveau retrait',message:u.name+' demande un retrait de '+amt,read:false,createdAt:new Date().toISOString()})});return{ok:true}});
+  if(r.err)return alert2(r.err,'e');
+  alert2('Demande de retrait soumise!','s');renderWallet(document.getElementById('app'),u);
+}
+
+// ==================== AFFILIATES ====================
+function renderAffiliates(app,u){
+  if(!u||u.role!=='teacher'){nav('/login');return}
+  let d=getDB();let links=d.affiliateLinks.filter(l=>l.teacherId===u.id);let courses=d.courses.filter(c=>c.teacherId===u.id);
+  let sales=d.affiliateSales.filter(s=>links.some(l=>l.id===s.linkId));
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:800px;margin:24px auto"><h2 style="margin-bottom:16px">Affiliation</h2><div class="grid3"><div class="scard"><div class="sicon b"><i class="fas fa-link"></i></div><div class="sinfo"><h3>${links.length}</h3><p>Liens actifs</p></div></div><div class="scard"><div class="sicon g"><i class="fas fa-shopping-cart"></i></div><div class="sinfo"><h3>${sales.length}</h3><p>Ventes</p></div></div><div class="scard"><div class="sicon p"><i class="fas fa-coins"></i></div><div class="sinfo"><h3>${fmtCur(sales.reduce((s,x)=>s+(x.commission||0),0),'USD')}</h3><p>Commissions</p></div></div></div><div class="card"><h3 class="card-t">Générer un lien d'affiliation</h3><div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;align-items:end"><div class="fg"><label>Cours</label><select class="fc" id="affCourse">${courses.map(c=>`<option value="${c.id}">${esc(c.title)}</option>`).join('')||'<option>Aucun cours</option>'}</select></div><div class="fg"><label>Commission %</label><input type="number" class="fc" id="affRate" value="10" min="1" max="50"></div><div class="fg"></div><button class="btn bp" onclick="genAffLink()" style="height:40px">Générer</button></div></div><div class="card"><h3 class="card-t">Mes liens</h3>${links.length?links.map(l=>{let c=d.courses.find(x=>x.id===l.courseId);return`<div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><strong>${c?esc(c.title):'Cours supprimé'}</strong><br><code style="font-size:.78rem;color:#6c5ce7">${l.code}</code><br><small>Commission: ${l.rate}% | Ventes: ${l.salesCount||0}</small></div><button class="btn bs btn-sm" onclick="navigator.clipboard.writeText('${l.code}');alert2('Code copié!','s')"><i class="fas fa-copy"></i> Copier</button></div>`}).join(''):'<p style="color:#999">Aucun lien généré</p>'}</div></div>`
+}
+window.genAffLink=function(){
+  let u=currentUser();let cid=document.getElementById('affCourse').value,rate=parseInt(document.getElementById('affRate').value)||10;
+  let r=dbOp(d=>{if(!d.courses.find(c=>c.id===cid))return{err:'Cours introuvable'};let code=affCode();while(d.affiliateLinks.find(l=>l.code===code))code=affCode();d.affiliateLinks.push({id:uid(),teacherId:u.id,courseId:cid,code,rate,salesCount:0,totalCommission:0,active:true,createdAt:new Date().toISOString()});return{ok:true}});
+  if(r.err)return alert2(r.err,'e');
+  alert2('Lien d\'affiliation généré!','s');renderAffiliates(document.getElementById('app'),u);
+}
+
+// ==================== STUDENT SUB-PAGES ====================
+function renderStudentPayments(app,u){
+  let d=getDB();let pays=d.payments.filter(p=>p.studentId===u.id);
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:900px;margin:24px auto"><h2 style="margin-bottom:16px">Mes paiements</h2><div class="tbl-wrap"><table><thead><tr><th>Cours</th><th>Montant</th><th>Méthode</th><th>Transaction</th><th>Statut</th><th>Date</th></tr></thead><tbody>${pays.length?pays.map(p=>{let c=d.courses.find(x=>x.id===p.courseId);return`<tr><td>${c?esc(c.title):'-'}</td><td>${fmtCur(p.amount,p.currency)}</td><td>${p.method}</td><td><code>${esc(p.transactionId)}</code></td><td>${statusB(p.status)}</td><td>${fmtDate(p.createdAt)}</td></tr>`}).join(''):'<tr><td colspan="6" style="text-align:center;color:#999">Aucun paiement</td></tr>'}</tbody></table></div></div>`
+}
+function renderStudentCerts(app,u){
+  let d=getDB();let certs=d.certificates.filter(c=>c.studentId===u.id);
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:900px;margin:24px auto"><h2 style="margin-bottom:16px">Mes certificats</h2><div class="grid2">${certs.length?certs.map(c=>`<div class="card" style="text-align:center"><h3>${esc(c.courseName)}</h3><p style="color:#888;margin:6px 0">ID: <code>${c.certificateId}</code></p><p style="font-size:.85rem">${fmtDate(c.issuedAt)}</p><a href="#/certificate/${c.courseId}" class="btn bp btn-sm" style="margin-top:8px">Voir le certificat</a></div>`).join(''):'<div class="empty"><i class="fas fa-certificate"></i><p>Aucun certificat obtenu</p></div>'}</div></div>`
+}
+function renderStudentNotifs(app,u){renderNotifs(app,u,'Étudiant')}
+function renderTeacherNotifs(app,u){renderNotifs(app,u,'Formateur')}
+function renderNotifs(app,u,roleLabel){
+  let d=getDB();let notifs=d.notifications.filter(n=>n.userId===u.id).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:700px;margin:24px auto"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2>Notifications</h2>${notifs.some(n=>!n.read)?`<button class="btn bs btn-sm" onclick="markAllRead()">Tout marquer lu</button>`:''}</div>${notifs.length?notifs.map(n=>`<div class="notif ${n.read?'':'unread'}" onclick="markRead('${n.id}')"><div style="display:flex;justify-content:space-between"><strong>${esc(n.title)}</strong><small style="color:#999">${fmtDT(n.createdAt)}</small></div><p style="font-size:.85rem;margin-top:4px">${esc(n.message)}</p></div>`).join(''):'<div class="empty"><i class="fas fa-bell-slash"></i><p>Aucune notification</p></div>'}</div>`
+}
+window.markRead=function(nid){dbOp(d=>{let n=d.notifications.find(x=>x.id===nid);if(n)n.read=true});route()}
+window.markAllRead=function(){let u=currentUser();dbOp(d=>{d.notifications.filter(n=>n.userId===u.id).forEach(n=>n.read=true)});route()}
+
+// ==================== CERTIFICATE VIEW ====================
+function renderCertView(app,p,u){
+  let cid=p.split('/')[2];let d=getDB();
+  let cert=d.certificates.find(c=>c.courseId===cid&&u&&c.studentId===u.id);
+  if(!cert){
+    cert=d.certificates.find(c=>c.courseId===cid);
+  }
+  if(!cert){app.innerHTML=headerH(u)+'<div class="container" style="padding:40px"><div class="empty"><i class="fas fa-certificate"></i><p>Certificat introuvable</p></div></div>';return}
+  app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px">${certHTML(cert)}<div style="text-align:center;margin-top:16px"><a href="#/verify-cert" class="btn bs btn-sm">Vérifier un certificat</a></div></div>`
+}
+function certHTML(cert){
+  return`<div class="cert"><div class="cert-h"><div class="cert-logo"><i class="fas fa-graduation-cap"></i> NOVA REACH ACADÉMIE</div><div class="cert-t">Certificat de Réussite</div><div class="cert-sub">Ce certificat est fièrement décerné à</div></div><div class="cert-body"><div class="cert-name">${esc(cert.studentName)}</div><p style="font-size:1rem;margin:12px 0">pour avoir complété avec succès la formation</p><div class="cert-course">"${esc(cert.courseName)}"</div><p style="margin-top:12px;color:#666">Date de complétion: ${fmtDate(cert.issuedAt)}</p></div><div class="cert-foot"><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:6px;margin-bottom:4px;min-width:160px"></div><div class="cert-sig-n">${esc(cert.studentName)}</div><div class="cert-sig-t">Étudiant(e)</div></div><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:6px;margin-bottom:4px;min-width:160px"></div><div class="cert-sig-n">BENÊCHE JURGENS</div><div class="cert-sig-t">PDG / Signature</div></div></div><div class="cert-id">ID du Certificat: ${cert.certificateId} | NOVA REACH ACADÉMIE</div></div>`
+}
+
+// ==================== VERIFY CERTIFICATE ====================
+function renderVerifyCert(app){
+  let u=currentUser();
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:500px;margin:60px auto"><div class="card"><h2 style="text-align:center;margin-bottom:20px"><i class="fas fa-shield-alt"></i> Vérification de Certificat</h2><form onsubmit="verifyCert(event)"><div class="fg"><label>ID du Certificat</label><input type="text" class="fc" id="vCertId" placeholder="NRA-XXXXX-XXXXXX" required></div><button type="submit" class="btn bp" style="width:100%">Vérifier</button></form><div id="vResult" style="margin-top:16px"></div></div></div>`
+}
+window.verifyCert=function(e){
+  e.preventDefault();let cid=document.getElementById('vCertId').value.trim();
+  let d=getDB();let cert=d.certificates.find(c=>c.certificateId===cid);
+  let res=document.getElementById('vResult');
+  if(cert){
+    res.innerHTML=`<div class="alert alert-s" style="position:static"><i class="fas fa-check-circle"></i> CERTIFICAT VALIDE ✅</div><div class="card"><p><strong>Étudiant:</strong> ${esc(cert.studentName)}</p><p><strong>Formation:</strong> ${esc(cert.courseName)}</p><p><strong>Date:</strong> ${fmtDate(cert.issuedAt)}</p><p><strong>Académie:</strong> NOVA REACH ACADÉMIE</p></div>`;
+  }else{
+    res.innerHTML=`<div class="alert alert-e" style="position:static"><i class="fas fa-times-circle"></i> CERTIFICAT NON TROUVÉ / INVALIDE</div>`;
+  }
+}
+
+// ==================== PROFILE ====================
+function renderProfile(app,u){
+  if(!u){nav('/login');return}
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:600px;margin:24px auto"><div class="card"><h2 class="card-t">Mon Profil</h2><form onsubmit="updateProfile(event)"><div class="fg"><label>Photo (URL)</label><input type="text" class="fc" id="pPhoto" value="${esc(u.profilePhoto||'')}"></div><div class="fg"><label>Nom complet</label><input type="text" class="fc" id="pName" value="${esc(u.name)}" required></div><div class="fg"><label>Email</label><input type="email" class="fc" value="${esc(u.email)}" disabled></div><div class="fg"><label>Téléphone</label><input type="tel" class="fc" id="pPhone" value="${esc(u.phone||'')}"></div><div class="fg"><label>Bio</label><textarea class="fc" id="pBio">${esc(u.bio||'')}</textarea></div><div class="fg"><label>Statut</label><input type="text" class="fc" value="${u.status}" disabled></div><div class="fg"><label>Membre depuis</label><input type="text" class="fc" value="${fmtDate(u.createdAt)}" disabled></div><button type="submit" class="btn bp">Sauvegarder</button></form><hr style="margin:20px 0"><h3>Changer le mot de passe</h3><form onsubmit="changePass(event)"><div class="fg"><label>Mot de passe actuel</label><input type="password" class="fc" id="cpOld" required></div><div class="fg"><label>Nouveau mot de passe</label><input type="password" class="fc" id="cpNew" required minlength="6"></div><button type="submit" class="btn bw">Changer</button></form></div></div>`
+}
+window.updateProfile=function(e){
+  e.preventDefault();let u=currentUser();
+  let name=document.getElementById('pName').value.trim(),phone=document.getElementById('pPhone').value.trim(),bio=document.getElementById('pBio').value.trim(),photo=document.getElementById('pPhoto').value.trim();
+  dbOp(d=>{let uu=d.users.find(x=>x.id===u.id);if(uu){uu.name=name;uu.phone=phone;uu.bio=bio;uu.profilePhoto=photo}});
+  alert2('Profil mis à jour!','s');renderProfile(document.getElementById('app'),currentUser());
+}
+window.changePass=function(e){
+  e.preventDefault();let u=currentUser();let old=document.getElementById('cpOld').value,nw=document.getElementById('cpNew').value;
+  let r=dbOp(d=>{let uu=d.users.find(x=>x.id===u.id);if(!uu)return{err:'Erreur'};if(uu.password!==old)return{err:'Mot de passe actuel incorrect'};uu.password=nw;return{ok:true}});
+  if(r.err)return alert2(r.err,'e');
+  alert2('Mot de passe changé!','s');
+}
+function renderPublicProfile(app,p){
+  let tid=p.split('/')[3];let d=getDB();let t=d.users.find(u=>u.id===tid);
+  if(!t){app.innerHTML=headerH(currentUser())+'<div class="container" style="padding:40px"><div class="empty">Profil introuvable</div></div>';return}
+  let courses=d.courses.filter(c=>c.teacherId===tid&&c.status==='published');
+  let reviews=d.reviews.filter(r=>courses.some(c=>c.id===r.courseId));
+  let u=currentUser();
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:800px;margin:24px auto"><div class="card" style="text-align:center"><div style="width:80px;height:80px;border-radius:50%;background:#6c5ce7;color:#fff;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px">${t.profilePhoto?'<img src="'+esc(t.profilePhoto)+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover">':t.name[0].toUpperCase()}</div><h2>${esc(t.name)}</h2><p style="color:#888">${esc(t.bio||'Formateur')}</p><div style="display:flex;gap:20px;justify-content:center;margin-top:12px"><span><strong>${courses.length}</strong> cours</span><span><strong>${courses.reduce((s,c)=>s+(c.studentsCount||0),0)}</strong> étudiants</span><span><strong>${reviews.length}</strong> avis</span></div></div><h3 style="margin:16px 0">Formations</h3><div class="grid2">${courses.map(c=>courseCardH(c,d)).join('')||'<p style="color:#999">Aucune formation publiée</p>'}</div></div>`
+}
+
+// ==================== ADMIN PANEL ====================
+function renderAdmin(app){
+  if(!isAdmin()){nav('/admin-login');return}
+  app.innerHTML=headerH(currentUser())+`<button class="mob-tog" style="display:none;position:fixed;bottom:16px;right:16px;z-index:200;background:#6c5ce7;color:#fff;width:48px;height:48px;border-radius:50%;font-size:1.2rem;border:none;cursor:pointer" onclick="document.querySelector('.side').classList.toggle('open')"><i class="fas fa-bars"></i></button><div class="side" id="adminSide"><ul><li class="act" data-s="dash" onclick="adminTab(this,'dash')"><i class="fas fa-tachometer-alt"></i> Dashboard</li><li data-s="students" onclick="adminTab(this,'students')"><i class="fas fa-user-graduate"></i> Étudiants</li><li data-s="teachers" onclick="adminTab(this,'teachers')"><i class="fas fa-chalkboard-teacher"></i> Formateurs</li><li data-s="courses" onclick="adminTab(this,'courses')"><i class="fas fa-book"></i> Tous les cours</li><li data-s="payments" onclick="adminTab(this,'payments')"><i class="fas fa-credit-card"></i> Paiements</li><li data-s="withdrawals" onclick="adminTab(this,'withdrawals')"><i class="fas fa-money-bill-wave"></i> Retraits</li><li data-s="affiliates" onclick="adminTab(this,'affiliates')"><i class="fas fa-handshake"></i> Affiliations</li><li data-s="certs" onclick="adminTab(this,'certs')"><i class="fas fa-certificate"></i> Certificats</li><li data-s="reviews" onclick="adminTab(this,'reviews')"><i class="fas fa-star"></i> Avis</li><li data-s="notifs" onclick="adminTab(this,'notifs')"><i class="fas fa-bell"></i> Notifications</li><li data-s="announce" onclick="adminTab(this,'announce')"><i class="fas fa-bullhorn"></i> Annonces</li><li data-s="logs" onclick="adminTab(this,'logs')"><i class="fas fa-history"></i> Journaux</li><li data-s="settings" onclick="adminTab(this,'settings')"><i class="fas fa-cog"></i> Paramètres</li><li onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</li></ul></div><div class="main" id="adminMain"></div><style>@media(max-width:768px){.mob-tog{display:block!important}}</style>`;
+  adminLoadDash();
+}
+window.adminTab=function(el,tab){
+  document.querySelectorAll('.side li').forEach(l=>l.classList.remove('act'));el.classList.add('act');
+  if(tab==='dash')adminLoadDash();
+  else if(tab==='students')adminLoadStudents();
+  else if(tab==='teachers')adminLoadTeachers();
+  else if(tab==='courses')adminLoadCourses();
+  else if(tab==='payments')adminLoadPayments();
+  else if(tab==='withdrawals')adminLoadWithdrawals();
+  else if(tab==='affiliates')adminLoadAffiliates();
+  else if(tab==='certs')adminLoadCerts();
+  else if(tab==='reviews')adminLoadReviews();
+  else if(tab==='notifs')adminLoadAdminNotifs();
+  else if(tab==='announce')adminLoadAnnounce();
+  else if(tab==='logs')adminLoadLogs();
+  else if(tab==='settings')adminLoadSettings();
+  document.querySelector('.side')?.classList.remove('open');
+}
+function adminLoadDash(){
+  let d=getDB();let m=document.getElementById('adminMain');
+  let students=d.users.filter(u=>u.role==='student'),teachers=d.users.filter(u=>u.role==='teacher');
+  let courses=d.courses,pays=d.payments,enrs=d.enrollments,certs=d.certificates,wds=d.withdrawals,links=d.affiliateLinks,sales=d.affiliateSales;
+  let revenue=pays.filter(p=>p.status==='approved').reduce((s,p)=>s+p.amount,0);
+  m.innerHTML=`<h1 style="margin-bottom:16px">Tableau de bord Admin</h1><div class="grid3"><div class="scard"><div class="sicon b"><i class="fas fa-user-graduate"></i></div><div class="sinfo"><h3>${students.length}</h3><p>Étudiants</p></div></div><div class="scard"><div class="sicon g"><i class="fas fa-chalkboard-teacher"></i></div><div class="sinfo"><h3>${teachers.length}</h3><p>Formateurs</p></div></div><div class="scard"><div class="sicon p"><i class="fas fa-book"></i></div><div class="sinfo"><h3>${courses.length}</h3><p>Cours</p></div></div><div class="scard"><div class="sicon o"><i class="fas fa-dollar-sign"></i></div><div class="sinfo"><h3>${fmtCur(revenue,'USD')}</h3><p>Revenus</p></div></div><div class="scard"><div class="sicon r"><i class="fas fa-users"></i></div><div class="sinfo"><h3>${enrs.length}</h3><p>Inscriptions</p></div></div><div class="scard"><div class="sicon b"><i class="fas fa-clock"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='pending').length}</h3><p>Paiements en attente</p></div></div><div class="scard"><div class="sicon g"><i class="fas fa-check"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='approved').length}</h3><p>Approuvés</p></div></div><div class="scard"><div class="sicon r"><i class="fas fa-times"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='rejected').length}</h3><p>Rejetés</p></div></div><div class="scard"><div class="sicon o"><i class="fas fa-money-bill"></i></div><div class="sinfo"><h3>${wds.filter(w=>w.status==='pending').length}</h3><p>Retraits en attente</p></div></div><div class="scard"><div class="sicon p"><i class="fas fa-handshake"></i></div><div class="sinfo"><h3>${links.length}</h3><p>Affiliés</p></div></div><div class="scard"><div class="sicon b"><i class="fas fa-shopping-cart"></i></div><div class="sinfo"><h3>${sales.length}</h3><p>Ventes affiliées</p></div></div><div class="scard"><div class="sicon g"><i class="fas fa-certificate"></i></div><div class="sinfo"><h3>${certs.length}</h3><p>Certificats</p></div></div></div><div class="card"><h3 class="card-t">Activité récente</h3><div class="tbl-wrap"><table><thead><tr><th>Action</th><th>Utilisateur</th><th>Date</th></tr></thead><tbody>${d.activityLogs.slice(0,10).map(l=>`<tr><td>${esc(l.action)}</td><td>${esc(l.userName||'Système')}</td><td>${fmtDT(l.timestamp)}</td></tr>`).join('')||'<tr><td colspan="3" style="text-align:center">Aucune activité</td></tr>'}</tbody></table></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bs btn-sm" onclick="exportBackup()"><i class="fas fa-download"></i> Exporter Backup</button><label class="btn bs btn-sm" style="cursor:pointer"><i class="fas fa-upload"></i> Importer Backup<input type="file" accept=".json" style="display:none" onchange="importBackup(event)"></label></div>`
+}
+function adminLoadStudents(){
+  let d=getDB();let m=document.getElementById('adminMain');let students=d.users.filter(u=>u.role==='student');
+  m.innerHTML=`<h1 style="margin-bottom:16px">Étudiants</h1><div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Cours</th><th>Complétés</th><th>Paiements</th><th>Date</th><th>Actions</th></tr></thead><tbody>${students.length?students.map(s=>{let enrs=d.enrollments.filter(e=>e.studentId===s.id);let pays=d.payments.filter(p=>p.studentId===s.id);return`<tr><td>${esc(s.name)}</td><td>${esc(s.email)}</td><td>${statusB(s.status)}</td><td>${enrs.length}</td><td>${enrs.filter(e=>e.completed).length}</td><td>${pays.length}</td><td>${fmtDate(s.createdAt)}</td><td><button class="btn bs btn-sm" onclick="toggleStatus('${s.id}')">${s.status==='active'?'Suspendre':'Activer'}</button> <button class="btn bd btn-sm" onclick="delUser('${s.id}')">Supprimer</button></td></tr>`}).join(''):'<tr><td colspan="8" style="text-align:center;color:#999">Aucun étudiant</td></tr>'}</tbody></table></div>`
+}
+function adminLoadTeachers(){
+  let d=getDB();let m=document.getElementById('adminMain');let teachers=d.users.filter(u=>u.role==='teacher');
+  m.innerHTML=`<h1 style="margin-bottom:16px">Formateurs</h1><div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Cours</th><th>Étudiants</th><th>Gains</th><th>Solde</th><th>Actions</th></tr></thead><tbody>${teachers.length?teachers.map(t=>{let cs=d.courses.filter(c=>c.teacherId===t.id);let w=d.wallets.find(x=>x.userId===t.id)||{};return`<tr><td>${esc(t.name)}</td><td>${esc(t.email)}</td><td>${statusB(t.status)}</td><td>${cs.length}</td><td>${cs.reduce((s,c)=>s+(c.studentsCount||0),0)}</td><td>${fmtCur(w.totalEarned||0,'USD')}</td><td>${fmtCur(w.availableBalance||0,'USD')}</td><td><button class="btn bs btn-sm" onclick="toggleStatus('${t.id}')">${t.status==='active'?'Suspendre':'Activer'}</button> <button class="btn bd btn-sm" onclick="delUser('${t.id}')">Supprimer</button></td></tr>`}).join(''):'<tr><td colspan="8" style="text-align:center;color:#999">Aucun formateur</td></tr>'}</tbody></table></div>`
+}
+window.toggleStatus=function(uid2){dbOp(d=>{let u=d.users.find(x=>x.id===uid2);if(u)u.status=u.status==='active'?'suspended':'active'});alert2('Statut mis à jour','s');route();setTimeout(()=>{let m=document.getElementById('adminMain');if(m)adminTab(document.querySelector('.side li.act')||{},document.querySelector('.side li.act')?.dataset.s||'dash')},50)}
+window.delUser=function(uid2){if(!confirm('Supprimer cet utilisateur?'))return;dbOp(d=>{d.users=d.users.filter(u=>u.id!==uid2)});alert2('Supprimé','s');let tab=document.querySelector('.side li.act')?.dataset.s||'dash';adminTab(document.querySelector('.side li.act')||{},tab)}
+function adminLoadCourses(){
+  let d=getDB();let m=document.getElementById('adminMain');
+  m.innerHTML=`<h1 style="margin-bottom:16px">Tous les cours</h1><div class="tabs"><div class="tab act" onclick="filterAdminCourses('all',this)">Tous</div><div class="tab" onclick="filterAdminCourses('free',this)">Gratuits</div><div class="tab" onclick="filterAdminCourses('paid',this)">Payants</div></div><div id="adminCoursesList"></div>`;
+  filterAdminCourses('all',document.querySelector('.tab'));
+}
+window.filterAdminCourses=function(type,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('act'));if(el)el.classList.add('act');
+  let d=getDB();let cs=d.courses;if(type!=='all')cs=cs.filter(c=>c.accessType===type);
+  document.getElementById('adminCoursesList').innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Titre</th><th>Formateur</th><th>Prix</th><th>Étudiants</th><th>Leçons</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${cs.length?cs.map(c=>{let t=d.users.find(u=>u.id===c.teacherId);let lc=d.lessons.filter(l=>l.courseId===c.id).length;return`<tr><td>${esc(c.title)}</td><td>${t?esc(t.name):'-'}</td><td>${c.accessType==='free'?'GRATUIT':fmtCur(c.price,c.currency)}</td><td>${c.studentsCount||0}</td><td>${lc}</td><td>${statusB(c.status)}</td><td><div style="display:flex;gap:4px;flex-wrap:wrap">${c.status==='pending_review'?`<button class="btn bg btn-sm" onclick="adminApproveCourse('${c.id}')">Approuver</button><button class="btn bd btn-sm" onclick="adminRejectCourse('${c.id}')">Rejeter</button>`:''}${c.status==='approved'?`<button class="btn bp btn-sm" onclick="adminPublishCourse('${c.id}')">Publier</button>`:''}${c.status==='published'?`<button class="btn bw btn-sm" onclick="adminUnpubCourse('${c.id}')">Dépublier</button>`:''}<button class="btn bd btn-sm" onclick="adminDelCourse('${c.id}')">Supprimer</button></div></td></tr>`}).join(''):'<tr><td colspan="7" style="text-align:center;color:#999">Aucun cours</td></tr>'}</tbody></table></div>`
+}
+window.adminApproveCourse=function(cid){dbOp(d=>{let c=d.courses.find(x=>x.id===cid);if(c){c.status='approved';d.notifications.push({id:uid(),userId:c.teacherId,type:'course_approved',title:'Cours approuvé',message:'Votre cours "'+c.title+'" a été approuvé',read:false,createdAt:new Date().toISOString()});d.activityLogs.push({id:uid(),userName:'Admin',userRole:'admin',action:'Cours approuvé',desc:c.title,timestamp:new Date().toISOString()})}});alert2('Approuvé','s');filterAdminCourses('all')};
+window.adminRejectCourse=function(cid){dbOp(d=>{let c=d.courses.find(x=>x.id===cid);if(c){c.status='rejected';d.notifications.push({id:uid(),userId:c.teacherId,type:'course_rejected',title:'Cours rejeté',message:'Votre cours "'+c.title+'" a été rejeté',read:false,createdAt:new Date().toISOString()})}});alert2('Rejeté','s');filterAdminCourses('all')};
+window.adminPublishCourse=function(cid){dbOp(d=>{let c=d.courses.find(x=>x.id===cid);if(c)c.status='published'});alert2('Publié','s');filterAdminCourses('all')};
+window.adminUnpubCourse=function(cid){dbOp(d=>{let c=d.courses.find(x=>x.id===cid);if(c)c.status='unpublished'});alert2('Dépublié','s');filterAdminCourses('all')};
+window.adminDelCourse=function(cid){if(!confirm('Supprimer?'))return;dbOp(d=>{d.courses=d.courses.filter(c=>c.id!==cid);d.lessons=d.lessons.filter(l=>l.courseId!==cid)});alert2('Supprimé','s');filterAdminCourses('all')};
+
+function adminLoadPayments(){
+  let d=getDB();let m=document.getElementById('adminMain');let pays=d.payments;
+  m.innerHTML=`<h1 style="margin-bottom:16px">Paiements & Preuves</h1><div class="tbl-wrap"><table><thead><tr><th>Étudiant</th><th>Cours</th><th>Montant</th><th>Méthode</th><th>Transaction</th><th>Preuve</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody>${pays.length?pays.map(p=>{let s=d.users.find(u=>u.id===p.studentId);let c=d.courses.find(u=>u.id===p.courseId);return`<tr><td>${s?esc(s.name):'-'}</td><td>${c?esc(c.title):'-'}</td><td>${fmtCur(p.amount,p.currency)}</td><td>${p.method}</td><td><code style="font-size:.75rem">${esc(p.transactionId)}</code></td><td>${p.proof?'<a href="'+esc(p.proof)+'" target="_blank" class="btn bs btn-sm">Voir</a>':'-'}</td><td>${statusB(p.status)}</td><td>${fmtDate(p.createdAt)}</td><td>${p.status==='pending'?`<button class="btn bg btn-sm" onclick="approvePay('${p.id}')">Approuver</button> <button class="btn bd btn-sm" onclick="rejectPay('${p.id}')">Rejeter</button>`:'-'}</td></tr>`}).join(''):'<tr><td colspan="9" style="text-align:center;color:#999">Aucun paiement</td></tr>'}</tbody></table></div>`
+}
+window.approvePay=function(pid){
+  dbOp(d=>{
+    let p=d.payments.find(x=>x.id===pid);if(!p||p.status!=='pending')return;
+    p.status='approved';
+    let c=d.courses.find(x=>x.id===p.courseId);
+    if(c&&!d.enrollments.find(e=>e.studentId===p.studentId&&e.courseId===p.courseId)){
+      d.enrollments.push({id:uid(),studentId:p.studentId,courseId:p.courseId,progress:0,completedLessons:[],lastLessonId:null,completed:false,enrolledAt:new Date().toISOString()});
+      c.studentsCount=(c.studentsCount||0)+1;
+    }
+    let settings=d.settings;let fee=(p.amount*(settings.commission||10))/100;let earning=p.amount-fee;
+    if(c){let w=d.wallets.find(x=>x.userId===c.teacherId);if(w){w.totalEarned+=earning;w.availableBalance+=earning}}
+    // Affiliate
+    let affSale=d.affiliateSales.find(s=>s.paymentId===p.id);
+    if(!affSale){
+      let link=d.affiliateLinks.find(l=>l.courseId===p.courseId&&l.active);
+      if(link){let comm=(p.amount*link.rate)/100;link.salesCount=(link.salesCount||0)+1;link.totalCommission+=comm;d.affiliateSales.push({id:uid(),linkId:link.id,paymentId:p.id,courseId:p.courseId,amount:p.amount,commission:comm,status:'approved',createdAt:new Date().toISOString()});if(c)d.notifications.push({id:uid(),userId:c.teacherId,type:'affiliate_sale',title:'Vente affiliée!',message:'Nouvelle vente affiliée pour "'+c.title+'" — Commission: '+fmtCur(comm,p.currency),read:false,createdAt:new Date().toISOString()})}
+    }
+    d.notifications.push({id:uid(),userId:p.studentId,type:'payment_approved',title:'Paiement approuvé ✅',message:'Votre paiement pour "'+(c?c.title:'')+'" a été approuvé. Accès accordé!',read:false,createdAt:new Date().toISOString()});
+    if(c)d.notifications.push({id:uid(),userId:c.teacherId,type:'payment_received',title:'Nouveau paiement',message:'Paiement reçu pour "'+c.title+'" — '+fmtCur(earning,p.currency),read:false,createdAt:new Date().toISOString()});
+    d.activityLogs.push({id:uid(),userName:'Admin',userRole:'admin',action:'Paiement approuvé',desc:'Paiement de '+p.amount+' '+p.currency+' approuvé',timestamp:new Date().toISOString()});
+  });
+  alert2('Paiement approuvé!','s');adminLoadPayments();
+}
+window.rejectPay=function(pid){
+  dbOp(d=>{
+    let p=d.payments.find(x=>x.id===pid);if(!p||p.status!=='pending')return;p.status='rejected';
+    let c=d.courses.find(x=>x.id===p.courseId);
+    d.notifications.push({id:uid(),userId:p.studentId,type:'payment_rejected',title:'Paiement rejeté ❌',message:'Votre paiement pour "'+(c?c.title:'')+'" a été rejeté.',read:false,createdAt:new Date().toISOString()});
+    d.activityLogs.push({id:uid(),userName:'Admin',userRole:'admin',action:'Paiement rejeté',desc:'Paiement de '+p.amount+' rejeté',timestamp:new Date().toISOString()});
+  });
+  alert2('Paiement rejeté','s');adminLoadPayments();
+}
+function adminLoadWithdrawals(){
+  let d=getDB();let m=document.getElementById('adminMain');let wds=d.withdrawals;
+  m.innerHTML=`<h1 style="margin-bottom:16px">Retraits</h1><div class="tbl-wrap"><table><thead><tr><th>Formateur</th><th>Montant</th><th>Méthode</th><th>Numéro</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody>${wds.length?wds.map(w=>{let t=d.users.find(u=>u.id===w.teacherId);return`<tr><td>${t?esc(t.name):'-'}</td><td>${fmtCur(w.amount,'USD')}</td><td>${w.method}</td><td>${esc(w.number)}</td><td>${statusB(w.status)}</td><td>${fmtDate(w.createdAt)}</td><td>${w.status==='pending'?`<button class="btn bg btn-sm" onclick="approveWd('${w.id}')">Approuver</button> <button class="btn bd btn-sm" onclick="rejectWd('${w.id}')">Rejeter</button>`:'-'}</td></tr>`}).join(''):'<tr><td colspan="7" style="text-align:center;color:#999">Aucun retrait</td></tr>'}</tbody></table></div>`
+}
+window.approveWd=function(wid){dbOp(d=>{let w=d.withdrawals.find(x=>x.id===wid);if(!w)return;w.status='approved';let wallet=d.wallets.find(x=>x.userId===w.teacherId);if(wallet){wallet.pendingBalance-=w.amount;wallet.totalWithdrawn+=w.amount}d.notifications.push({id:uid(),userId:w.teacherId,type:'withdrawal_approved',title:'Retrait approuvé',message:'Votre retrait de '+fmtCur(w.amount,'USD')+' a été approuvé',read:false,createdAt:new Date().toISOString()});d.activityLogs.push({id:uid(),userName:'Admin',userRole:'admin',action:'Retrait approuvé',desc:'Retrait de '+w.amount+' approuvé',timestamp:new Date().toISOString()})});alert2('Approuvé','s');adminLoadWithdrawals()}
+window.rejectWd=function(wid){dbOp(d=>{let w=d.withdrawals.find(x=>x.id===wid);if(!w)return;w.status='rejected';let wallet=d.wallets.find(x=>x.userId===w.teacherId);if(wallet){wallet.pendingBalance-=w.amount;wallet.availableBalance+=w.amount}d.notifications.push({id:uid(),userId:w.teacherId,type:'withdrawal_rejected',title:'Retrait rejeté',message:'Votre retrait de '+fmtCur(w.amount,'USD')+' a été rejeté',read:false,createdAt:new Date().toISOString()});d.activityLogs.push({id:uid(),userName:'Admin',userRole:'admin',action:'Retrait rejeté',desc:'Retrait de '+w.amount+' rejeté',timestamp:new Date().toISOString()})});alert2('Rejeté','s');adminLoadWithdrawals()}
+function adminLoadAffiliates(){
+  let d=getDB();let m=document.getElementById('adminMain');let links=d.affiliateLinks;let sales=d.affiliateSales;
+  m.innerHTML=`<h1 style="margin-bottom:16px">Affiliations</h1><div class="tbl-wrap"><table><thead><tr><th>Formateur</th><th>Cours</th><th>Code</th><th>Commission</th><th>Ventes</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${links.length?links.map(l=>{let t=d.users.find(u=>u.id===l.teacherId);let c=d.courses.find(u=>u.id===l.courseId);return`<tr><td>${t?esc(t.name):'-'}</td><td>${c?esc(c.title):'-'}</td><td><code>${l.code}</code></td><td>${l.rate}%</td><td>${l.salesCount||0}</td><td>${l.active?'<span class="badge sba">Actif</span>':'<span class="badge sbr">Désactivé</span>'}</td><td><button class="btn bs btn-sm" onclick="toggleAff('${l.id}')">${l.active?'Désactiver':'Activer'}</button></td></tr>`}).join(''):'<tr><td colspan="7" style="text-align:center;color:#999">Aucune affiliation</td></tr>'}</tbody></table></div>`
+}
+window.toggleAff=function(lid){dbOp(d=>{let l=d.affiliateLinks.find(x=>x.id===lid);if(l)l.active=!l.active});alert2('Mis à jour','s');adminLoadAffiliates()}
+function adminLoadCerts(){
+  let d=getDB();let m=document.getElementById('adminMain');let certs=d.certificates;
+  m.innerHTML=`<h1 style="margin-bottom:16px">Certificats</h1><div class="tbl-wrap"><table><thead><tr><th>Étudiant</th><th>Formation</th><th>ID Certificat</th><th>Date</th><th>Actions</th></tr></thead><tbody>${certs.length?certs.map(c=>`<tr><td>${esc(c.studentName)}</td><td>${esc(c.courseName)}</td><td><code>${c.certificateId}</code></td><td>${fmtDate(c.issuedAt)}</td><td><a href="#/certificate/${c.courseId}" class="btn bs btn-sm">Voir</a></td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:#999">Aucun certificat</td></tr>'}</tbody></table></div>`
+}
+function adminLoadReviews(){
+  let d=getDB();let m=document.getElementById('adminMain');
+  m.innerHTML=`<h1 style="margin-bottom:16px">Avis</h1><div class="tbl-wrap"><table><thead><tr><th>Étudiant</th><th>Cours</th><th>Note</th><th>Commentaire</th><th>Date</th><th>Actions</th></tr></thead><tbody>${d.reviews.length?d.reviews.map(r=>{let s=d.users.find(u=>u.id===r.studentId);let c=d.courses.find(u=>u.id===r.courseId);return`<tr><td>${s?esc(s.name):'-'}</td><td>${c?esc(c.title):'-'}</td><td>${starsH(r.rating)}</td><td>${esc(r.text)}</td><td>${fmtDate(r.createdAt)}</td><td><button class="btn bd btn-sm" onclick="delReview('${r.id}')">Supprimer</button></td></tr>`}).join(''):'<tr><td colspan="6" style="text-align:center;color:#999">Aucun avis</td></tr>'}</tbody></table></div>`
+}
+window.delReview=function(rid){if(!confirm('Supprimer?'))return;dbOp(d=>{let r=d.reviews.find(x=>x.id===rid);if(r){d.reviews=d.reviews.filter(x=>x.id!==rid);let revs=d.reviews.filter(x=>x.courseId===r.courseId);let c=d.courses.find(x=>x.id===r.courseId);if(c)c.rating=revs.length?Math.round((revs.reduce((s,x)=>s+x.rating,0)/revs.length)*10)/10:0}});alert2('Supprimé','s');adminLoadReviews()}
+function adminLoadAdminNotifs(){
+  let u=currentUser();let d=getDB();let m=document.getElementById('adminMain');let notifs=d.notifications.filter(n=>n.userId===u.id).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  m.innerHTML=`<h1 style="margin-bottom:16px">Notifications Admin</h1><div style="margin-bottom:12px"><button class="btn bs btn-sm" onclick="markAllRead();adminLoadAdminNotifs()">Tout marquer lu</button></div>${notifs.length?notifs.map(n=>`<div class="notif ${n.read?'':'unread'}"><strong>${esc(n.title)}</strong><p style="font-size:.85rem">${esc(n.message)}</p><small style="color:#999">${fmtDT(n.createdAt)}</small></div>`).join(''):'<div class="empty"><i class="fas fa-bell-slash"></i><p>Aucune notification</p></div>'}`
+}
+function adminLoadAnnounce(){
+  let m=document.getElementById('adminMain');
+  m.innerHTML=`<h1 style="margin-bottom:16px">Annonces</h1><div class="card"><h3 class="card-t">Nouvelle annonce</h3><form onsubmit="sendAnnounce(event)"><div class="fg"><label>Titre</label><input type="text" class="fc" id="annTitle" required></div><div class="fg"><label>Message</label><textarea class="fc" id="annMsg" required></textarea></div><div class="fg"><label>Audience</label><select class="fc" id="annAud"><option value="all">Tous</option><option value="student">Étudiants</option><option value="teacher">Formateurs</option></select></div><button class="btn bp" type="submit">Envoyer</button></form></div>`
+}
+window.sendAnnounce=function(e){
+  e.preventDefault();let title=document.getElementById('annTitle').value.trim(),msg=document.getElementById('annMsg').value.trim(),aud=document.getElementById('annAud').value;
+  dbOp(d=>{
+    d.announcements.push({id:uid(),title,message:msg,audience:aud,createdAt:new Date().toISOString()});
+    let targets=aud==='all'?d.users:d.users.filter(u=>u.role===aud);
+    targets.forEach(u=>{d.notifications.push({id:uid(),userId:u.id,type:'announcement',title,message:msg,read:false,createdAt:new Date().toISOString()})});
+    d.activityLogs.push({id:uid(),userName:'Admin',userRole:'admin',action:'Annonce envoyée',desc:title+' ('+aud+')',timestamp:new Date().toISOString()});
+  });
+  alert2('Annonce envoyée!','s');adminLoadAnnounce();
+}
+function adminLoadLogs(){
+  let d=getDB();let m=document.getElementById('adminMain');
+  m.innerHTML=`<h1 style="margin-bottom:16px">Journaux d'activité</h1><div class="tbl-wrap"><table><thead><tr><th>Utilisateur</th><th>Rôle</th><th>Action</th><th>Description</th><th>Date</th></tr></thead><tbody>${d.activityLogs.length?d.activityLogs.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(l=>`<tr><td>${esc(l.userName||'-')}</td><td><span class="badge sbd">${l.userRole||'-'}</span></td><td>${esc(l.action)}</td><td>${esc(l.desc)}</td><td>${fmtDT(l.timestamp)}</td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:#999">Aucun journal</td></tr>'}</tbody></table></div>`
+}
+function adminLoadSettings(){
+  let d=getDB();let s=d.settings;let m=document.getElementById('adminMain');
+  m.innerHTML=`<h1 style="margin-bottom:16px">Paramètres</h1><div class="card"><form onsubmit="saveSettings(event)"><div class="fg"><label>Nom de la plateforme</label><input type="text" class="fc" id="sName" value="${esc(s.platformName)}"></div><div class="fg"><label>Commission plateforme (%)</label><input type="number" class="fc" id="sComm" value="${s.commission}" min="0" max="100"></div><div class="fg"><label>Email de contact</label><input type="text" class="fc" id="sEmail" value="${esc(s.contactEmail||'')}"></div><h3 style="margin:16px 0 8px">MonCash</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="fg"><label>Numéro</label><input type="text" class="fc" id="sMcNum" value="${esc(s.moncash?.number||'')}"></div><div class="fg"><label>Nom</label><input type="text" class="fc" id="sMcName" value="${esc(s.moncash?.name||'')}"></div></div><h3 style="margin:16px 0 8px">NatCash</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="fg"><label>Numéro</label><input type="text" class="fc" value="33461451" disabled></div><div class="fg"><label>Nom</label><input type="text" class="fc" value="Darlene George" disabled></div></div><button class="btn bp" type="submit">Sauvegarder</button></form></div>`
+}
+window.saveSettings=function(e){
+  e.preventDefault();
+  dbOp(d=>{d.settings.platformName=document.getElementById('sName').value.trim();d.settings.commission=parseFloat(document.getElementById('sComm').value)||10;d.settings.contactEmail=document.getElementById('sEmail').value.trim();d.settings.moncash={number:document.getElementById('sMcNum').value.trim(),name:document.getElementById('sMcName').value.trim()}});
+  alert2('Paramètres sauvegardés!','s');
+}
+window.exportBackup=function(){let d=getDB();let blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nova-reach-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();alert2('Backup exporté!','s')}
+window.importBackup=function(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=function(ev){try{let data=JSON.parse(ev.target.result);if(!data.users||!data.courses)throw new Error();saveDB(data);alert2('Backup importé!','s');route()}catch{alert2('Fichier invalide','e')}};r.readAsText(f)}
+</script>
+</body>
+</html>
