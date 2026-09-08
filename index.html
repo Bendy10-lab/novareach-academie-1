@@ -121,18 +121,22 @@ tr:hover{background:#fafbfc}
 .tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #e2e8f0;overflow-x:auto}
 .tab{padding:8px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;white-space:nowrap;font-size:.88rem}
 .tab.act{border-bottom-color:#6c5ce7;color:#6c5ce7;font-weight:600}
+
+/* KORIKSYON LAYOUT LEÇON YO */
+.lesson-side{width:280px;flex-shrink:0;height:calc(100vh - 52px);position:sticky;top:52px;z-index:50;background:#fff;border-right:1px solid #eee;overflow-y:auto;padding:12px}
 @media(max-width:768px){
-.side{transform:translateX(-100%);transition:.3s;top:0;padding-top:60px}
-.side.open{transform:translateX(0)}
-.main{margin-left:0;padding:12px}
-.grid2,.grid3{grid-template-columns:1fr}
-.mob-tog{display:block}
-.nav{display:none}
-.nav.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:#6c5ce7;padding:12px;gap:10px}
-.cert{padding:20px}
-.cert-t{font-size:1.4rem}
-.cert-name{font-size:1.2rem}
-.cert-foot{flex-direction:column;gap:20px;align-items:center}
+  .side{transform:translateX(-100%);transition:.3s;top:0;padding-top:60px}
+  .side.open{transform:translateX(0)}
+  .main{margin-left:0;padding:12px}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .mob-tog{display:block}
+  .nav{display:none}
+  .nav.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:#6c5ce7;padding:12px;gap:10px}
+  .cert{padding:20px}
+  .cert-t{font-size:1.4rem}
+  .cert-name{font-size:1.2rem}
+  .cert-foot{flex-direction:column;gap:20px;align-items:center}
+  .lesson-side{width:100%;position:relative;top:0;border-right:none;border-bottom:1px solid #eee;max-height:200px;height:auto}
 }
 </style>
 </head>
@@ -376,17 +380,36 @@ function renderLearn(app,p,u){
   if(!currentL)currentL=lessons[0];
   let pct=lessons.length?Math.round((enr.completedLessons.length/lessons.length)*100):0;
 
-  app.innerHTML=headerH(u)+`<div style="display:flex;min-height:calc(100vh - 52px)"><div style="width:280px;background:#fff;border-right:1px solid #eee;overflow-y:auto;padding:12px" class="lesson-side"><h3 style="font-size:.95rem;margin-bottom:8px">${esc(c.title)}</h3><div class="pbar"><div class="pfill" style="width:${pct}%"></div></div><p style="font-size:.75rem;color:#888;margin-bottom:12px">${enr.completedLessons.length}/${lessons.length} leçons (${pct}%)</p>${lessons.map((l,i)=>{let done=enr.completedLessons.includes(l.id);let active=currentL.id===l.id;return`<div onclick="loadLesson('${l.id}','${cid}')" style="padding:8px;border-radius:6px;margin-bottom:4px;cursor:pointer;font-size:.82rem;${active?'background:#6c5ce7;color:#fff':'background:'+(done?'#f0fdf4':'#f9f9f9')}"><i class="fas fa-${done?'check-circle':'circle'}" style="margin-right:6px"></i>${i+1}. ${esc(l.title)} <span style="font-size:.7rem;opacity:.7">${l.type.toUpperCase()}</span></div>`}).join('')}</div><div style="flex:1;padding:20px;overflow-y:auto" id="lessonArea">${renderLessonContent(currentL,enr)}</div></div><style>.lesson-side{position:fixed;top:52px;left:0;bottom:0;z-index:50}@media(max-width:768px){.lesson-side{width:100%;position:relative;top:0;border-right:none;border-bottom:1px solid #eee;max-height:200px}}</style>`
+  app.innerHTML=headerH(u)+`<div style="display:flex;min-height:calc(100vh - 52px)"><div class="lesson-side"><h3 style="font-size:.95rem;margin-bottom:8px">${esc(c.title)}</h3><div class="pbar"><div class="pfill" style="width:${pct}%"></div></div><p style="font-size:.75rem;color:#888;margin-bottom:12px">${enr.completedLessons.length}/${lessons.length} leçons (${pct}%)</p>${lessons.map((l,i)=>{let done=enr.completedLessons.includes(l.id);let active=currentL.id===l.id;return`<div onclick="loadLesson('${l.id}','${cid}')" style="padding:8px;border-radius:6px;margin-bottom:4px;cursor:pointer;font-size:.82rem;${active?'background:#6c5ce7;color:#fff':'background:'+(done?'#f0fdf4':'#f9f9f9')}"><i class="fas fa-${done?'check-circle':'circle'}" style="margin-right:6px"></i>${i+1}. ${esc(l.title)} <span style="font-size:.7rem;opacity:.7">${l.type.toUpperCase()}</span></div>`}).join('')}</div><div style="flex:1;padding:20px;overflow-y:auto" id="lessonArea">${renderLessonContent(currentL,enr)}</div></div>`
 }
+
+// KORIKSYON: Jere base64 ak URL pou videyo/odyo/pdf
 function renderLessonContent(l,enr){
   let done=enr.completedLessons.includes(l.id);
   let content='';
-  if(l.type==='video')content=`<div class="video-wrap">${l.content.includes('youtube')||l.content.includes('youtu.be')?`<iframe src="${l.content.includes('embed')?l.content:l.content.replace('watch?v=','embed/')}" frameborder="0" allowfullscreen></iframe>`:`<video controls src="${esc(l.content)}">Votre navigateur ne supporte pas la vidéo</video>`}</div>`;
-  else if(l.type==='audio')content=`<div class="audio-wrap"><h3 style="margin-bottom:12px"><i class="fas fa-headphones"></i> ${esc(l.title)}</h3><audio controls src="${esc(l.content)}">Votre navigateur ne supporte pas l'audio</audio></div>`;
-  else if(l.type==='text')content=`<div class="text-wrap">${esc(l.content)}</div>`;
-  else if(l.type==='pdf')content=`<div class="pdf-wrap"><h3 style="margin-bottom:12px"><i class="fas fa-file-pdf" style="color:#e74c3c"></i> ${esc(l.title)}</h3><iframe src="${esc(l.content)}"></iframe><br><a href="${esc(l.content)}" target="_blank" class="btn bs btn-sm" style="margin-top:8px"><i class="fas fa-download"></i> Télécharger</a></div>`;
+  if(l.type==='video'){
+    if(l.content.includes('youtube')||l.content.includes('youtu.be')){
+      content=`<div class="video-wrap"><iframe src="${l.content.includes('embed')?l.content:l.content.replace('watch?v=','embed/')}" frameborder="0" allowfullscreen></iframe></div>`;
+    } else {
+      content=`<div class="video-wrap"><video controls src="${esc(l.content)}">Votre navigateur ne supporte pas la vidéo</video></div>`;
+    }
+  }
+  else if(l.type==='audio'){
+    content=`<div class="audio-wrap"><h3 style="margin-bottom:12px"><i class="fas fa-headphones"></i> ${esc(l.title)}</h3><audio controls src="${esc(l.content)}">Votre navigateur ne supporte pas l'audio</audio></div>`;
+  }
+  else if(l.type==='text'){
+    content=`<div class="text-wrap">${esc(l.content)}</div>`;
+  }
+  else if(l.type==='pdf'){
+    if(l.content.startsWith('data:application/pdf')){
+       content=`<div class="pdf-wrap"><h3 style="margin-bottom:12px"><i class="fas fa-file-pdf" style="color:#e74c3c"></i> ${esc(l.title)}</h3><iframe src="${esc(l.content)}"></iframe><br><a href="${esc(l.content)}" download="document.pdf" class="btn bs btn-sm" style="margin-top:8px"><i class="fas fa-download"></i> Télécharger</a></div>`;
+    } else {
+       content=`<div class="pdf-wrap"><h3 style="margin-bottom:12px"><i class="fas fa-file-pdf" style="color:#e74c3c"></i> ${esc(l.title)}</h3><iframe src="${esc(l.content)}"></iframe><br><a href="${esc(l.content)}" target="_blank" class="btn bs btn-sm" style="margin-top:8px"><i class="fas fa-download"></i> Télécharger</a></div>`;
+    }
+  }
   return`<div class="lesson-content"><h2 style="margin-bottom:16px">${esc(l.title)} <span class="badge sbd">${l.type.toUpperCase()}</span></h2>${content}<div style="margin-top:20px;display:flex;gap:12px;align-items:center">${done?'<span style="color:#10b981;font-weight:600"><i class="fas fa-check-circle"></i> Complétée</span>':`<button class="btn bg" onclick="markDone('${l.id}','${l.courseId}')"><i class="fas fa-check"></i> Marquer comme complétée</button>`}</div></div>`
 }
+
 window.loadLesson=function(lid,cid){
   let u=currentUser();let d=getDB();let l=d.lessons.find(x=>x.id===lid);let enr=d.enrollments.find(e=>e.studentId===u.id&&e.courseId===cid);
   if(!l||!enr)return;
@@ -459,15 +482,65 @@ function renderEditCourse(app,p,u){
   let cid=p.split('/')[3];let d=getDB();let c=d.courses.find(x=>x.id===cid);
   if(!c||c.teacherId!==u.id){nav('/teacher');return}
   let lessons=d.lessons.filter(l=>l.courseId===cid);
-  app.innerHTML=headerH(u)+`<div class="container" style="max-width:800px;margin:24px auto"><div class="card"><h2 class="card-t">Modifier: ${esc(c.title)}</h2><form onsubmit="saveCourse(event,'${cid}')"><div class="fg"><label>Titre</label><input type="text" class="fc" id="cTitle" value="${esc(c.title)}" required></div><div class="fg"><label>Description</label><textarea class="fc" id="cDesc" required>${esc(c.description)}</textarea></div><div class="fg"><label>Catégorie</label><select class="fc" id="cCat"><option ${c.category==='Marketing'?'selected':''}>Marketing</option><option ${c.category==='Programmation'?'selected':''}>Programmation</option><option ${c.category==='Design'?'selected':''}>Design</option><option ${c.category==='Business'?'selected':''}>Business</option><option ${c.category==='Langues'?'selected':''}>Langues</option><option ${c.category==='Autre'?'selected':''}>Autre</option></select></div><div class="fg"><label>URL miniature</label><input type="text" class="fc" id="cThumb" value="${esc(c.thumbnail||'')}"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="fg"><label>Accès</label><select class="fc" id="cAccess"><option value="free" ${c.accessType==='free'?'selected':''}>Gratuit</option><option value="paid" ${c.accessType==='paid'?'selected':''}>Payant</option></select></div><div class="fg"><label>Prix</label><input type="number" class="fc" id="cPrice" value="${c.price||0}" min="0"></div><div class="fg"><label>Devise</label><select class="fc" id="cCur"><option ${c.currency==='USD'?'selected':''}>USD</option><option ${c.currency==='HTG'?'selected':''}>HTG</option><option ${c.currency==='EUR'?'selected':''}>EUR</option></select></div></div><button type="submit" class="btn bp" style="width:100%">Sauvegarder</button></form><hr style="margin:24px 0"><h3>Leçons (${lessons.length})</h3><div id="lessonsList">${lessons.map((l,i)=>`<div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><strong>${i+1}. ${esc(l.title)}</strong> <span class="badge sbd">${l.type.toUpperCase()}</span>${l.isPreview?' <span class="badge bf">Preview</span>':''}</div><button class="btn bd btn-sm" onclick="deleteLesson('${l.id}','${cid}')"><i class="fas fa-trash"></i></button></div>`).join('')||'<p style="color:#999">Aucune leçon</p>'}</div><div class="card" style="margin-top:16px;background:#f8f9ff"><h4 style="margin-bottom:12px">Ajouter une leçon</h4><div class="fg"><label>Titre</label><input type="text" class="fc" id="lTitle"></div><div class="fg"><label>Type</label><select class="fc" id="lType" onchange="toggleLContent()"><option value="video">Vidéo</option><option value="audio">Audio</option><option value="text">Texte</option><option value="pdf">PDF</option></select></div><div class="fg" id="lContentWrap"><label id="lContentLabel">URL Vidéo</label><textarea class="fc" id="lContent" placeholder="URL ou contenu..."></textarea></div><div class="fg"><label><input type="checkbox" id="lPreview"> Aperçu gratuit (Preview)</label></div><button class="btn bg" onclick="addLesson('${cid}')"><i class="fas fa-plus"></i> Ajouter</button></div><hr style="margin:24px 0"><div style="display:flex;gap:8px;flex-wrap:wrap">${c.status==='draft'||c.status==='rejected'?`<button class="btn bw" onclick="submitCourse('${cid}')">Soumettre pour révision</button>`:''}${c.status==='published'?`<span class="badge sba">Publié</span>`:''}${statusB(c.status)}</div></div></div>`
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:800px;margin:24px auto"><div class="card"><h2 class="card-t">Modifier: ${esc(c.title)}</h2><form onsubmit="saveCourse(event,'${cid}')"><div class="fg"><label>Titre</label><input type="text" class="fc" id="cTitle" value="${esc(c.title)}" required></div><div class="fg"><label>Description</label><textarea class="fc" id="cDesc" required>${esc(c.description)}</textarea></div><div class="fg"><label>Catégorie</label><select class="fc" id="cCat"><option ${c.category==='Marketing'?'selected':''}>Marketing</option><option ${c.category==='Programmation'?'selected':''}>Programmation</option><option ${c.category==='Design'?'selected':''}>Design</option><option ${c.category==='Business'?'selected':''}>Business</option><option ${c.category==='Langues'?'selected':''}>Langues</option><option ${c.category==='Autre'?'selected':''}>Autre</option></select></div><div class="fg"><label>URL miniature</label><input type="text" class="fc" id="cThumb" value="${esc(c.thumbnail||'')}"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="fg"><label>Accès</label><select class="fc" id="cAccess"><option value="free" ${c.accessType==='free'?'selected':''}>Gratuit</option><option value="paid" ${c.accessType==='paid'?'selected':''}>Payant</option></select></div><div class="fg"><label>Prix</label><input type="number" class="fc" id="cPrice" value="${c.price||0}" min="0"></div><div class="fg"><label>Devise</label><select class="fc" id="cCur"><option ${c.currency==='USD'?'selected':''}>USD</option><option ${c.currency==='HTG'?'selected':''}>HTG</option><option ${c.currency==='EUR'?'selected':''}>EUR</option></select></div></div><button type="submit" class="btn bp" style="width:100%">Sauvegarder</button></form><hr style="margin:24px 0"><h3>Leçons (${lessons.length})</h3><div id="lessonsList">${lessons.map((l,i)=>`<div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><strong>${i+1}. ${esc(l.title)}</strong> <span class="badge sbd">${l.type.toUpperCase()}</span>${l.isPreview?' <span class="badge bf">Preview</span>':''}</div><button class="btn bd btn-sm" onclick="deleteLesson('${l.id}','${cid}')"><i class="fas fa-trash"></i></button></div>`).join('')||'<p style="color:#999">Aucune leçon</p>'}</div>
+
+<!-- KORIKSYON: AJOUTE UPLOAD FICHYE -->
+<div class="card" style="margin-top:16px;background:#f8f9ff">
+  <h4 style="margin-bottom:12px">Ajouter une leçon</h4>
+  <div class="fg"><label>Titre</label><input type="text" class="fc" id="lTitle"></div>
+  <div class="fg"><label>Type</label><select class="fc" id="lType" onchange="toggleLContent()"><option value="video">Vidéo</option><option value="audio">Audio</option><option value="text">Texte</option><option value="pdf">PDF</option></select></div>
+  <div class="fg" id="lContentWrap">
+    <label id="lContentLabel">URL Vidéo ou Fichier Vidéo</label>
+    <textarea class="fc" id="lContent" placeholder="https://www.youtube.com/watch?v=... ou utiliser le bouton ci-dessous"></textarea>
+    <input type="file" id="lFile" accept="video/*" style="margin-top:8px" onchange="handleFileUpload(this)">
+    <small style="color:#888;display:block;margin-top:4px">Note: Fichiers < 2MB recommandés pour éviter de saturer le stockage local.</small>
+  </div>
+  <div class="fg"><label><input type="checkbox" id="lPreview"> Aperçu gratuit (Preview)</label></div>
+  <button class="btn bg" onclick="addLesson('${cid}')"><i class="fas fa-plus"></i> Ajouter</button>
+</div>
+
+<hr style="margin:24px 0"><div style="display:flex;gap:8px;flex-wrap:wrap">${c.status==='draft'||c.status==='rejected'?`<button class="btn bw" onclick="submitCourse('${cid}')">Soumettre pour révision</button>`:''}${c.status==='published'?`<span class="badge sba">Publié</span>`:''}${statusB(c.status)}</div></div></div>`
 }
+
+// KORIKSYON: Jere chanjman label ak bouton upload
 window.toggleLContent=function(){
   let t=document.getElementById('lType').value;
-  let labels={video:'URL Vidéo (ou lien YouTube)',audio:'URL Audio',text:'Contenu texte',pdf:'URL du PDF'};
-  let ph={video:'https://www.youtube.com/watch?v=... ou URL fichier',audio:'https://...mp3',text:'Écrivez votre leçon ici...',pdf:'https://...pdf'};
+  let labels={video:'URL Vidéo ou Fichier Vidéo',audio:'URL Audio ou Fichier Audio',text:'Contenu texte',pdf:'URL du PDF ou Fichier PDF'};
+  let ph={video:'https://www.youtube.com/watch?v=... ou utiliser le bouton ci-dessous',audio:'https://...mp3 ou utiliser le bouton ci-dessous',text:'Écrivez votre leçon ici...',pdf:'https://...pdf ou utiliser le bouton ci-dessous'};
   document.getElementById('lContentLabel').textContent=labels[t];
   document.getElementById('lContent').placeholder=ph[t];
+  
+  let fileInput=document.getElementById('lFile');
+  if(fileInput){
+    if(t==='video') fileInput.accept='video/*';
+    else if(t==='audio') fileInput.accept='audio/*';
+    else if(t==='pdf') fileInput.accept='application/pdf,.pdf';
+    
+    if(t==='text') fileInput.style.display='none';
+    else fileInput.style.display='block';
+  }
 }
+
+// KORIKSYON: Fonksyon pou li fichye a epi konvèti l an base64
+window.handleFileUpload=function(input){
+  let file=input.files[0];
+  if(!file)return;
+  if(file.size > 2 * 1024 * 1024){
+    alert2('Fichier trop volumineux! Maximum 2MB recommandé pour le stockage local.','e');
+    input.value='';
+    return;
+  }
+  let reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('lContent').value=e.target.result;
+    alert2('Fichier chargé avec succès! Pensez à cliquer sur "Ajouter".','s');
+  };
+  reader.onerror=function(){
+    alert2('Erreur lors de la lecture du fichier.','e');
+  };
+  reader.readAsDataURL(file);
+}
+
 window.addLesson=function(cid){
   let title=document.getElementById('lTitle').value.trim(),type=document.getElementById('lType').value,content=document.getElementById('lContent').value.trim(),preview=document.getElementById('lPreview').checked;
   if(!title||!content)return alert2('Remplissez tous les champs','e');
@@ -675,7 +748,6 @@ window.approvePay=function(pid){
     }
     let settings=d.settings;let fee=(p.amount*(settings.commission||10))/100;let earning=p.amount-fee;
     if(c){let w=d.wallets.find(x=>x.userId===c.teacherId);if(w){w.totalEarned+=earning;w.availableBalance+=earning}}
-    // Affiliate
     let affSale=d.affiliateSales.find(s=>s.paymentId===p.id);
     if(!affSale){
       let link=d.affiliateLinks.find(l=>l.courseId===p.courseId&&l.active);
