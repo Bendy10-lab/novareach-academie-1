@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>NOVA REACH ACADÉMIE</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1a1a2e;line-height:1.6}
@@ -95,34 +96,30 @@ tr:hover{background:#fafbfc}
 .sf input,.sf select{flex:1;min-width:160px}
 .empty{text-align:center;padding:40px 20px;color:#999}
 .empty i{font-size:3rem;margin-bottom:12px;opacity:.4}
-.cert{background:linear-gradient(135deg,#fefce8,#fffbeb,#fff);border:16px solid #d4af37;border-radius:10px;padding:40px;max-width:800px;margin:20px auto;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.15)}
-.cert::before{content:'';position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;border:2px solid #d4af37;border-radius:10px;pointer-events:none}
-.cert-h{text-align:center;margin-bottom:24px}
-.cert-logo{font-size:1.6rem;font-weight:800;color:#6c5ce7;margin-bottom:8px}
-.cert-t{font-size:2rem;font-weight:700;color:#1a1a2e;margin-bottom:6px}
-.cert-sub{font-size:1.1rem;color:#666}
-.cert-body{text-align:center;margin:24px 0}
-.cert-name{font-size:1.8rem;font-weight:700;color:#6c5ce7;margin:12px 0;border-bottom:2px solid #d4af37;display:inline-block;padding-bottom:6px}
-.cert-course{font-size:1.3rem;color:#333;margin:10px 0}
-.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:32px;padding-top:20px;border-top:2px solid #d4af37}
-.cert-sig{text-align:center;min-width:180px}
-.cert-sig-n{font-weight:700;font-size:1rem;margin-bottom:2px}
-.cert-sig-t{color:#777;font-size:.8rem}
-.cert-id{text-align:center;margin-top:16px;color:#999;font-size:.8rem}
-.mob-tog{display:none;background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer}
-.lesson-content{max-width:900px;margin:0 auto}
-.video-wrap{width:100%;max-width:800px;margin:0 auto;background:#000;border-radius:10px;overflow:hidden}
-.video-wrap video,.video-wrap iframe{width:100%;aspect-ratio:16/9;display:block}
-.audio-wrap{max-width:600px;margin:20px auto;background:#fff;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.audio-wrap audio{width:100%}
-.text-wrap{max-width:800px;margin:0 auto;background:#fff;padding:28px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);line-height:1.8;white-space:pre-wrap}
-.pdf-wrap{max-width:800px;margin:0 auto;text-align:center}
-.pdf-wrap iframe{width:100%;height:600px;border:none;border-radius:10px}
-.tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #e2e8f0;overflow-x:auto}
-.tab{padding:8px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;white-space:nowrap;font-size:.88rem}
-.tab.act{border-bottom-color:#6c5ce7;color:#6c5ce7;font-weight:600}
 
-/* KORIKSYON LAYOUT LEÇON YO */
+/* NOUVO CERTIFICAT STYLE - PI PITI AK PI BEL */
+.cert{background:linear-gradient(135deg,#fff 0%,#f8f9ff 100%);border:8px solid #6c5ce7;border-radius:12px;padding:25px;max-width:600px;margin:20px auto;position:relative;box-shadow:0 8px 32px rgba(108,92,231,0.15)}
+.cert::before{content:'';position:absolute;top:-4px;left:-4px;right:-4px;bottom:-4px;border:2px dashed #a855f7;border-radius:12px;pointer-events:none;opacity:0.5}
+.cert-h{text-align:center;margin-bottom:16px}
+.cert-logo{font-size:1.3rem;font-weight:800;color:#6c5ce7;margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:8px}
+.cert-t{font-size:1.4rem;font-weight:700;color:#1a1a2e;margin-bottom:4px}
+.cert-sub{font-size:0.9rem;color:#666}
+.cert-body{text-align:center;margin:16px 0}
+.cert-name{font-size:1.3rem;font-weight:700;color:#6c5ce7;margin:8px 0;border-bottom:2px solid #6c5ce7;display:inline-block;padding-bottom:4px}
+.cert-course{font-size:1rem;color:#333;margin:8px 0;font-weight:600}
+.cert-qr{display:flex;justify-content:center;margin:12px 0}
+.cert-qr canvas{border:2px solid #e2e8f0;border-radius:8px;padding:4px;background:#fff}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:20px;padding-top:12px;border-top:2px solid #e2e8f0;font-size:0.8rem}
+.cert-sig{text-align:center;min-width:140px}
+.cert-sig-n{font-weight:700;font-size:0.85rem;margin-bottom:2px}
+.cert-sig-t{color:#777;font-size:0.7rem}
+.cert-id{text-align:center;margin-top:12px;color:#999;font-size:0.7rem}
+
+.ads-banner{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:16px;border-radius:12px;margin-bottom:20px;text-align:center;box-shadow:0 4px 15px rgba(102,126,234,0.3)}
+.ads-banner h3{margin-bottom:8px;font-size:1.2rem}
+.ads-banner p{margin-bottom:12px;opacity:0.9}
+.ads-banner .btn{background:#fff;color:#667eea}
+
 .lesson-side{width:280px;flex-shrink:0;height:calc(100vh - 52px);position:sticky;top:52px;z-index:50;background:#fff;border-right:1px solid #eee;overflow-y:auto;padding:12px}
 @media(max-width:768px){
   .side{transform:translateX(-100%);transition:.3s;top:0;padding-top:60px}
@@ -132,11 +129,13 @@ tr:hover{background:#fafbfc}
   .mob-tog{display:block}
   .nav{display:none}
   .nav.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:#6c5ce7;padding:12px;gap:10px}
-  .cert{padding:20px}
-  .cert-t{font-size:1.4rem}
-  .cert-name{font-size:1.2rem}
-  .cert-foot{flex-direction:column;gap:20px;align-items:center}
+  .cert{padding:16px}
+  .cert-t{font-size:1.1rem}
+  .cert-name{font-size:1rem}
+  .cert-foot{flex-direction:column;gap:12px;align-items:center}
   .lesson-side{width:100%;position:relative;top:0;border-right:none;border-bottom:1px solid #eee;max-height:200px;height:auto}
+  .ads-banner{padding:12px}
+  .ads-banner h3{font-size:1rem}
 }
 </style>
 </head>
@@ -151,7 +150,7 @@ function affCode(){return 'AFF-'+Math.random().toString(36).slice(2,10).toUpperC
 
 function getDB(){
   let d=localStorage.getItem(SK);
-  if(!d){d={users:[],courses:[],lessons:[],enrollments:[],payments:[],paymentProofs:[],withdrawals:[],wallets:[],certificates:[],notifications:[],affiliateLinks:[],affiliateSales:[],reviews:[],questions:[],answers:[],announcements:[],activityLogs:[],refunds:[],settings:{platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'}};localStorage.setItem(SK,JSON.stringify(d))}
+  if(!d){d={users:[],courses:[],lessons:[],enrollments:[],payments:[],paymentProofs:[],withdrawals:[],wallets:[],certificates:[],notifications:[],affiliateLinks:[],affiliateSales:[],reviews:[],questions:[],answers:[],announcements:[],activityLogs:[],refunds:[],ads:[],settings:{platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'}};localStorage.setItem(SK,JSON.stringify(d))}
   return JSON.parse(d);
 }
 function saveDB(d){localStorage.setItem(SK,JSON.stringify(d))}
@@ -227,7 +226,8 @@ function doLogout(){clearSession();nav('/');alert2('Déconnecté','s')}
 // ==================== HOME ====================
 function renderHome(app,u){
   let d=getDB();let courses=d.courses.filter(c=>c.status==='published');
-  app.innerHTML=headerH(u)+`<div class="container" style="padding:40px 16px"><div style="text-align:center;padding:40px 0"><h1 style="font-size:2.4rem;margin-bottom:12px;background:linear-gradient(135deg,#6c5ce7,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Bienvenue à NOVA REACH ACADÉMIE</h1><p style="font-size:1.1rem;color:#666;margin-bottom:24px">Transformez votre avenir avec des formations professionnelles en ligne</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><a href="#/courses" class="btn bp"><i class="fas fa-search"></i> Parcourir les cours</a>${!u?'<a href="#/register" class="btn bs">S\'inscrire</a>':''}</div></div><h2 style="margin-bottom:16px">Formations disponibles</h2><div class="grid2">${courses.length?courses.slice(0,6).map(c=>courseCardH(c,d)).join(''):'<div class="empty"><i class="fas fa-book-open"></i><p>Aucune formation disponible pour le moment</p></div>'}</div></div>`
+  let activeAds=d.ads.filter(a=>a.active&&a.position==='home');
+  app.innerHTML=headerH(u)+`<div class="container" style="padding:40px 16px">${activeAds.length?`<div class="ads-banner"><h3>${esc(activeAds[0].title)}</h3><p>${esc(activeAds[0].description||'')}</p><a href="${esc(activeAds[0].link||'#')}" class="btn" target="_blank">En savoir plus</a></div>`:''}<div style="text-align:center;padding:40px 0"><h1 style="font-size:2.4rem;margin-bottom:12px;background:linear-gradient(135deg,#6c5ce7,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Bienvenue à NOVA REACH ACADÉMIE</h1><p style="font-size:1.1rem;color:#666;margin-bottom:24px">Transformez votre avenir avec des formations professionnelles en ligne</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><a href="#/courses" class="btn bp"><i class="fas fa-search"></i> Parcourir les cours</a>${!u?'<a href="#/register" class="btn bs">S\'inscrire</a>':''}</div></div><h2 style="margin-bottom:16px">Formations disponibles</h2><div class="grid2">${courses.length?courses.slice(0,6).map(c=>courseCardH(c,d)).join(''):'<div class="empty"><i class="fas fa-book-open"></i><p>Aucune formation disponible pour le moment</p></div>'}</div></div>`
 }
 function courseCardH(c,d){
   let t=d.users.find(u=>u.id===c.teacherId);
@@ -383,7 +383,6 @@ function renderLearn(app,p,u){
   app.innerHTML=headerH(u)+`<div style="display:flex;min-height:calc(100vh - 52px)"><div class="lesson-side"><h3 style="font-size:.95rem;margin-bottom:8px">${esc(c.title)}</h3><div class="pbar"><div class="pfill" style="width:${pct}%"></div></div><p style="font-size:.75rem;color:#888;margin-bottom:12px">${enr.completedLessons.length}/${lessons.length} leçons (${pct}%)</p>${lessons.map((l,i)=>{let done=enr.completedLessons.includes(l.id);let active=currentL.id===l.id;return`<div onclick="loadLesson('${l.id}','${cid}')" style="padding:8px;border-radius:6px;margin-bottom:4px;cursor:pointer;font-size:.82rem;${active?'background:#6c5ce7;color:#fff':'background:'+(done?'#f0fdf4':'#f9f9f9')}"><i class="fas fa-${done?'check-circle':'circle'}" style="margin-right:6px"></i>${i+1}. ${esc(l.title)} <span style="font-size:.7rem;opacity:.7">${l.type.toUpperCase()}</span></div>`}).join('')}</div><div style="flex:1;padding:20px;overflow-y:auto" id="lessonArea">${renderLessonContent(currentL,enr)}</div></div>`
 }
 
-// KORIKSYON: Jere base64 ak URL pou videyo/odyo/pdf
 function renderLessonContent(l,enr){
   let done=enr.completedLessons.includes(l.id);
   let content='';
@@ -475,16 +474,16 @@ function renderTeacherDash(app){
 // ==================== CREATE / EDIT COURSE ====================
 function renderCreateCourse(app,u){
   if(!u||u.role!=='teacher'){nav('/login');return}
-  app.innerHTML=headerH(u)+`<div class="container" style="max-width:700px;margin:24px auto"><div class="card"><h2 class="card-t">Créer une formation</h2><form onsubmit="saveCourse(event,null)"><div class="fg"><label>Titre</label><input type="text" class="fc" id="cTitle" required></div><div class="fg"><label>Description</label><textarea class="fc" id="cDesc" required></textarea></div><div class="fg"><label>Catégorie</label><select class="fc" id="cCat"><option>Marketing</option><option>Programmation</option><option>Design</option><option>Business</option><option>Langues</option><option>Autre</option></select></div><div class="fg"><label>URL de la miniature</label><input type="text" class="fc" id="cThumb" placeholder="https://..."></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="fg"><label>Type d'accès</label><select class="fc" id="cAccess"><option value="free">Gratuit</option><option value="paid">Payant</option></select></div><div class="fg"><label>Prix</label><input type="number" class="fc" id="cPrice" value="0" min="0"></div><div class="fg"><label>Devise</label><select class="fc" id="cCur"><option>USD</option><option>HTG</option><option>EUR</option></select></div></div><button type="submit" class="btn bp" style="width:100%">Créer le cours</button></form></div></div>`
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:700px;margin:24px auto"><div class="card"><h2 class="card-t">Créer une formation</h2><form onsubmit="saveCourse(event,null)"><div class="fg"><label>Titre</label><input type="text" class="fc" id="cTitle" required></div><div class="fg"><label>Description</label><textarea class="fc" id="cDesc" required></textarea></div><div class="fg"><label>Catégorie</label><select class="fc" id="cCat"><option>Marketing</option><option>Programmation</option><option>Design</option><option>Business</option><option>Langues</option><option>Autre</option></select></div><div class="fg"><label>Miniature du cours</label><input type="file" id="cThumbFile" accept="image/*" onchange="handleThumbUpload(this)" style="margin-bottom:8px"><small style="color:#888;display:block;margin-bottom:8px">Ou entrez une URL</small><input type="text" class="fc" id="cThumb" placeholder="https://..."></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="fg"><label>Type d'accès</label><select class="fc" id="cAccess"><option value="free">Gratuit</option><option value="paid">Payant</option></select></div><div class="fg"><label>Prix</label><input type="number" class="fc" id="cPrice" value="0" min="0"></div><div class="fg"><label>Devise</label><select class="fc" id="cCur"><option>USD</option><option>HTG</option><option>EUR</option></select></div></div><button type="submit" class="btn bp" style="width:100%">Créer le cours</button></form></div></div>`
 }
+
 function renderEditCourse(app,p,u){
   if(!u||u.role!=='teacher'){nav('/login');return}
   let cid=p.split('/')[3];let d=getDB();let c=d.courses.find(x=>x.id===cid);
   if(!c||c.teacherId!==u.id){nav('/teacher');return}
   let lessons=d.lessons.filter(l=>l.courseId===cid);
-  app.innerHTML=headerH(u)+`<div class="container" style="max-width:800px;margin:24px auto"><div class="card"><h2 class="card-t">Modifier: ${esc(c.title)}</h2><form onsubmit="saveCourse(event,'${cid}')"><div class="fg"><label>Titre</label><input type="text" class="fc" id="cTitle" value="${esc(c.title)}" required></div><div class="fg"><label>Description</label><textarea class="fc" id="cDesc" required>${esc(c.description)}</textarea></div><div class="fg"><label>Catégorie</label><select class="fc" id="cCat"><option ${c.category==='Marketing'?'selected':''}>Marketing</option><option ${c.category==='Programmation'?'selected':''}>Programmation</option><option ${c.category==='Design'?'selected':''}>Design</option><option ${c.category==='Business'?'selected':''}>Business</option><option ${c.category==='Langues'?'selected':''}>Langues</option><option ${c.category==='Autre'?'selected':''}>Autre</option></select></div><div class="fg"><label>URL miniature</label><input type="text" class="fc" id="cThumb" value="${esc(c.thumbnail||'')}"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="fg"><label>Accès</label><select class="fc" id="cAccess"><option value="free" ${c.accessType==='free'?'selected':''}>Gratuit</option><option value="paid" ${c.accessType==='paid'?'selected':''}>Payant</option></select></div><div class="fg"><label>Prix</label><input type="number" class="fc" id="cPrice" value="${c.price||0}" min="0"></div><div class="fg"><label>Devise</label><select class="fc" id="cCur"><option ${c.currency==='USD'?'selected':''}>USD</option><option ${c.currency==='HTG'?'selected':''}>HTG</option><option ${c.currency==='EUR'?'selected':''}>EUR</option></select></div></div><button type="submit" class="btn bp" style="width:100%">Sauvegarder</button></form><hr style="margin:24px 0"><h3>Leçons (${lessons.length})</h3><div id="lessonsList">${lessons.map((l,i)=>`<div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><strong>${i+1}. ${esc(l.title)}</strong> <span class="badge sbd">${l.type.toUpperCase()}</span>${l.isPreview?' <span class="badge bf">Preview</span>':''}</div><button class="btn bd btn-sm" onclick="deleteLesson('${l.id}','${cid}')"><i class="fas fa-trash"></i></button></div>`).join('')||'<p style="color:#999">Aucune leçon</p>'}</div>
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:800px;margin:24px auto"><div class="card"><h2 class="card-t">Modifier: ${esc(c.title)}</h2><form onsubmit="saveCourse(event,'${cid}')"><div class="fg"><label>Titre</label><input type="text" class="fc" id="cTitle" value="${esc(c.title)}" required></div><div class="fg"><label>Description</label><textarea class="fc" id="cDesc" required>${esc(c.description)}</textarea></div><div class="fg"><label>Catégorie</label><select class="fc" id="cCat"><option ${c.category==='Marketing'?'selected':''}>Marketing</option><option ${c.category==='Programmation'?'selected':''}>Programmation</option><option ${c.category==='Design'?'selected':''}>Design</option><option ${c.category==='Business'?'selected':''}>Business</option><option ${c.category==='Langues'?'selected':''}>Langues</option><option ${c.category==='Autre'?'selected':''}>Autre</option></select></div><div class="fg"><label>Miniature du cours</label><input type="file" id="cThumbFile" accept="image/*" onchange="handleThumbUpload(this)" style="margin-bottom:8px"><small style="color:#888;display:block;margin-bottom:8px">Ou entrez une URL</small><input type="text" class="fc" id="cThumb" value="${esc(c.thumbnail||'')}"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="fg"><label>Accès</label><select class="fc" id="cAccess"><option value="free" ${c.accessType==='free'?'selected':''}>Gratuit</option><option value="paid" ${c.accessType==='paid'?'selected':''}>Payant</option></select></div><div class="fg"><label>Prix</label><input type="number" class="fc" id="cPrice" value="${c.price||0}" min="0"></div><div class="fg"><label>Devise</label><select class="fc" id="cCur"><option ${c.currency==='USD'?'selected':''}>USD</option><option ${c.currency==='HTG'?'selected':''}>HTG</option><option ${c.currency==='EUR'?'selected':''}>EUR</option></select></div></div><button type="submit" class="btn bp" style="width:100%">Sauvegarder</button></form><hr style="margin:24px 0"><h3>Leçons (${lessons.length})</h3><div id="lessonsList">${lessons.map((l,i)=>`<div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><strong>${i+1}. ${esc(l.title)}</strong> <span class="badge sbd">${l.type.toUpperCase()}</span>${l.isPreview?' <span class="badge bf">Preview</span>':''}</div><button class="btn bd btn-sm" onclick="deleteLesson('${l.id}','${cid}')"><i class="fas fa-trash"></i></button></div>`).join('')||'<p style="color:#999">Aucune leçon</p>'}</div>
 
-<!-- KORIKSYON: AJOUTE UPLOAD FICHYE -->
 <div class="card" style="margin-top:16px;background:#f8f9ff">
   <h4 style="margin-bottom:12px">Ajouter une leçon</h4>
   <div class="fg"><label>Titre</label><input type="text" class="fc" id="lTitle"></div>
@@ -502,7 +501,22 @@ function renderEditCourse(app,p,u){
 <hr style="margin:24px 0"><div style="display:flex;gap:8px;flex-wrap:wrap">${c.status==='draft'||c.status==='rejected'?`<button class="btn bw" onclick="submitCourse('${cid}')">Soumettre pour révision</button>`:''}${c.status==='published'?`<span class="badge sba">Publié</span>`:''}${statusB(c.status)}</div></div></div>`
 }
 
-// KORIKSYON: Jere chanjman label ak bouton upload
+window.handleThumbUpload=function(input){
+  let file=input.files[0];
+  if(!file)return;
+  if(file.size > 2 * 1024 * 1024){
+    alert2('Image trop volumineuse! Maximum 2MB.','e');
+    input.value='';
+    return;
+  }
+  let reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('cThumb').value=e.target.result;
+    alert2('Image chargée avec succès!','s');
+  };
+  reader.readAsDataURL(file);
+}
+
 window.toggleLContent=function(){
   let t=document.getElementById('lType').value;
   let labels={video:'URL Vidéo ou Fichier Vidéo',audio:'URL Audio ou Fichier Audio',text:'Contenu texte',pdf:'URL du PDF ou Fichier PDF'};
@@ -521,7 +535,6 @@ window.toggleLContent=function(){
   }
 }
 
-// KORIKSYON: Fonksyon pou li fichye a epi konvèti l an base64
 window.handleFileUpload=function(input){
   let file=input.files[0];
   if(!file)return;
@@ -631,8 +644,10 @@ function renderCertView(app,p,u){
   if(!cert){app.innerHTML=headerH(u)+'<div class="container" style="padding:40px"><div class="empty"><i class="fas fa-certificate"></i><p>Certificat introuvable</p></div></div>';return}
   app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px">${certHTML(cert)}<div style="text-align:center;margin-top:16px"><a href="#/verify-cert" class="btn bs btn-sm">Vérifier un certificat</a></div></div>`
 }
+
 function certHTML(cert){
-  return`<div class="cert"><div class="cert-h"><div class="cert-logo"><i class="fas fa-graduation-cap"></i> NOVA REACH ACADÉMIE</div><div class="cert-t">Certificat de Réussite</div><div class="cert-sub">Ce certificat est fièrement décerné à</div></div><div class="cert-body"><div class="cert-name">${esc(cert.studentName)}</div><p style="font-size:1rem;margin:12px 0">pour avoir complété avec succès la formation</p><div class="cert-course">"${esc(cert.courseName)}"</div><p style="margin-top:12px;color:#666">Date de complétion: ${fmtDate(cert.issuedAt)}</p></div><div class="cert-foot"><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:6px;margin-bottom:4px;min-width:160px"></div><div class="cert-sig-n">${esc(cert.studentName)}</div><div class="cert-sig-t">Étudiant(e)</div></div><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:6px;margin-bottom:4px;min-width:160px"></div><div class="cert-sig-n">BENÊCHE JURGENS</div><div class="cert-sig-t">PDG / Signature</div></div></div><div class="cert-id">ID du Certificat: ${cert.certificateId} | NOVA REACH ACADÉMIE</div></div>`
+  let certUrl=window.location.href.split('#')[0]+'#/certificate/'+cert.courseId;
+  return`<div class="cert"><div class="cert-h"><div class="cert-logo"><i class="fas fa-graduation-cap"></i> NOVA REACH ACADÉMIE</div><div class="cert-t">Certificat de Réussite</div><div class="cert-sub">Ce certificat est fièrement décerné à</div></div><div class="cert-body"><div class="cert-name">${esc(cert.studentName)}</div><p style="font-size:0.85rem;margin:8px 0">pour avoir complété avec succès la formation</p><div class="cert-course">"${esc(cert.courseName)}"</div><p style="margin-top:8px;color:#666;font-size:0.8rem">Date: ${fmtDate(cert.issuedAt)}</p></div><div class="cert-qr"><div id="qrcode"></div></div><div class="cert-foot"><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:4px;margin-bottom:2px;min-width:120px"></div><div class="cert-sig-n">${esc(cert.studentName)}</div><div class="cert-sig-t">Étudiant(e)</div></div><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:4px;margin-bottom:2px;min-width:120px"></div><div class="cert-sig-n">BENÊCHE JURGENS</div><div class="cert-sig-t">PDG / Signature</div></div></div><div class="cert-id">ID: ${cert.certificateId} | NOVA REACH ACADÉMIE</div></div><script>setTimeout(function(){new QRCode(document.getElementById("qrcode"),{text:"${certUrl}",width:80,height:80,colorDark:"#6c5ce7",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H})},100);<\/script>`
 }
 
 // ==================== VERIFY CERTIFICATE ====================
@@ -680,7 +695,7 @@ function renderPublicProfile(app,p){
 // ==================== ADMIN PANEL ====================
 function renderAdmin(app){
   if(!isAdmin()){nav('/admin-login');return}
-  app.innerHTML=headerH(currentUser())+`<button class="mob-tog" style="display:none;position:fixed;bottom:16px;right:16px;z-index:200;background:#6c5ce7;color:#fff;width:48px;height:48px;border-radius:50%;font-size:1.2rem;border:none;cursor:pointer" onclick="document.querySelector('.side').classList.toggle('open')"><i class="fas fa-bars"></i></button><div class="side" id="adminSide"><ul><li class="act" data-s="dash" onclick="adminTab(this,'dash')"><i class="fas fa-tachometer-alt"></i> Dashboard</li><li data-s="students" onclick="adminTab(this,'students')"><i class="fas fa-user-graduate"></i> Étudiants</li><li data-s="teachers" onclick="adminTab(this,'teachers')"><i class="fas fa-chalkboard-teacher"></i> Formateurs</li><li data-s="courses" onclick="adminTab(this,'courses')"><i class="fas fa-book"></i> Tous les cours</li><li data-s="payments" onclick="adminTab(this,'payments')"><i class="fas fa-credit-card"></i> Paiements</li><li data-s="withdrawals" onclick="adminTab(this,'withdrawals')"><i class="fas fa-money-bill-wave"></i> Retraits</li><li data-s="affiliates" onclick="adminTab(this,'affiliates')"><i class="fas fa-handshake"></i> Affiliations</li><li data-s="certs" onclick="adminTab(this,'certs')"><i class="fas fa-certificate"></i> Certificats</li><li data-s="reviews" onclick="adminTab(this,'reviews')"><i class="fas fa-star"></i> Avis</li><li data-s="notifs" onclick="adminTab(this,'notifs')"><i class="fas fa-bell"></i> Notifications</li><li data-s="announce" onclick="adminTab(this,'announce')"><i class="fas fa-bullhorn"></i> Annonces</li><li data-s="logs" onclick="adminTab(this,'logs')"><i class="fas fa-history"></i> Journaux</li><li data-s="settings" onclick="adminTab(this,'settings')"><i class="fas fa-cog"></i> Paramètres</li><li onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</li></ul></div><div class="main" id="adminMain"></div><style>@media(max-width:768px){.mob-tog{display:block!important}}</style>`;
+  app.innerHTML=headerH(currentUser())+`<button class="mob-tog" style="display:none;position:fixed;bottom:16px;right:16px;z-index:200;background:#6c5ce7;color:#fff;width:48px;height:48px;border-radius:50%;font-size:1.2rem;border:none;cursor:pointer" onclick="document.querySelector('.side').classList.toggle('open')"><i class="fas fa-bars"></i></button><div class="side" id="adminSide"><ul><li class="act" data-s="dash" onclick="adminTab(this,'dash')"><i class="fas fa-tachometer-alt"></i> Dashboard</li><li data-s="students" onclick="adminTab(this,'students')"><i class="fas fa-user-graduate"></i> Étudiants</li><li data-s="teachers" onclick="adminTab(this,'teachers')"><i class="fas fa-chalkboard-teacher"></i> Formateurs</li><li data-s="courses" onclick="adminTab(this,'courses')"><i class="fas fa-book"></i> Tous les cours</li><li data-s="payments" onclick="adminTab(this,'payments')"><i class="fas fa-credit-card"></i> Paiements</li><li data-s="withdrawals" onclick="adminTab(this,'withdrawals')"><i class="fas fa-money-bill-wave"></i> Retraits</li><li data-s="affiliates" onclick="adminTab(this,'affiliates')"><i class="fas fa-handshake"></i> Affiliations</li><li data-s="certs" onclick="adminTab(this,'certs')"><i class="fas fa-certificate"></i> Certificats</li><li data-s="reviews" onclick="adminTab(this,'reviews')"><i class="fas fa-star"></i> Avis</li><li data-s="ads" onclick="adminTab(this,'ads')"><i class="fas fa-ad"></i> Publicités</li><li data-s="notifs" onclick="adminTab(this,'notifs')"><i class="fas fa-bell"></i> Notifications</li><li data-s="announce" onclick="adminTab(this,'announce')"><i class="fas fa-bullhorn"></i> Annonces</li><li data-s="logs" onclick="adminTab(this,'logs')"><i class="fas fa-history"></i> Journaux</li><li data-s="settings" onclick="adminTab(this,'settings')"><i class="fas fa-cog"></i> Paramètres</li><li onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</li></ul></div><div class="main" id="adminMain"></div><style>@media(max-width:768px){.mob-tog{display:block!important}}</style>`;
   adminLoadDash();
 }
 window.adminTab=function(el,tab){
@@ -694,6 +709,7 @@ window.adminTab=function(el,tab){
   else if(tab==='affiliates')adminLoadAffiliates();
   else if(tab==='certs')adminLoadCerts();
   else if(tab==='reviews')adminLoadReviews();
+  else if(tab==='ads')adminLoadAds();
   else if(tab==='notifs')adminLoadAdminNotifs();
   else if(tab==='announce')adminLoadAnnounce();
   else if(tab==='logs')adminLoadLogs();
@@ -788,6 +804,51 @@ function adminLoadReviews(){
   m.innerHTML=`<h1 style="margin-bottom:16px">Avis</h1><div class="tbl-wrap"><table><thead><tr><th>Étudiant</th><th>Cours</th><th>Note</th><th>Commentaire</th><th>Date</th><th>Actions</th></tr></thead><tbody>${d.reviews.length?d.reviews.map(r=>{let s=d.users.find(u=>u.id===r.studentId);let c=d.courses.find(u=>u.id===r.courseId);return`<tr><td>${s?esc(s.name):'-'}</td><td>${c?esc(c.title):'-'}</td><td>${starsH(r.rating)}</td><td>${esc(r.text)}</td><td>${fmtDate(r.createdAt)}</td><td><button class="btn bd btn-sm" onclick="delReview('${r.id}')">Supprimer</button></td></tr>`}).join(''):'<tr><td colspan="6" style="text-align:center;color:#999">Aucun avis</td></tr>'}</tbody></table></div>`
 }
 window.delReview=function(rid){if(!confirm('Supprimer?'))return;dbOp(d=>{let r=d.reviews.find(x=>x.id===rid);if(r){d.reviews=d.reviews.filter(x=>x.id!==rid);let revs=d.reviews.filter(x=>x.courseId===r.courseId);let c=d.courses.find(x=>x.id===r.courseId);if(c)c.rating=revs.length?Math.round((revs.reduce((s,x)=>s+x.rating,0)/revs.length)*10)/10:0}});alert2('Supprimé','s');adminLoadReviews()}
+
+// ==================== ADS MANAGEMENT ====================
+function adminLoadAds(){
+  let d=getDB();let m=document.getElementById('adminMain');let ads=d.ads||[];
+  m.innerHTML=`<h1 style="margin-bottom:16px">Gestion des Publicités</h1><div class="card"><h3 class="card-t">Ajouter une publicité</h3><form onsubmit="addAd(event)"><div class="fg"><label>Titre</label><input type="text" class="fc" id="adTitle" required></div><div class="fg"><label>Description</label><textarea class="fc" id="adDesc" required></textarea></div><div class="fg"><label>Lien (URL)</label><input type="url" class="fc" id="adLink" placeholder="https://..."></div><div class="fg"><label>Image (URL ou uploader)</label><input type="file" id="adImageFile" accept="image/*" onchange="handleAdImageUpload(this)" style="margin-bottom:8px"><input type="text" class="fc" id="adImage" placeholder="https://..."></div><div class="fg"><label>Position</label><select class="fc" id="adPosition"><option value="home">Page d'accueil</option><option value="sidebar">Barre latérale</option><option value="footer">Pied de page</option></select></div><div class="fg"><label><input type="checkbox" id="adActive" checked> Actif</label></div><button class="btn bp" type="submit">Ajouter la publicité</button></form></div><div class="card"><h3 class="card-t">Publicités existantes</h3><div class="grid2">${ads.length?ads.map(ad=>`<div style="padding:12px;border:1px solid #eee;border-radius:8px;margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:start"><div><strong>${esc(ad.title)}</strong><br><small>${esc(ad.description||'')}</small><br><span class="badge ${ad.active?'sba':'sbr'}">${ad.active?'Actif':'Inactif'}</span> <span class="badge sbd">${ad.position}</span></div><div style="display:flex;gap:4px"><button class="btn bs btn-sm" onclick="toggleAd('${ad.id}')"><i class="fas fa-${ad.active?'eye-slash':'eye'}"></i></button><button class="btn bd btn-sm" onclick="deleteAd('${ad.id}')"><i class="fas fa-trash"></i></button></div></div></div>`).join(''):'<p style="color:#999">Aucune publicité</p>'}</div></div>`
+}
+
+window.handleAdImageUpload=function(input){
+  let file=input.files[0];
+  if(!file)return;
+  if(file.size > 2 * 1024 * 1024){
+    alert2('Image trop volumineuse! Maximum 2MB.','e');
+    input.value='';
+    return;
+  }
+  let reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('adImage').value=e.target.result;
+    alert2('Image chargée!','s');
+  };
+  reader.readAsDataURL(file);
+}
+
+window.addAd=function(e){
+  e.preventDefault();
+  let title=document.getElementById('adTitle').value.trim(),desc=document.getElementById('adDesc').value.trim(),link=document.getElementById('adLink').value.trim(),image=document.getElementById('adImage').value.trim(),position=document.getElementById('adPosition').value,active=document.getElementById('adActive').checked;
+  dbOp(d=>{
+    if(!d.ads)d.ads=[];
+    d.ads.push({id:uid(),title,description:desc,link,image,position,active,createdAt:new Date().toISOString()});
+    d.activityLogs.push({id:uid(),userName:'Admin',userRole:'admin',action:'Publicité ajoutée',desc:title,timestamp:new Date().toISOString()});
+  });
+  alert2('Publicité ajoutée!','s');adminLoadAds();
+}
+
+window.toggleAd=function(aid){
+  dbOp(d=>{let ad=d.ads.find(x=>x.id===aid);if(ad)ad.active=!ad.active});
+  alert2('Statut mis à jour','s');adminLoadAds();
+}
+
+window.deleteAd=function(aid){
+  if(!confirm('Supprimer cette publicité?'))return;
+  dbOp(d=>{d.ads=d.ads.filter(x=>x.id!==aid)});
+  alert2('Publicité supprimée','s');adminLoadAds();
+}
+
 function adminLoadAdminNotifs(){
   let u=currentUser();let d=getDB();let m=document.getElementById('adminMain');let notifs=d.notifications.filter(n=>n.userId===u.id).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
   m.innerHTML=`<h1 style="margin-bottom:16px">Notifications Admin</h1><div style="margin-bottom:12px"><button class="btn bs btn-sm" onclick="markAllRead();adminLoadAdminNotifs()">Tout marquer lu</button></div>${notifs.length?notifs.map(n=>`<div class="notif ${n.read?'':'unread'}"><strong>${esc(n.title)}</strong><p style="font-size:.85rem">${esc(n.message)}</p><small style="color:#999">${fmtDT(n.createdAt)}</small></div>`).join(''):'<div class="empty"><i class="fas fa-bell-slash"></i><p>Aucune notification</p></div>'}`
