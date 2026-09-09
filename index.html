@@ -96,8 +96,6 @@ tr:hover{background:#fafbfc}
 .sf input,.sf select{flex:1;min-width:160px}
 .empty{text-align:center;padding:40px 20px;color:#999}
 .empty i{font-size:3rem;margin-bottom:12px;opacity:.4}
-
-/* NOUVO CERTIFICAT STYLE - PI PITI AK PI BEL */
 .cert{background:linear-gradient(135deg,#fff 0%,#f8f9ff 100%);border:8px solid #6c5ce7;border-radius:12px;padding:25px;max-width:600px;margin:20px auto;position:relative;box-shadow:0 8px 32px rgba(108,92,231,0.15)}
 .cert::before{content:'';position:absolute;top:-4px;left:-4px;right:-4px;bottom:-4px;border:2px dashed #a855f7;border-radius:12px;pointer-events:none;opacity:0.5}
 .cert-h{text-align:center;margin-bottom:16px}
@@ -114,12 +112,10 @@ tr:hover{background:#fafbfc}
 .cert-sig-n{font-weight:700;font-size:0.85rem;margin-bottom:2px}
 .cert-sig-t{color:#777;font-size:0.7rem}
 .cert-id{text-align:center;margin-top:12px;color:#999;font-size:0.7rem}
-
 .ads-banner{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:16px;border-radius:12px;margin-bottom:20px;text-align:center;box-shadow:0 4px 15px rgba(102,126,234,0.3)}
 .ads-banner h3{margin-bottom:8px;font-size:1.2rem}
 .ads-banner p{margin-bottom:12px;opacity:0.9}
 .ads-banner .btn{background:#fff;color:#667eea}
-
 .lesson-side{width:280px;flex-shrink:0;height:calc(100vh - 52px);position:sticky;top:52px;z-index:50;background:#fff;border-right:1px solid #eee;overflow-y:auto;padding:12px}
 @media(max-width:768px){
   .side{transform:translateX(-100%);transition:.3s;top:0;padding-top:60px}
@@ -226,8 +222,9 @@ function doLogout(){clearSession();nav('/');alert2('Déconnecté','s')}
 // ==================== HOME ====================
 function renderHome(app,u){
   let d=getDB();let courses=d.courses.filter(c=>c.status==='published');
-  let activeAds=d.ads.filter(a=>a.active&&a.position==='home');
-  app.innerHTML=headerH(u)+`<div class="container" style="padding:40px 16px">${activeAds.length?`<div class="ads-banner"><h3>${esc(activeAds[0].title)}</h3><p>${esc(activeAds[0].description||'')}</p><a href="${esc(activeAds[0].link||'#')}" class="btn" target="_blank">En savoir plus</a></div>`:''}<div style="text-align:center;padding:40px 0"><h1 style="font-size:2.4rem;margin-bottom:12px;background:linear-gradient(135deg,#6c5ce7,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Bienvenue à NOVA REACH ACADÉMIE</h1><p style="font-size:1.1rem;color:#666;margin-bottom:24px">Transformez votre avenir avec des formations professionnelles en ligne</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><a href="#/courses" class="btn bp"><i class="fas fa-search"></i> Parcourir les cours</a>${!u?'<a href="#/register" class="btn bs">S\'inscrire</a>':''}</div></div><h2 style="margin-bottom:16px">Formations disponibles</h2><div class="grid2">${courses.length?courses.slice(0,6).map(c=>courseCardH(c,d)).join(''):'<div class="empty"><i class="fas fa-book-open"></i><p>Aucune formation disponible pour le moment</p></div>'}</div></div>`
+  let ads=d.ads||[];
+  let activeAds=ads.filter(a=>a.active&&a.position==='home');
+  app.innerHTML=headerH(u)+`<div class="container" style="padding:40px 16px">${activeAds.length?`<div class="ads-banner"><h3>${esc(activeAds[0].title)}</h3><p>${esc(activeAds[0].description||'')}</p>${activeAds[0].link?`<a href="${esc(activeAds[0].link)}" class="btn" target="_blank">En savoir plus</a>`:''}</div>`:''}<div style="text-align:center;padding:40px 0"><h1 style="font-size:2.4rem;margin-bottom:12px;background:linear-gradient(135deg,#6c5ce7,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Bienvenue à NOVA REACH ACADÉMIE</h1><p style="font-size:1.1rem;color:#666;margin-bottom:24px">Transformez votre avenir avec des formations professionnelles en ligne</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><a href="#/courses" class="btn bp"><i class="fas fa-search"></i> Parcourir les cours</a>${!u?'<a href="#/register" class="btn bs">S\'inscrire</a>':''}</div></div><h2 style="margin-bottom:16px">Formations disponibles</h2><div class="grid2">${courses.length?courses.slice(0,6).map(c=>courseCardH(c,d)).join(''):'<div class="empty"><i class="fas fa-book-open"></i><p>Aucune formation disponible pour le moment</p></div>'}</div></div>`
 }
 function courseCardH(c,d){
   let t=d.users.find(u=>u.id===c.teacherId);
@@ -400,11 +397,7 @@ function renderLessonContent(l,enr){
     content=`<div class="text-wrap">${esc(l.content)}</div>`;
   }
   else if(l.type==='pdf'){
-    if(l.content.startsWith('data:application/pdf')){
-       content=`<div class="pdf-wrap"><h3 style="margin-bottom:12px"><i class="fas fa-file-pdf" style="color:#e74c3c"></i> ${esc(l.title)}</h3><iframe src="${esc(l.content)}"></iframe><br><a href="${esc(l.content)}" download="document.pdf" class="btn bs btn-sm" style="margin-top:8px"><i class="fas fa-download"></i> Télécharger</a></div>`;
-    } else {
-       content=`<div class="pdf-wrap"><h3 style="margin-bottom:12px"><i class="fas fa-file-pdf" style="color:#e74c3c"></i> ${esc(l.title)}</h3><iframe src="${esc(l.content)}"></iframe><br><a href="${esc(l.content)}" target="_blank" class="btn bs btn-sm" style="margin-top:8px"><i class="fas fa-download"></i> Télécharger</a></div>`;
-    }
+    content=`<div class="pdf-wrap"><h3 style="margin-bottom:12px"><i class="fas fa-file-pdf" style="color:#e74c3c"></i> ${esc(l.title)}</h3><iframe src="${esc(l.content)}"></iframe><br><a href="${esc(l.content)}" target="_blank" class="btn bs btn-sm" style="margin-top:8px"><i class="fas fa-download"></i> Télécharger</a></div>`;
   }
   return`<div class="lesson-content"><h2 style="margin-bottom:16px">${esc(l.title)} <span class="badge sbd">${l.type.toUpperCase()}</span></h2>${content}<div style="margin-top:20px;display:flex;gap:12px;align-items:center">${done?'<span style="color:#10b981;font-weight:600"><i class="fas fa-check-circle"></i> Complétée</span>':`<button class="btn bg" onclick="markDone('${l.id}','${l.courseId}')"><i class="fas fa-check"></i> Marquer comme complétée</button>`}</div></div>`
 }
@@ -483,21 +476,7 @@ function renderEditCourse(app,p,u){
   if(!c||c.teacherId!==u.id){nav('/teacher');return}
   let lessons=d.lessons.filter(l=>l.courseId===cid);
   app.innerHTML=headerH(u)+`<div class="container" style="max-width:800px;margin:24px auto"><div class="card"><h2 class="card-t">Modifier: ${esc(c.title)}</h2><form onsubmit="saveCourse(event,'${cid}')"><div class="fg"><label>Titre</label><input type="text" class="fc" id="cTitle" value="${esc(c.title)}" required></div><div class="fg"><label>Description</label><textarea class="fc" id="cDesc" required>${esc(c.description)}</textarea></div><div class="fg"><label>Catégorie</label><select class="fc" id="cCat"><option ${c.category==='Marketing'?'selected':''}>Marketing</option><option ${c.category==='Programmation'?'selected':''}>Programmation</option><option ${c.category==='Design'?'selected':''}>Design</option><option ${c.category==='Business'?'selected':''}>Business</option><option ${c.category==='Langues'?'selected':''}>Langues</option><option ${c.category==='Autre'?'selected':''}>Autre</option></select></div><div class="fg"><label>Miniature du cours</label><input type="file" id="cThumbFile" accept="image/*" onchange="handleThumbUpload(this)" style="margin-bottom:8px"><small style="color:#888;display:block;margin-bottom:8px">Ou entrez une URL</small><input type="text" class="fc" id="cThumb" value="${esc(c.thumbnail||'')}"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="fg"><label>Accès</label><select class="fc" id="cAccess"><option value="free" ${c.accessType==='free'?'selected':''}>Gratuit</option><option value="paid" ${c.accessType==='paid'?'selected':''}>Payant</option></select></div><div class="fg"><label>Prix</label><input type="number" class="fc" id="cPrice" value="${c.price||0}" min="0"></div><div class="fg"><label>Devise</label><select class="fc" id="cCur"><option ${c.currency==='USD'?'selected':''}>USD</option><option ${c.currency==='HTG'?'selected':''}>HTG</option><option ${c.currency==='EUR'?'selected':''}>EUR</option></select></div></div><button type="submit" class="btn bp" style="width:100%">Sauvegarder</button></form><hr style="margin:24px 0"><h3>Leçons (${lessons.length})</h3><div id="lessonsList">${lessons.map((l,i)=>`<div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><strong>${i+1}. ${esc(l.title)}</strong> <span class="badge sbd">${l.type.toUpperCase()}</span>${l.isPreview?' <span class="badge bf">Preview</span>':''}</div><button class="btn bd btn-sm" onclick="deleteLesson('${l.id}','${cid}')"><i class="fas fa-trash"></i></button></div>`).join('')||'<p style="color:#999">Aucune leçon</p>'}</div>
-
-<div class="card" style="margin-top:16px;background:#f8f9ff">
-  <h4 style="margin-bottom:12px">Ajouter une leçon</h4>
-  <div class="fg"><label>Titre</label><input type="text" class="fc" id="lTitle"></div>
-  <div class="fg"><label>Type</label><select class="fc" id="lType" onchange="toggleLContent()"><option value="video">Vidéo</option><option value="audio">Audio</option><option value="text">Texte</option><option value="pdf">PDF</option></select></div>
-  <div class="fg" id="lContentWrap">
-    <label id="lContentLabel">URL Vidéo ou Fichier Vidéo</label>
-    <textarea class="fc" id="lContent" placeholder="https://www.youtube.com/watch?v=... ou utiliser le bouton ci-dessous"></textarea>
-    <input type="file" id="lFile" accept="video/*" style="margin-top:8px" onchange="handleFileUpload(this)">
-    <small style="color:#888;display:block;margin-top:4px">Note: Fichiers < 2MB recommandés pour éviter de saturer le stockage local.</small>
-  </div>
-  <div class="fg"><label><input type="checkbox" id="lPreview"> Aperçu gratuit (Preview)</label></div>
-  <button class="btn bg" onclick="addLesson('${cid}')"><i class="fas fa-plus"></i> Ajouter</button>
-</div>
-
+<div class="card" style="margin-top:16px;background:#f8f9ff"><h4 style="margin-bottom:12px">Ajouter une leçon</h4><div class="fg"><label>Titre</label><input type="text" class="fc" id="lTitle"></div><div class="fg"><label>Type</label><select class="fc" id="lType" onchange="toggleLContent()"><option value="video">Vidéo</option><option value="audio">Audio</option><option value="text">Texte</option><option value="pdf">PDF</option></select></div><div class="fg" id="lContentWrap"><label id="lContentLabel">URL Vidéo ou Fichier Vidéo</label><textarea class="fc" id="lContent" placeholder="https://www.youtube.com/watch?v=... ou utiliser le bouton ci-dessous"></textarea><input type="file" id="lFile" accept="video/*" style="margin-top:8px" onchange="handleFileUpload(this)"><small style="color:#888;display:block;margin-top:4px">Note: Fichiers < 2MB recommandés pour éviter de saturer le stockage local.</small></div><div class="fg"><label><input type="checkbox" id="lPreview"> Aperçu gratuit (Preview)</label></div><button class="btn bg" onclick="addLesson('${cid}')"><i class="fas fa-plus"></i> Ajouter</button></div>
 <hr style="margin:24px 0"><div style="display:flex;gap:8px;flex-wrap:wrap">${c.status==='draft'||c.status==='rejected'?`<button class="btn bw" onclick="submitCourse('${cid}')">Soumettre pour révision</button>`:''}${c.status==='published'?`<span class="badge sba">Publié</span>`:''}${statusB(c.status)}</div></div></div>`
 }
 
@@ -642,12 +621,23 @@ function renderCertView(app,p,u){
     cert=d.certificates.find(c=>c.courseId===cid);
   }
   if(!cert){app.innerHTML=headerH(u)+'<div class="container" style="padding:40px"><div class="empty"><i class="fas fa-certificate"></i><p>Certificat introuvable</p></div></div>';return}
-  app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px">${certHTML(cert)}<div style="text-align:center;margin-top:16px"><a href="#/verify-cert" class="btn bs btn-sm">Vérifier un certificat</a></div></div>`
+  
+  let certUrl=window.location.href.split('#')[0]+'#/certificate/'+cert.courseId;
+  app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px">${certHTML(cert,certUrl)}<div style="text-align:center;margin-top:16px"><a href="#/verify-cert" class="btn bs btn-sm">Vérifier un certificat</a></div></div>`;
+  
+  // Generate QR Code after rendering
+  setTimeout(function(){
+    let qrEl=document.getElementById('qrcode');
+    if(qrEl && typeof QRCode !== 'undefined'){
+      try{
+        new QRCode(qrEl,{text:certUrl,width:80,height:80,colorDark:"#6c5ce7",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
+      }catch(e){console.error('QR Error:',e)}
+    }
+  },100);
 }
 
-function certHTML(cert){
-  let certUrl=window.location.href.split('#')[0]+'#/certificate/'+cert.courseId;
-  return`<div class="cert"><div class="cert-h"><div class="cert-logo"><i class="fas fa-graduation-cap"></i> NOVA REACH ACADÉMIE</div><div class="cert-t">Certificat de Réussite</div><div class="cert-sub">Ce certificat est fièrement décerné à</div></div><div class="cert-body"><div class="cert-name">${esc(cert.studentName)}</div><p style="font-size:0.85rem;margin:8px 0">pour avoir complété avec succès la formation</p><div class="cert-course">"${esc(cert.courseName)}"</div><p style="margin-top:8px;color:#666;font-size:0.8rem">Date: ${fmtDate(cert.issuedAt)}</p></div><div class="cert-qr"><div id="qrcode"></div></div><div class="cert-foot"><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:4px;margin-bottom:2px;min-width:120px"></div><div class="cert-sig-n">${esc(cert.studentName)}</div><div class="cert-sig-t">Étudiant(e)</div></div><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:4px;margin-bottom:2px;min-width:120px"></div><div class="cert-sig-n">BENÊCHE JURGENS</div><div class="cert-sig-t">PDG / Signature</div></div></div><div class="cert-id">ID: ${cert.certificateId} | NOVA REACH ACADÉMIE</div></div><script>setTimeout(function(){new QRCode(document.getElementById("qrcode"),{text:"${certUrl}",width:80,height:80,colorDark:"#6c5ce7",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H})},100);<\/script>`
+function certHTML(cert,certUrl){
+  return`<div class="cert"><div class="cert-h"><div class="cert-logo"><i class="fas fa-graduation-cap"></i> NOVA REACH ACADÉMIE</div><div class="cert-t">Certificat de Réussite</div><div class="cert-sub">Ce certificat est fièrement décerné à</div></div><div class="cert-body"><div class="cert-name">${esc(cert.studentName)}</div><p style="font-size:0.85rem;margin:8px 0">pour avoir complété avec succès la formation</p><div class="cert-course">"${esc(cert.courseName)}"</div><p style="margin-top:8px;color:#666;font-size:0.8rem">Date: ${fmtDate(cert.issuedAt)}</p></div><div class="cert-qr"><div id="qrcode"></div></div><div class="cert-foot"><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:4px;margin-bottom:2px;min-width:120px"></div><div class="cert-sig-n">${esc(cert.studentName)}</div><div class="cert-sig-t">Étudiant(e)</div></div><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:4px;margin-bottom:2px;min-width:120px"></div><div class="cert-sig-n">BENÊCHE JURGENS</div><div class="cert-sig-t">PDG / Signature</div></div></div><div class="cert-id">ID: ${cert.certificateId} | NOVA REACH ACADÉMIE</div></div>`
 }
 
 // ==================== VERIFY CERTIFICATE ====================
