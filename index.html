@@ -166,34 +166,39 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 function certId(){return 'NRA-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase()}
 function affCode(){return 'AFF-'+Math.random().toString(36).slice(2,10).toUpperCase()}
 
-// KORIKSYON MAJE: Verifye epi kreye tout tablo ki manke yo pou evite erè silansye
+// FONKSYON KI BAY DEFAULT DB LA (POU EVITE ERÈ SI YON TABLO MANKE)
+function getDefaultDB(){
+  return {
+    users:[],courses:[],lessons:[],enrollments:[],payments:[],paymentProofs:[],
+    withdrawals:[],wallets:[],certificates:[],notifications:[],affiliateLinks:[],
+    affiliateSales:[],reviews:[],questions:[],answers:[],announcements:[],
+    activityLogs:[],refunds:[],ads:[],
+    settings:{platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'}
+  };
+}
+
+// KORIKSYON MAJE: Verifye epi repare baz done a otomatikman
 function getDB(){
   let d=localStorage.getItem(SK);
   let db = {};
   if(!d){
-    db={users:[],courses:[],lessons:[],enrollments:[],payments:[],paymentProofs:[],withdrawals:[],wallets:[],certificates:[],notifications:[],affiliateLinks:[],affiliateSales:[],reviews:[],questions:[],answers:[],announcements:[],activityLogs:[],refunds:[],ads:[],settings:{platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'}};
+    db = getDefaultDB();
     localStorage.setItem(SK,JSON.stringify(db));
   } else {
-    db = JSON.parse(d);
-    // Migration sekirite pou ansyen baz done ki pa gen tout tablo yo
-    if(!db.users) db.users=[];
-    if(!db.courses) db.courses=[];
-    if(!db.lessons) db.lessons=[];
-    if(!db.enrollments) db.enrollments=[];
-    if(!db.payments) db.payments=[];
-    if(!db.wallets) db.wallets=[]; // <--- SA A TE KOZE PWOBLEMM NAN
-    if(!db.certificates) db.certificates=[];
-    if(!db.notifications) db.notifications=[];
-    if(!db.affiliateLinks) db.affiliateLinks=[];
-    if(!db.affiliateSales) db.affiliateSales=[];
-    if(!db.reviews) db.reviews=[];
-    if(!db.questions) db.questions=[];
-    if(!db.answers) db.answers=[];
-    if(!db.announcements) db.announcements=[];
-    if(!db.activityLogs) db.activityLogs=[];
-    if(!db.refunds) db.refunds=[];
-    if(!db.ads) db.ads=[];
-    if(!db.settings) db.settings={platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'};
+    try {
+      db = JSON.parse(d);
+      let def = getDefaultDB();
+      // Si yon tablo manke, nou kreye l otomatikman
+      for(let key in def){
+        if(!db[key]) db[key] = def[key];
+      }
+      // Sove vèsyon repare a pou li pa janm echwe ankò
+      localStorage.setItem(SK,JSON.stringify(db));
+    } catch(e) {
+      console.error("DB parse error, resetting...", e);
+      db = getDefaultDB();
+      localStorage.setItem(SK,JSON.stringify(db));
+    }
   }
   return db;
 }
@@ -212,7 +217,7 @@ function isStudent(){let u=currentUser();return u&&u.role==='student'}
 
 // ==================== HELPERS ====================
 function alert2(msg,type='s'){let el=document.createElement('div');el.className='alert alert-'+type;el.innerHTML='<i class="fas fa-'+(type==='s'?'check-circle':type==='e'?'exclamation-circle':'info-circle')+'"></i> '+msg;document.body.appendChild(el);setTimeout(()=>el.remove(),3500)}
-function fmtCur(a,c){let s={HTG:'HTG',USD:'$',EUR:'€'};return c==='USD'||c==='EUR'?(s[c]||c)+' '+a:a+' '+(s[c]||c)}
+function fmtCur(a,c){let s={HTG:'HTG',USD:'$',EUR:'€'};let num=parseFloat(a)||0;return c==='USD'||c==='EUR'?(s[c]||c)+' '+num.toFixed(2):num.toFixed(2)+' '+(s[c]||c)}
 function fmtDate(d){if(!d)return'-';return new Date(d).toLocaleDateString('fr-FR',{year:'numeric',month:'short',day:'numeric'})}
 function fmtDT(d){if(!d)return'-';return new Date(d).toLocaleString('fr-FR')}
 function starsH(r){let h='';for(let i=1;i<=5;i++)h+='<i class="fas fa-star star'+(i<=Math.round(r)?' on':'')+'"></i>';return h}
@@ -300,10 +305,12 @@ function doRegister(e){
     if(d.users.find(u=>u.email===email))return{err:'Cet email existe déjà'};
     let u={id:uid(),role,name,email,password:pass,status:'active',phone,profilePhoto:'',bio:'',createdAt:new Date().toISOString()};
     d.users.push(u);
+    // KORIKSYON: Asire w ke tablo wallets la egziste anvan nou ajoute ladan l
     if(role==='teacher'){
-      // Kounye a sa ap fonksyone paski getDB() asire w ke d.wallets egziste
+      if(!d.wallets) d.wallets=[];
       d.wallets.push({id:uid(),userId:u.id,totalEarned:0,availableBalance:0,pendingBalance:0,totalWithdrawn:0});
     }
+    if(!d.activityLogs) d.activityLogs=[];
     d.activityLogs.push({id:uid(),userName:name,userRole:role,action:'Inscription',desc:name+' s\'est inscrit(e) comme '+role,timestamp:new Date().toISOString()});
     u._id=u.id;
     return{ok:u}
@@ -767,13 +774,39 @@ window.adminTab=function(el,tab){
   else if(tab==='settings')adminLoadSettings();
   document.querySelector('.side')?.classList.remove('open');
 }
+
+// KORIKSYON MAJE: Kalkile revni yo separe pa lajan (HTG, USD, EUR)
 function adminLoadDash(){
   let d=getDB();let m=document.getElementById('adminMain');
   let students=d.users.filter(u=>u.role==='student'),teachers=d.users.filter(u=>u.role==='teacher');
   let courses=d.courses,pays=d.payments,enrs=d.enrollments,certs=d.certificates,wds=d.withdrawals,links=d.affiliateLinks,sales=d.affiliateSales;
-  let revenue=pays.filter(p=>p.status==='approved').reduce((s,p)=>s+p.amount,0);
-  m.innerHTML=`<h1 style="margin-bottom:16px">Tableau de bord Admin</h1><div class="grid3"><div class="scard"><div class="sicon b"><i class="fas fa-user-graduate"></i></div><div class="sinfo"><h3>${students.length}</h3><p>Étudiants</p></div></div><div class="scard"><div class="sicon g"><i class="fas fa-chalkboard-teacher"></i></div><div class="sinfo"><h3>${teachers.length}</h3><p>Formateurs</p></div></div><div class="scard"><div class="sicon p"><i class="fas fa-book"></i></div><div class="sinfo"><h3>${courses.length}</h3><p>Cours</p></div></div><div class="scard"><div class="sicon o"><i class="fas fa-dollar-sign"></i></div><div class="sinfo"><h3>${fmtCur(revenue,'USD')}</h3><p>Revenus</p></div></div><div class="scard"><div class="sicon r"><i class="fas fa-users"></i></div><div class="sinfo"><h3>${enrs.length}</h3><p>Inscriptions</p></div></div><div class="scard"><div class="sicon b"><i class="fas fa-clock"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='pending').length}</h3><p>Paiements en attente</p></div></div><div class="scard"><div class="sicon g"><i class="fas fa-check"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='approved').length}</h3><p>Approuvés</p></div></div><div class="scard"><div class="sicon r"><i class="fas fa-times"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='rejected').length}</h3><p>Rejetés</p></div></div><div class="scard"><div class="sicon o"><i class="fas fa-money-bill"></i></div><div class="sinfo"><h3>${wds.filter(w=>w.status==='pending').length}</h3><p>Retraits en attente</p></div></div><div class="scard"><div class="sicon p"><i class="fas fa-handshake"></i></div><div class="sinfo"><h3>${links.length}</h3><p>Affiliés</p></div></div><div class="scard"><div class="sicon b"><i class="fas fa-shopping-cart"></i></div><div class="sinfo"><h3>${sales.length}</h3><p>Ventes affiliées</p></div></div><div class="scard"><div class="sicon g"><i class="fas fa-certificate"></i></div><div class="sinfo"><h3>${certs.length}</h3><p>Certificats</p></div></div></div><div class="card"><h3 class="card-t">Activité récente</h3><div class="tbl-wrap"><table><thead><tr><th>Action</th><th>Utilisateur</th><th>Date</th></tr></thead><tbody>${d.activityLogs.slice(0,10).map(l=>`<tr><td>${esc(l.action)}</td><td>${esc(l.userName||'Système')}</td><td>${fmtDT(l.timestamp)}</td></tr>`).join('')||'<tr><td colspan="3" style="text-align:center">Aucune activité</td></tr>'}</tbody></table></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bs btn-sm" onclick="exportBackup()"><i class="fas fa-download"></i> Exporter Backup</button><label class="btn bs btn-sm" style="cursor:pointer"><i class="fas fa-upload"></i> Importer Backup<input type="file" accept=".json" style="display:none" onchange="importBackup(event)"></label></div>`
+  
+  // Kalkile revni pa lajan
+  let revenueHTG = pays.filter(p=>p.status==='approved' && p.currency==='HTG').reduce((s,p)=>s+parseFloat(p.amount||0),0);
+  let revenueUSD = pays.filter(p=>p.status==='approved' && p.currency==='USD').reduce((s,p)=>s+parseFloat(p.amount||0),0);
+  let revenueEUR = pays.filter(p=>p.status==='approved' && p.currency==='EUR').reduce((s,p)=>s+parseFloat(p.amount||0),0);
+
+  m.innerHTML=`<h1 style="margin-bottom:16px">Tableau de bord Admin</h1>
+  <div class="grid3">
+    <div class="scard"><div class="sicon b"><i class="fas fa-user-graduate"></i></div><div class="sinfo"><h3>${students.length}</h3><p>Étudiants</p></div></div>
+    <div class="scard"><div class="sicon g"><i class="fas fa-chalkboard-teacher"></i></div><div class="sinfo"><h3>${teachers.length}</h3><p>Formateurs</p></div></div>
+    <div class="scard"><div class="sicon p"><i class="fas fa-book"></i></div><div class="sinfo"><h3>${courses.length}</h3><p>Cours</p></div></div>
+    <div class="scard"><div class="sicon g"><i class="fas fa-dollar-sign"></i></div><div class="sinfo"><h3>${fmtCur(revenueUSD,'USD')}</h3><p>Revenus (USD)</p></div></div>
+    <div class="scard"><div class="sicon b"><i class="fas fa-money-bill-wave"></i></div><div class="sinfo"><h3>${fmtCur(revenueHTG,'HTG')}</h3><p>Revenus (HTG)</p></div></div>
+    <div class="scard"><div class="sicon p"><i class="fas fa-euro-sign"></i></div><div class="sinfo"><h3>${fmtCur(revenueEUR,'EUR')}</h3><p>Revenus (EUR)</p></div></div>
+    <div class="scard"><div class="sicon r"><i class="fas fa-users"></i></div><div class="sinfo"><h3>${enrs.length}</h3><p>Inscriptions</p></div></div>
+    <div class="scard"><div class="sicon o"><i class="fas fa-clock"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='pending').length}</h3><p>Paiements en attente</p></div></div>
+    <div class="scard"><div class="sicon g"><i class="fas fa-check"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='approved').length}</h3><p>Approuvés</p></div></div>
+    <div class="scard"><div class="sicon r"><i class="fas fa-times"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='rejected').length}</h3><p>Rejetés</p></div></div>
+    <div class="scard"><div class="sicon o"><i class="fas fa-money-bill"></i></div><div class="sinfo"><h3>${wds.filter(w=>w.status==='pending').length}</h3><p>Retraits en attente</p></div></div>
+    <div class="scard"><div class="sicon p"><i class="fas fa-handshake"></i></div><div class="sinfo"><h3>${links.length}</h3><p>Affiliés</p></div></div>
+    <div class="scard"><div class="sicon b"><i class="fas fa-shopping-cart"></i></div><div class="sinfo"><h3>${sales.length}</h3><p>Ventes affiliées</p></div></div>
+    <div class="scard"><div class="sicon g"><i class="fas fa-certificate"></i></div><div class="sinfo"><h3>${certs.length}</h3><p>Certificats</p></div></div>
+  </div>
+  <div class="card"><h3 class="card-t">Activité récente</h3><div class="tbl-wrap"><table><thead><tr><th>Action</th><th>Utilisateur</th><th>Date</th></tr></thead><tbody>${d.activityLogs.slice(0,10).map(l=>`<tr><td>${esc(l.action)}</td><td>${esc(l.userName||'Système')}</td><td>${fmtDT(l.timestamp)}</td></tr>`).join('')||'<tr><td colspan="3" style="text-align:center">Aucune activité</td></tr>'}</tbody></table></div></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bs btn-sm" onclick="exportBackup()"><i class="fas fa-download"></i> Exporter Backup</button><label class="btn bs btn-sm" style="cursor:pointer"><i class="fas fa-upload"></i> Importer Backup<input type="file" accept=".json" style="display:none" onchange="importBackup(event)"></label></div>`;
 }
+
 function adminLoadStudents(){
   let d=getDB();let m=document.getElementById('adminMain');let students=d.users.filter(u=>u.role==='student');
   m.innerHTML=`<h1 style="margin-bottom:16px">Étudiants</h1><div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Cours</th><th>Complétés</th><th>Paiements</th><th>Date</th><th>Actions</th></tr></thead><tbody>${students.length?students.map(s=>{let enrs=d.enrollments.filter(e=>e.studentId===s.id);let pays=d.payments.filter(p=>p.studentId===s.id);return`<tr><td>${esc(s.name)}</td><td>${esc(s.email)}</td><td>${statusB(s.status)}</td><td>${enrs.length}</td><td>${enrs.filter(e=>e.completed).length}</td><td>${pays.length}</td><td>${fmtDate(s.createdAt)}</td><td><button class="btn bs btn-sm" onclick="toggleStatus('${s.id}')">${s.status==='active'?'Suspendre':'Activer'}</button> <button class="btn bd btn-sm" onclick="delUser('${s.id}')">Supprimer</button></td></tr>`}).join(''):'<tr><td colspan="8" style="text-align:center;color:#999">Aucun étudiant</td></tr>'}</tbody></table></div>`
