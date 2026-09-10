@@ -140,7 +140,6 @@ tr:hover{background:#fafbfc}
   .cert-name{font-size:1rem}
   .cert-foot{flex-direction:column;gap:12px;align-items:center}
   
-  /* Fòse leson yo stack youn anba lòt sou telefòn */
   .lesson-layout { flex-direction: column !important; }
   .lesson-side { width: 100% !important; position: relative !important; top: 0 !important; border-right: none !important; border-bottom: 1px solid #eee !important; max-height: 250px !important; height: auto !important; flex-shrink: 0 !important; }
   #lessonArea { padding: 12px !important; width: 100% !important; }
@@ -148,7 +147,6 @@ tr:hover{background:#fafbfc}
   .video-wrap, .audio-wrap, .text-wrap, .pdf-wrap { max-width: 100% !important; }
   .text-wrap { padding: 16px !important; }
   
-  /* Fòme fòmilè yo pou yo pa sere sou telefòn */
   .grid-3-col, .grid-aff-mobile { grid-template-columns: 1fr !important; }
   .course-detail-grid { grid-template-columns: 1fr !important; }
   .card { padding: 16px !important; }
@@ -168,10 +166,36 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 function certId(){return 'NRA-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase()}
 function affCode(){return 'AFF-'+Math.random().toString(36).slice(2,10).toUpperCase()}
 
+// KORIKSYON MAJE: Verifye epi kreye tout tablo ki manke yo pou evite erè silansye
 function getDB(){
   let d=localStorage.getItem(SK);
-  if(!d){d={users:[],courses:[],lessons:[],enrollments:[],payments:[],paymentProofs:[],withdrawals:[],wallets:[],certificates:[],notifications:[],affiliateLinks:[],affiliateSales:[],reviews:[],questions:[],answers:[],announcements:[],activityLogs:[],refunds:[],settings:{platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'}};localStorage.setItem(SK,JSON.stringify(d))}
-  return JSON.parse(d);
+  let db = {};
+  if(!d){
+    db={users:[],courses:[],lessons:[],enrollments:[],payments:[],paymentProofs:[],withdrawals:[],wallets:[],certificates:[],notifications:[],affiliateLinks:[],affiliateSales:[],reviews:[],questions:[],answers:[],announcements:[],activityLogs:[],refunds:[],ads:[],settings:{platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'}};
+    localStorage.setItem(SK,JSON.stringify(db));
+  } else {
+    db = JSON.parse(d);
+    // Migration sekirite pou ansyen baz done ki pa gen tout tablo yo
+    if(!db.users) db.users=[];
+    if(!db.courses) db.courses=[];
+    if(!db.lessons) db.lessons=[];
+    if(!db.enrollments) db.enrollments=[];
+    if(!db.payments) db.payments=[];
+    if(!db.wallets) db.wallets=[]; // <--- SA A TE KOZE PWOBLEMM NAN
+    if(!db.certificates) db.certificates=[];
+    if(!db.notifications) db.notifications=[];
+    if(!db.affiliateLinks) db.affiliateLinks=[];
+    if(!db.affiliateSales) db.affiliateSales=[];
+    if(!db.reviews) db.reviews=[];
+    if(!db.questions) db.questions=[];
+    if(!db.answers) db.answers=[];
+    if(!db.announcements) db.announcements=[];
+    if(!db.activityLogs) db.activityLogs=[];
+    if(!db.refunds) db.refunds=[];
+    if(!db.ads) db.ads=[];
+    if(!db.settings) db.settings={platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'};
+  }
+  return db;
 }
 function saveDB(d){localStorage.setItem(SK,JSON.stringify(d))}
 function dbOp(fn){let d=getDB();let r=fn(d);saveDB(d);return r}
@@ -272,7 +296,18 @@ function renderRegister(app){
 function doRegister(e){
   e.preventDefault();
   let role=document.getElementById('rRole').value,name=document.getElementById('rName').value.trim(),email=document.getElementById('rEmail').value.trim(),phone=document.getElementById('rPhone').value.trim(),pass=document.getElementById('rPass').value;
-  let r=dbOp(d=>{if(d.users.find(u=>u.email===email))return{err:'Cet email existe déjà'};let u={id:uid(),role,name,email,password:pass,status:'active',phone,profilePhoto:'',bio:'',createdAt:new Date().toISOString()};d.users.push(u);if(role==='teacher')d.wallets.push({id:uid(),userId:u.id,totalEarned:0,availableBalance:0,pendingBalance:0,totalWithdrawn:0});d.activityLogs.push({id:uid(),userName:name,userRole:role,action:'Inscription',desc:name+' s\'est inscrit(e) comme '+role,timestamp:new Date().toISOString()});u._id=u.id;return{ok:u}});
+  let r=dbOp(d=>{
+    if(d.users.find(u=>u.email===email))return{err:'Cet email existe déjà'};
+    let u={id:uid(),role,name,email,password:pass,status:'active',phone,profilePhoto:'',bio:'',createdAt:new Date().toISOString()};
+    d.users.push(u);
+    if(role==='teacher'){
+      // Kounye a sa ap fonksyone paski getDB() asire w ke d.wallets egziste
+      d.wallets.push({id:uid(),userId:u.id,totalEarned:0,availableBalance:0,pendingBalance:0,totalWithdrawn:0});
+    }
+    d.activityLogs.push({id:uid(),userName:name,userRole:role,action:'Inscription',desc:name+' s\'est inscrit(e) comme '+role,timestamp:new Date().toISOString()});
+    u._id=u.id;
+    return{ok:u}
+  });
   if(r.err)return alert2(r.err,'e');
   setSession(r.ok._id,role);
   alert2('Compte créé avec succès','s');
@@ -399,7 +434,6 @@ function renderLearn(app,p,u){
   if(!currentL)currentL=lessons[0];
   let pct=lessons.length?Math.round((enr.completedLessons.length/lessons.length)*100):0;
 
-  // KORIKSYON: Ajoute class "lesson-layout" pou CSS mobil lan ka fonksyone
   app.innerHTML=headerH(u)+`<div class="lesson-layout"><div class="lesson-side"><h3 style="font-size:.95rem;margin-bottom:8px">${esc(c.title)}</h3><div class="pbar"><div class="pfill" style="width:${pct}%"></div></div><p style="font-size:.75rem;color:#888;margin-bottom:12px">${enr.completedLessons.length}/${lessons.length} leçons (${pct}%)</p>${lessons.map((l,i)=>{let done=enr.completedLessons.includes(l.id);let active=currentL.id===l.id;return`<div onclick="loadLesson('${l.id}','${cid}')" style="padding:8px;border-radius:6px;margin-bottom:4px;cursor:pointer;font-size:.82rem;${active?'background:#6c5ce7;color:#fff':'background:'+(done?'#f0fdf4':'#f9f9f9')}"><i class="fas fa-${done?'check-circle':'circle'}" style="margin-right:6px"></i>${i+1}. ${esc(l.title)} <span style="font-size:.7rem;opacity:.7">${l.type.toUpperCase()}</span></div>`}).join('')}</div><div style="flex:1;padding:20px;overflow-y:auto" id="lessonArea">${renderLessonContent(currentL,enr)}</div></div>`
 }
 
@@ -744,10 +778,38 @@ function adminLoadStudents(){
   let d=getDB();let m=document.getElementById('adminMain');let students=d.users.filter(u=>u.role==='student');
   m.innerHTML=`<h1 style="margin-bottom:16px">Étudiants</h1><div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Cours</th><th>Complétés</th><th>Paiements</th><th>Date</th><th>Actions</th></tr></thead><tbody>${students.length?students.map(s=>{let enrs=d.enrollments.filter(e=>e.studentId===s.id);let pays=d.payments.filter(p=>p.studentId===s.id);return`<tr><td>${esc(s.name)}</td><td>${esc(s.email)}</td><td>${statusB(s.status)}</td><td>${enrs.length}</td><td>${enrs.filter(e=>e.completed).length}</td><td>${pays.length}</td><td>${fmtDate(s.createdAt)}</td><td><button class="btn bs btn-sm" onclick="toggleStatus('${s.id}')">${s.status==='active'?'Suspendre':'Activer'}</button> <button class="btn bd btn-sm" onclick="delUser('${s.id}')">Supprimer</button></td></tr>`}).join(''):'<tr><td colspan="8" style="text-align:center;color:#999">Aucun étudiant</td></tr>'}</tbody></table></div>`
 }
+
+// KORIKSYON MAJE: Fonksyon sa a kounye a gen yon kontè ak debug pou w ka wè si done yo la
 function adminLoadTeachers(){
-  let d=getDB();let m=document.getElementById('adminMain');let teachers=d.users.filter(u=>u.role==='teacher');
-  m.innerHTML=`<h1 style="margin-bottom:16px">Formateurs</h1><div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Cours</th><th>Étudiants</th><th>Gains</th><th>Solde</th><th>Actions</th></tr></thead><tbody>${teachers.length?teachers.map(t=>{let cs=d.courses.filter(c=>c.teacherId===t.id);let w=d.wallets.find(x=>x.userId===t.id)||{};return`<tr><td>${esc(t.name)}</td><td>${esc(t.email)}</td><td>${statusB(t.status)}</td><td>${cs.length}</td><td>${cs.reduce((s,c)=>s+(c.studentsCount||0),0)}</td><td>${fmtCur(w.totalEarned||0,'USD')}</td><td>${fmtCur(w.availableBalance||0,'USD')}</td><td><button class="btn bs btn-sm" onclick="toggleStatus('${t.id}')">${t.status==='active'?'Suspendre':'Activer'}</button> <button class="btn bd btn-sm" onclick="delUser('${t.id}')">Supprimer</button></td></tr>`}).join(''):'<tr><td colspan="8" style="text-align:center;color:#999">Aucun formateur</td></tr>'}</tbody></table></div>`
+  let d=getDB();
+  let m=document.getElementById('adminMain');
+  if(!m) return;
+  let teachers=d.users.filter(u=>u.role==='teacher');
+  
+  // Debug pou ede w verifye si done yo byen la
+  console.log("DEBUG ADMIN - Total Users:", d.users.length, "Teachers found:", teachers.length, teachers);
+  
+  m.innerHTML=`<h1 style="margin-bottom:16px">Formateurs (${teachers.length})</h1>
+  <div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Cours</th><th>Étudiants</th><th>Gains</th><th>Solde</th><th>Actions</th></tr></thead>
+  <tbody>${teachers.length?teachers.map(t=>{
+    let cs=d.courses.filter(c=>c.teacherId===t.id);
+    let w=d.wallets.find(x=>x.userId===t.id)||{totalEarned:0,availableBalance:0};
+    return`<tr>
+      <td>${esc(t.name)}</td>
+      <td>${esc(t.email)}</td>
+      <td>${statusB(t.status)}</td>
+      <td>${cs.length}</td>
+      <td>${cs.reduce((s,c)=>s+(c.studentsCount||0),0)}</td>
+      <td>${fmtCur(w.totalEarned||0,'USD')}</td>
+      <td>${fmtCur(w.availableBalance||0,'USD')}</td>
+      <td>
+        <button class="btn bs btn-sm" onclick="toggleStatus('${t.id}')">${t.status==='active'?'Suspendre':'Activer'}</button>
+        <button class="btn bd btn-sm" onclick="delUser('${t.id}')">Supprimer</button>
+      </td>
+    </tr>`
+  }).join(''):'<tr><td colspan="8" style="text-align:center;color:#999">Aucun formateur enregistré. (Ouvri konsòl la ak F12 pou wè detay debug)</td></tr>'}</tbody></table></div>`;
 }
+
 window.toggleStatus=function(uid2){dbOp(d=>{let u=d.users.find(x=>x.id===uid2);if(u)u.status=u.status==='active'?'suspended':'active'});alert2('Statut mis à jour','s');route();setTimeout(()=>{let m=document.getElementById('adminMain');if(m)adminTab(document.querySelector('.side li.act')||{},document.querySelector('.side li.act')?.dataset.s||'dash')},50)}
 window.delUser=function(uid2){if(!confirm('Supprimer cet utilisateur?'))return;dbOp(d=>{d.users=d.users.filter(u=>u.id!==uid2)});alert2('Supprimé','s');let tab=document.querySelector('.side li.act')?.dataset.s||'dash';adminTab(document.querySelector('.side li.act')||{},tab)}
 function adminLoadCourses(){
