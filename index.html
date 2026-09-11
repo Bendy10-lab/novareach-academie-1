@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>NOVA REACH ACADÉMIE</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Firebase Compat Scripts (Fonksyone dirèkteman san sèvè) -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1a1a2e;line-height:1.6}
@@ -156,11 +161,8 @@ tr:hover{background:#fafbfc}
 <body>
 <div id="app"></div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, addDoc, query, where, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+<script>
+  // 1. Inisyalize Firebase ak vèsyon Compat la
   const firebaseConfig = {
     apiKey: "AIzaSyBPBmbaJkwxcVaav48L8142japNjA7tn20",
     authDomain: "nova-reach-f5beb.firebaseapp.com",
@@ -171,12 +173,9 @@ tr:hover{background:#fafbfc}
     measurementId: "G-G1YMFZ4NNC"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  window.db = db;
-  window.auth = auth;
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
   window.APP_DATA = {
     users: [], courses: [], lessons: [], enrollments: [], payments: [],
@@ -187,8 +186,13 @@ tr:hover{background:#fafbfc}
   };
 
   async function fetchCollection(name) {
-    const snap = await getDocs(collection(db, name));
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    try {
+      const snap = await db.collection(name).get();
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e) {
+      console.error("Erè chaje collection:", name, e);
+      return [];
+    }
   }
 
   window.refreshData = async function() {
@@ -220,7 +224,7 @@ tr:hover{background:#fafbfc}
     
     if(!window.APP_DATA.settings.platformName) {
         window.APP_DATA.settings = {platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'};
-        await setDoc(doc(db, 'settings', 'global'), window.APP_DATA.settings);
+        await db.collection('settings').doc('global').set(window.APP_DATA.settings);
     }
   };
 
@@ -228,13 +232,13 @@ tr:hover{background:#fafbfc}
 
   window.addDocToDB = async function(col, data) {
     if(!data.id) data.id = Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-    await addDoc(collection(db, col), data);
+    await db.collection(col).add(data);
     if(window.APP_DATA[col]) window.APP_DATA[col].push(data);
     return data.id;
   };
 
   window.updateDocInDB = async function(col, id, data) {
-    await updateDoc(doc(db, col, id), data);
+    await db.collection(col).doc(id).update(data);
     if(window.APP_DATA[col]) {
         let idx = window.APP_DATA[col].findIndex(x => x.id === id);
         if(idx !== -1) window.APP_DATA[col][idx] = { ...window.APP_DATA[col][idx], ...data };
@@ -242,7 +246,7 @@ tr:hover{background:#fafbfc}
   };
 
   window.deleteDocFromDB = async function(col, id) {
-    await deleteDoc(doc(db, col, id));
+    await db.collection(col).doc(id).delete();
     if(window.APP_DATA[col]) {
         window.APP_DATA[col] = window.APP_DATA[col].filter(x => x.id !== id);
     }
@@ -285,7 +289,7 @@ tr:hover{background:#fafbfc}
       window.route();
   });
 
-  // --- RENDER ENGINE (Simplified for brevity, keeping core logic) ---
+  // --- RENDER ENGINE ---
   window.render = function(p){
     let app=document.getElementById('app');
     let u=currentUser();
@@ -319,7 +323,7 @@ tr:hover{background:#fafbfc}
     return`<header class="hdr"><div class="hdr-inner"><div class="logo" onclick="nav('/')"><i class="fas fa-graduation-cap"></i>NOVA REACH ACADÉMIE</div><button class="mob-tog" onclick="document.querySelector('.nav').classList.toggle('open')"><i class="fas fa-bars"></i></button><nav class="nav">${u?`<a href="#/${u.role}">Dashboard</a><a href="#/courses">Courses</a><a href="#/profile">Profile</a><a href="#" onclick="window.doLogout();return false">Logout</a>`:`<a href="#/login">Login</a><a href="#/register">Register</a><a href="#/courses">Courses</a>`}<span class="lock-icon" onclick="nav('/admin-login')" title="Admin"><i class="fas fa-lock"></i></span></nav></div></header>`
   }
   window.doLogout = async function(){
-      try { await signOut(auth); } catch(e){}
+      try { await auth.signOut(); } catch(e){}
       window.clearSession();
       nav('/');
       window.alert2('Déconnecté','s');
@@ -351,7 +355,7 @@ tr:hover{background:#fafbfc}
         if(!userDoc) { window.alert2('Email ou mot de passe incorrect', 'e'); return; }
         if(userDoc.status === 'suspended') { window.alert2('Compte suspendu', 'e'); return; }
         
-        try { await signInWithEmailAndPassword(auth, email, pass); } 
+        try { await auth.signInWithEmailAndPassword(email, pass); } 
         catch (authError) { if(userDoc.password !== pass) { window.alert2('Email ou mot de passe incorrect', 'e'); return; } }
         
         window.setSession(userDoc.id, userDoc.role);
@@ -368,7 +372,7 @@ tr:hover{background:#fafbfc}
     let role=document.getElementById('rRole').value,name=document.getElementById('rName').value.trim(),email=document.getElementById('rEmail').value.trim(),phone=document.getElementById('rPhone').value.trim(),pass=document.getElementById('rPass').value;
     if(window.APP_DATA.users.find(u=>u.email===email)) return window.alert2('Cet email existe déjà','e');
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+        const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
         let uid = userCredential.user.uid;
         let u = {id:uid, role, name, email, password:pass, status:'active', phone, profilePhoto:'', bio:'', createdAt:new Date().toISOString()};
         await window.addDocToDB('users', u);
@@ -396,7 +400,7 @@ tr:hover{background:#fafbfc}
     nav('/admin');
   }
 
-  // --- COURSES & LEARNING (Async updated) ---
+  // --- COURSES & LEARNING ---
   window.renderCourses = function(app,u){
     let d=getDB();let allC=d.courses.filter(c=>c.status==='published');
     app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px"><h2 style="margin-bottom:16px">Toutes les formations</h2><div class="sf"><input type="text" class="fc" id="searchQ" placeholder="Rechercher..." oninput="window.filterCourses()"><select class="fc" id="fType" onchange="window.filterCourses()"><option value="">Tous</option><option value="free">Gratuit</option><option value="paid">Payant</option></select><select class="fc" id="fCat" onchange="window.filterCourses()"><option value="">Catégorie</option><option>Marketing</option><option>Programmation</option><option>Design</option><option>Business</option><option>Langues</option><option>Autre</option></select></div><div class="grid2" id="coursesGrid">${allC.map(c=>window.courseCardH(c,d)).join('')||'<div class="empty"><i class="fas fa-search"></i><p>Aucun cours trouvé</p></div>'}</div></div>`
@@ -437,7 +441,7 @@ tr:hover{background:#fafbfc}
     window.alert2('Inscription réussie!','s');nav('/learn/'+cid);
   }
 
-  window.renderLearn = function(app,p,u){
+  window.renderLearn = async function(app,p,u){
     if(!u||u.role!=='student'){nav('/login');return}
     let cid=p.split('/')[2];let d=getDB();let c=d.courses.find(x=>x.id===cid);
     let enr=d.enrollments.find(e=>e.studentId===u.id&&e.courseId===cid);
@@ -603,7 +607,7 @@ tr:hover{background:#fafbfc}
   }
 
   window.adminLoadDash = async function(){
-    await window.refreshData(); // Ensure fresh data
+    await window.refreshData();
     let d=getDB();let m=document.getElementById('adminMain');
     let students=d.users.filter(u=>u.role==='student'),teachers=d.users.filter(u=>u.role==='teacher');
     let courses=d.courses,pays=d.payments,enrs=d.enrollments,certs=d.certificates;
@@ -647,7 +651,7 @@ tr:hover{background:#fafbfc}
   window.adminRejectCourse = async function(cid){ await window.updateDocInDB('courses', cid, {status:'rejected'}); window.alert2('Rejeté','s'); window.adminLoadCourses(); }
   window.adminPublishCourse = async function(cid){ await window.updateDocInDB('courses', cid, {status:'published'}); window.alert2('Publié','s'); window.adminLoadCourses(); }
 
-  // --- OTHER RENDER STUBS (To prevent errors) ---
+  // --- OTHER RENDER STUBS ---
   window.renderStudentDash = function(app){ app.innerHTML=headerH(currentUser())+`<div class="container" style="padding:24px"><h1>Tableau de bord Étudiant</h1><p>Bienvenue!</p></div>`; }
   window.renderProfile = function(app,u){ app.innerHTML=headerH(u)+`<div class="container" style="padding:24px"><h1>Profil</h1></div>`; }
   window.renderVerifyCert = function(app){ app.innerHTML=headerH(currentUser())+`<div class="container" style="padding:24px"><h1>Vérifier Certificat</h1></div>`; }
@@ -664,7 +668,6 @@ tr:hover{background:#fafbfc}
   window.adminLoadPayments = function(){ document.getElementById('adminMain').innerHTML='<h1>Paiements</h1><p>Chargement...</p>'; }
   window.adminLoadSettings = function(){ document.getElementById('adminMain').innerHTML='<h1>Paramètres</h1><p>Chargement...</p>'; }
 
-  // Initial call to ensure data is loaded on first paint if hash is empty
   if(!window.location.hash) window.refreshData();
 </script>
 </body>
