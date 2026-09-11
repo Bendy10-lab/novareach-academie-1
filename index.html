@@ -122,11 +122,9 @@ tr:hover{background:#fafbfc}
 .tab{padding:8px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;white-space:nowrap;font-size:.88rem}
 .tab.act{border-bottom-color:#6c5ce7;color:#6c5ce7;font-weight:600}
 
-/* LAYOUT LEÇON YO */
 .lesson-layout{display:flex;min-height:calc(100vh - 52px)}
 .lesson-side{width:280px;flex-shrink:0;height:calc(100vh - 52px);position:sticky;top:52px;z-index:50;background:#fff;border-right:1px solid #eee;overflow-y:auto;padding:12px}
 
-/* === GWO KORIKSYON POU MOBIL === */
 @media(max-width:768px){
   .side{transform:translateX(-100%);transition:.3s;top:0;padding-top:60px}
   .side.open{transform:translateX(0)}
@@ -139,14 +137,12 @@ tr:hover{background:#fafbfc}
   .cert-t{font-size:1.1rem}
   .cert-name{font-size:1rem}
   .cert-foot{flex-direction:column;gap:12px;align-items:center}
-  
   .lesson-layout { flex-direction: column !important; }
   .lesson-side { width: 100% !important; position: relative !important; top: 0 !important; border-right: none !important; border-bottom: 1px solid #eee !important; max-height: 250px !important; height: auto !important; flex-shrink: 0 !important; }
   #lessonArea { padding: 12px !important; width: 100% !important; }
   .lesson-content { max-width: 100% !important; }
   .video-wrap, .audio-wrap, .text-wrap, .pdf-wrap { max-width: 100% !important; }
   .text-wrap { padding: 16px !important; }
-  
   .grid-3-col, .grid-aff-mobile { grid-template-columns: 1fr !important; }
   .course-detail-grid { grid-template-columns: 1fr !important; }
   .card { padding: 16px !important; }
@@ -160,13 +156,11 @@ tr:hover{background:#fafbfc}
 <body>
 <div id="app"></div>
 <script>
-// ==================== DATABASE ====================
 const SK='nova_reach_db';
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function certId(){return 'NRA-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase()}
 function affCode(){return 'AFF-'+Math.random().toString(36).slice(2,10).toUpperCase()}
 
-// FONKSYON KI BAY DEFAULT DB LA (POU EVITE ERÈ SI YON TABLO MANKE)
 function getDefaultDB(){
   return {
     users:[],courses:[],lessons:[],enrollments:[],payments:[],paymentProofs:[],
@@ -177,7 +171,6 @@ function getDefaultDB(){
   };
 }
 
-// KORIKSYON MAJE: Verifye epi repare baz done a otomatikman
 function getDB(){
   let d=localStorage.getItem(SK);
   let db = {};
@@ -188,11 +181,9 @@ function getDB(){
     try {
       db = JSON.parse(d);
       let def = getDefaultDB();
-      // Si yon tablo manke, nou kreye l otomatikman
       for(let key in def){
-        if(!db[key]) db[key] = def[key];
+        if(db[key] === undefined) db[key] = def[key];
       }
-      // Sove vèsyon repare a pou li pa janm echwe ankò
       localStorage.setItem(SK,JSON.stringify(db));
     } catch(e) {
       console.error("DB parse error, resetting...", e);
@@ -205,7 +196,6 @@ function getDB(){
 function saveDB(d){localStorage.setItem(SK,JSON.stringify(d))}
 function dbOp(fn){let d=getDB();let r=fn(d);saveDB(d);return r}
 
-// ==================== AUTH ====================
 const SESS_KEY='nova_sess';
 function setSession(uid2,role){let s={uid:uid2,role,ts:Date.now()};localStorage.setItem(SESS_KEY,JSON.stringify(s));return s}
 function getSession(){let s=localStorage.getItem(SESS_KEY);if(!s)return null;try{return JSON.parse(s)}catch{return null}}
@@ -215,7 +205,6 @@ function isAdmin(){let u=currentUser();return u&&u.role==='admin'}
 function isTeacher(){let u=currentUser();return u&&u.role==='teacher'}
 function isStudent(){let u=currentUser();return u&&u.role==='student'}
 
-// ==================== HELPERS ====================
 function alert2(msg,type='s'){let el=document.createElement('div');el.className='alert alert-'+type;el.innerHTML='<i class="fas fa-'+(type==='s'?'check-circle':type==='e'?'exclamation-circle':'info-circle')+'"></i> '+msg;document.body.appendChild(el);setTimeout(()=>el.remove(),3500)}
 function fmtCur(a,c){let s={HTG:'HTG',USD:'$',EUR:'€'};let num=parseFloat(a)||0;return c==='USD'||c==='EUR'?(s[c]||c)+' '+num.toFixed(2):num.toFixed(2)+' '+(s[c]||c)}
 function fmtDate(d){if(!d)return'-';return new Date(d).toLocaleDateString('fr-FR',{year:'numeric',month:'short',day:'numeric'})}
@@ -224,7 +213,6 @@ function starsH(r){let h='';for(let i=1;i<=5;i++)h+='<i class="fas fa-star star'
 function statusB(s){let m={pending:'sbp',approved:'sba',rejected:'sbr',draft:'sbd',pending_review:'sbp',published:'sba',unpublished:'sbp2',archived:'sbd',active:'sba',suspended:'sbr'};return'<span class="badge '+(m[s]||'sbd')+'">'+s+'</span>'}
 function esc(s){if(!s)return'';let d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
-// ==================== ROUTER ====================
 function nav(p){window.location.hash=p}
 function getRoute(){return window.location.hash.slice(1)||'/'}
 function route(){
@@ -237,7 +225,6 @@ function route(){
 window.addEventListener('hashchange',route);
 window.addEventListener('load',route);
 
-// ==================== RENDER ENGINE ====================
 function render(p){
   let app=document.getElementById('app');
   let u=currentUser();
@@ -272,7 +259,6 @@ function headerH(u){
 }
 function doLogout(){clearSession();nav('/');alert2('Déconnecté','s')}
 
-// ==================== HOME ====================
 function renderHome(app,u){
   let d=getDB();let courses=d.courses.filter(c=>c.status==='published');
   app.innerHTML=headerH(u)+`<div class="container" style="padding:40px 16px"><div style="text-align:center;padding:40px 0"><h1 style="font-size:2.4rem;margin-bottom:12px;background:linear-gradient(135deg,#6c5ce7,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Bienvenue à NOVA REACH ACADÉMIE</h1><p style="font-size:1.1rem;color:#666;margin-bottom:24px">Transformez votre avenir avec des formations professionnelles en ligne</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><a href="#/courses" class="btn bp"><i class="fas fa-search"></i> Parcourir les cours</a>${!u?'<a href="#/register" class="btn bs">S\'inscrire</a>':''}</div></div><h2 style="margin-bottom:16px">Formations disponibles</h2><div class="grid2">${courses.length?courses.slice(0,6).map(c=>courseCardH(c,d)).join(''):'<div class="empty"><i class="fas fa-book-open"></i><p>Aucune formation disponible pour le moment</p></div>'}</div></div>`
@@ -282,59 +268,64 @@ function courseCardH(c,d){
   return`<div class="ccard" onclick="nav('/course/${c.id}')"><div class="cthumb">${c.thumbnail?'<img src="'+esc(c.thumbnail)+'">':'<i class="fas fa-play-circle"></i>'}</div><div class="cinfo"><div class="ctitle">${esc(c.title)}</div><div class="cteacher">Par ${t?esc(t.name):'Inconnu'}</div><div style="font-size:.8rem;color:#888;margin-bottom:6px">${esc(c.description||'').slice(0,80)}...</div><div class="cmeta"><span class="cprice">${c.accessType==='free'?'GRATUIT':fmtCur(c.price,c.currency)}</span><span class="badge ${c.accessType==='free'?'bf':'bpa'}">${c.accessType==='free'?'GRATUIT':'PAYANT'}</span></div><div style="margin-top:6px;display:flex;align-items:center;gap:6px"><span class="stars">${starsH(c.rating||0)}</span><span style="font-size:.75rem;color:#999">(${c.studentsCount||0})</span></div></div></div>`
 }
 
-// ==================== LOGIN / REGISTER ====================
 function renderLogin(app){
   app.innerHTML=headerH(null)+`<div class="container" style="max-width:440px;margin:60px auto"><div class="card"><h2 style="text-align:center;margin-bottom:20px">Connexion</h2><form onsubmit="doLogin(event)"><div class="fg"><label>Email</label><input type="email" class="fc" id="lEmail" required></div><div class="fg"><label>Mot de passe</label><input type="password" class="fc" id="lPass" required></div><button type="submit" class="btn bp" style="width:100%">Se connecter</button></form><p style="text-align:center;margin-top:14px;font-size:.85rem">Pas de compte? <a href="#/register">S'inscrire</a></p></div></div>`
 }
 function doLogin(e){
   e.preventDefault();
   let email=document.getElementById('lEmail').value.trim(),pass=document.getElementById('lPass').value;
-  let r=dbOp(d=>{let u=d.users.find(x=>x.email===email);if(!u)return{err:'Email ou mot de passe incorrect'};if(u.password!==pass)return{err:'Email ou mot de passe incorrect'};if(u.status==='suspended')return{err:'Compte suspendu'};u._id=u.id;u._role=u.role;return{ok:u}});
+  let r=dbOp(d=>{let u=d.users.find(x=>x.email===email);if(!u)return{err:'Email ou mot de passe incorrect'};if(u.password!==pass)return{err:'Email ou mot de passe incorrect'};if(u.status==='suspended')return{err:'Compte suspendu'};return{ok:u}});
   if(r.err)return alert2(r.err,'e');
-  setSession(r.ok._id,r.ok._role);
+  setSession(r.ok.id,r.ok.role);
   alert2('Connecté avec succès','s');
-  nav('/'+r.ok._role);
+  nav('/'+r.ok.role);
 }
+
 function renderRegister(app){
   app.innerHTML=headerH(null)+`<div class="container" style="max-width:440px;margin:60px auto"><div class="card"><h2 style="text-align:center;margin-bottom:20px">Inscription</h2><form onsubmit="doRegister(event)"><div class="fg"><label>Rôle</label><select class="fc" id="rRole"><option value="student">Étudiant</option><option value="teacher">Formateur</option></select></div><div class="fg"><label>Nom complet</label><input type="text" class="fc" id="rName" required></div><div class="fg"><label>Email</label><input type="email" class="fc" id="rEmail" required></div><div class="fg"><label>Téléphone</label><input type="tel" class="fc" id="rPhone"></div><div class="fg"><label>Mot de passe (min 6)</label><input type="password" class="fc" id="rPass" required minlength="6"></div><button type="submit" class="btn bp" style="width:100%">S'inscrire</button></form><p style="text-align:center;margin-top:14px;font-size:.85rem">Déjà un compte? <a href="#/login">Se connecter</a></p></div></div>`
 }
 function doRegister(e){
   e.preventDefault();
   let role=document.getElementById('rRole').value,name=document.getElementById('rName').value.trim(),email=document.getElementById('rEmail').value.trim(),phone=document.getElementById('rPhone').value.trim(),pass=document.getElementById('rPass').value;
+  
   let r=dbOp(d=>{
     if(d.users.find(u=>u.email===email))return{err:'Cet email existe déjà'};
     let u={id:uid(),role,name,email,password:pass,status:'active',phone,profilePhoto:'',bio:'',createdAt:new Date().toISOString()};
     d.users.push(u);
-    // KORIKSYON: Asire w ke tablo wallets la egziste anvan nou ajoute ladan l
+    
+    if(!d.wallets) d.wallets = [];
     if(role==='teacher'){
-      if(!d.wallets) d.wallets=[];
       d.wallets.push({id:uid(),userId:u.id,totalEarned:0,availableBalance:0,pendingBalance:0,totalWithdrawn:0});
     }
+    
     if(!d.activityLogs) d.activityLogs=[];
     d.activityLogs.push({id:uid(),userName:name,userRole:role,action:'Inscription',desc:name+' s\'est inscrit(e) comme '+role,timestamp:new Date().toISOString()});
-    u._id=u.id;
+    
+    console.log("✅ REGISTRATION SUCCESS. USER SAVED TO DB:", u);
     return{ok:u}
   });
-  if(r.err)return alert2(r.err,'e');
-  setSession(r.ok._id,role);
-  alert2('Compte créé avec succès','s');
-  nav('/'+role);
+  
+  if(r.err){
+    alert2(r.err,'e');
+  } else {
+    setSession(r.ok.id, role);
+    alert2('Compte créé avec succès en tant que ' + (role==='teacher'?'Formateur':'Étudiant') + ' !','s');
+    nav('/'+role);
+  }
 }
 
-// ==================== ADMIN LOGIN ====================
 function renderAdminLogin(app){
   app.innerHTML=headerH(currentUser())+`<div class="container" style="max-width:400px;margin:80px auto"><div class="card"><h2 style="text-align:center;margin-bottom:20px"><i class="fas fa-lock"></i> Accès Admin</h2><form onsubmit="doAdminLogin(event)"><div class="fg"><label>Code d'accès administrateur</label><input type="password" class="fc" id="aCode" required></div><button type="submit" class="btn bp" style="width:100%">Accéder</button></form></div></div>`
 }
 function doAdminLogin(e){
   e.preventDefault();let code=document.getElementById('aCode').value;
   if(code!=='Bendy509'){return alert2('Accès refusé — Code incorrect','e')}
-  let r=dbOp(d=>{let a=d.users.find(u=>u.role==='admin');if(!a){a={id:uid(),role:'admin',name:'Administrateur',email:'admin@novareach.com',password:'__admin__',status:'active',phone:'',profilePhoto:'',bio:'',createdAt:new Date().toISOString()};d.users.push(a)}a._id=a.id;return{ok:a}});
-  setSession(r.ok._id,'admin');
+  let r=dbOp(d=>{let a=d.users.find(u=>u.role==='admin');if(!a){a={id:uid(),role:'admin',name:'Administrateur',email:'admin@novareach.com',password:'__admin__',status:'active',phone:'',profilePhoto:'',bio:'',createdAt:new Date().toISOString()};d.users.push(a)}return{ok:a}});
+  setSession(r.ok.id,'admin');
   alert2('Accès administrateur autorisé','s');
   nav('/admin');
 }
 
-// ==================== COURSES LIST ====================
 function renderCourses(app,u){
   let d=getDB();let allC=d.courses.filter(c=>c.status==='published');
   app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px"><h2 style="margin-bottom:16px">Toutes les formations</h2><div class="sf"><input type="text" class="fc" id="searchQ" placeholder="Rechercher un cours..." oninput="filterCourses()"><select class="fc" id="fType" onchange="filterCourses()"><option value="">Tous</option><option value="free">Gratuit</option><option value="paid">Payant</option></select><select class="fc" id="fCat" onchange="filterCourses()"><option value="">Catégorie</option><option>Marketing</option><option>Programmation</option><option>Design</option><option>Business</option><option>Langues</option><option>Autre</option></select><select class="fc" id="fSort" onchange="filterCourses()"><option value="newest">Plus récent</option><option value="oldest">Plus ancien</option><option value="low">Prix croissant</option><option value="high">Prix décroissant</option><option value="rated">Mieux noté</option></select><select class="fc" id="fCur" onchange="filterCourses()"><option value="">Devise</option><option>HTG</option><option>USD</option><option>EUR</option></select></div><div class="grid2" id="coursesGrid">${allC.map(c=>courseCardH(c,d)).join('')||'<div class="empty"><i class="fas fa-search"></i><p>Aucun cours trouvé</p></div>'}</div></div>`
@@ -354,7 +345,6 @@ window.filterCourses=function(){
   document.getElementById('coursesGrid').innerHTML=cs.length?cs.map(c=>courseCardH(c,d)).join(''):'<div class="empty"><i class="fas fa-search"></i><p>Aucun cours trouvé</p></div>';
 }
 
-// ==================== COURSE DETAIL ====================
 function renderCourseDetail(app,p,u){
   let cid=p.split('/')[2];let d=getDB();let c=d.courses.find(x=>x.id===cid);
   if(!c){app.innerHTML=headerH(u)+'<div class="container" style="padding:40px"><div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Cours introuvable</p></div></div>';return}
@@ -368,13 +358,9 @@ function renderCourseDetail(app,p,u){
   let accessBtn='';
   if(!u)accessBtn=`<a href="#/login" class="btn bp" style="width:100%">Connectez-vous pour accéder</a>`;
   else if(u.role==='student'){
-    if(c.accessType==='free'&&!enrolled){
-      accessBtn=`<button class="btn bg" style="width:100%" onclick="enrollFree('${cid}')">Accéder au cours (Gratuit)</button>`;
-    }else if(c.accessType==='paid'&&!enrolled){
-      accessBtn=`<a href="#/payment/${cid}" class="btn bp" style="width:100%">Acheter — ${fmtCur(c.price,c.currency)}</a>`;
-    }else if(enrolled){
-      accessBtn=`<a href="#/learn/${cid}" class="btn bg" style="width:100%">Accéder au cours</a>`;
-    }
+    if(c.accessType==='free'&&!enrolled){ accessBtn=`<button class="btn bg" style="width:100%" onclick="enrollFree('${cid}')">Accéder au cours (Gratuit)</button>`; }
+    else if(c.accessType==='paid'&&!enrolled){ accessBtn=`<a href="#/payment/${cid}" class="btn bp" style="width:100%">Acheter — ${fmtCur(c.price,c.currency)}</a>`; }
+    else if(enrolled){ accessBtn=`<a href="#/learn/${cid}" class="btn bg" style="width:100%">Accéder au cours</a>`; }
   }else if(u.role==='teacher'&&u.id===c.teacherId){
     accessBtn=`<a href="#/teacher/edit/${cid}" class="btn bw" style="width:100%">Modifier le cours</a>`;
   }
@@ -394,7 +380,6 @@ window.askQ=function(e,cid){
   alert2('Question posée','s');renderCourseDetail(document.getElementById('app'),'/course/'+cid,u);
 }
 
-// ==================== PAYMENT PAGE ====================
 function renderPaymentPage(app,p,u){
   if(!u||u.role!=='student'){nav('/login');return}
   let cid=p.split('/')[2];let d=getDB();let c=d.courses.find(x=>x.id===cid);
@@ -424,7 +409,6 @@ window.submitPayment=function(e,cid){
   nav('/student');
 }
 
-// ==================== LEARN / LESSON VIEWER ====================
 function renderLearn(app,p,u){
   if(!u||u.role!=='student'){nav('/login');return}
   let cid=p.split('/')[2];let d=getDB();let c=d.courses.find(x=>x.id===cid);
@@ -501,7 +485,6 @@ window.markDone=function(lid,cid){
   renderLearn(document.getElementById('app'),'/learn/'+cid,u);
 }
 
-// ==================== STUDENT DASHBOARD ====================
 function renderStudentDash(app){
   let u=currentUser();let d=getDB();
   let enrs=d.enrollments.filter(e=>e.studentId===u.id);
@@ -522,7 +505,6 @@ window.submitReview=function(e){
   alert2('Avis soumis!','s');closeModal('reviewModal');renderStudentDash(document.getElementById('app'));
 }
 
-// ==================== TEACHER DASHBOARD ====================
 function renderTeacherDash(app){
   let u=currentUser();let d=getDB();
   let courses=d.courses.filter(c=>c.teacherId===u.id);
@@ -532,7 +514,6 @@ function renderTeacherDash(app){
   app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px"><h1 style="margin-bottom:16px">Tableau de bord Formateur</h1><div class="grid3"><div class="scard"><div class="sicon b"><i class="fas fa-book"></i></div><div class="sinfo"><h3>${courses.length}</h3><p>Mes cours</p></div></div><div class="scard"><div class="sicon g"><i class="fas fa-users"></i></div><div class="sinfo"><h3>${courses.reduce((s,c)=>s+(c.studentsCount||0),0)}</h3><p>Étudiants</p></div></div><div class="scard"><div class="sicon p"><i class="fas fa-wallet"></i></div><div class="sinfo"><h3>${fmtCur(w.availableBalance,'USD')}</h3><p>Disponible</p></div></div><div class="scard"><div class="sicon o"><i class="fas fa-bell"></i></div><div class="sinfo"><h3>${unread}</h3><p>Notifications</p></div></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0"><a href="#/teacher/create" class="btn bp btn-sm"><i class="fas fa-plus"></i> Créer un cours</a><a href="#/teacher/wallet" class="btn bs btn-sm">Portefeuille</a><a href="#/teacher/affiliates" class="btn bs btn-sm">Affiliation</a><a href="#/teacher/notifications" class="btn bs btn-sm">Notifications (${unread})</a></div><h2 style="margin-bottom:12px">Mes formations</h2><div class="grid2">${courses.length?courses.map(c=>`<div class="ccard" onclick="nav('/teacher/edit/${c.id}')"><div class="cthumb" style="height:120px">${c.thumbnail?'<img src="'+esc(c.thumbnail)+'">':'<i class="fas fa-play-circle"></i>'}</div><div class="cinfo"><div class="ctitle">${esc(c.title)}</div>${statusB(c.status)}<div style="margin-top:8px;display:flex;justify-content:space-between;font-size:.82rem;color:#888"><span>${c.studentsCount||0} étudiants</span><span>${c.accessType==='free'?'Gratuit':fmtCur(c.price,c.currency)}</span></div></div></div>`).join(''):'<div class="empty"><i class="fas fa-plus-circle"></i><p>Aucun cours. <a href="#/teacher/create">Créez votre premier cours!</a></p></div>'}</div></div>`
 }
 
-// ==================== CREATE / EDIT COURSE ====================
 function renderCreateCourse(app,u){
   if(!u||u.role!=='teacher'){nav('/login');return}
   app.innerHTML=headerH(u)+`<div class="container" style="max-width:700px;margin:24px auto"><div class="card"><h2 class="card-t">Créer une formation</h2><form onsubmit="saveCourse(event,null)"><div class="fg"><label>Titre</label><input type="text" class="fc" id="cTitle" required></div><div class="fg"><label>Description</label><textarea class="fc" id="cDesc" required></textarea></div><div class="fg"><label>Catégorie</label><select class="fc" id="cCat"><option>Marketing</option><option>Programmation</option><option>Design</option><option>Business</option><option>Langues</option><option>Autre</option></select></div><div class="fg"><label>Miniature du cours</label><input type="file" id="cThumbFile" accept="image/*" onchange="handleThumbUpload(this)" style="margin-bottom:8px"><small style="color:#888;display:block;margin-bottom:8px">Ou entrez une URL</small><input type="text" class="fc" id="cThumb" placeholder="https://..."></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px" class="grid-3-col"><div class="fg"><label>Type d'accès</label><select class="fc" id="cAccess"><option value="free">Gratuit</option><option value="paid">Payant</option></select></div><div class="fg"><label>Prix</label><input type="number" class="fc" id="cPrice" value="0" min="0"></div><div class="fg"><label>Devise</label><select class="fc" id="cCur"><option>USD</option><option>HTG</option><option>EUR</option></select></div></div><button type="submit" class="btn bp" style="width:100%">Créer le cours</button></form></div></div>`
@@ -565,16 +546,9 @@ function renderEditCourse(app,p,u){
 window.handleThumbUpload=function(input){
   let file=input.files[0];
   if(!file)return;
-  if(file.size > 2 * 1024 * 1024){
-    alert2('Image trop volumineuse! Maximum 2MB.','e');
-    input.value='';
-    return;
-  }
+  if(file.size > 2 * 1024 * 1024){ alert2('Image trop volumineuse! Maximum 2MB.','e'); input.value=''; return; }
   let reader=new FileReader();
-  reader.onload=function(e){
-    document.getElementById('cThumb').value=e.target.result;
-    alert2('Image chargée avec succès!','s');
-  };
+  reader.onload=function(e){ document.getElementById('cThumb').value=e.target.result; alert2('Image chargée avec succès!','s'); };
   reader.readAsDataURL(file);
 }
 
@@ -584,13 +558,11 @@ window.toggleLContent=function(){
   let ph={video:'https://www.youtube.com/watch?v=... ou utiliser le bouton ci-dessous',audio:'https://...mp3 ou utiliser le bouton ci-dessous',text:'Écrivez votre leçon ici...',pdf:'https://...pdf ou utiliser le bouton ci-dessous'};
   document.getElementById('lContentLabel').textContent=labels[t];
   document.getElementById('lContent').placeholder=ph[t];
-  
   let fileInput=document.getElementById('lFile');
   if(fileInput){
     if(t==='video') fileInput.accept='video/*';
     else if(t==='audio') fileInput.accept='audio/*';
     else if(t==='pdf') fileInput.accept='application/pdf,.pdf';
-    
     if(t==='text') fileInput.style.display='none';
     else fileInput.style.display='block';
   }
@@ -599,19 +571,10 @@ window.toggleLContent=function(){
 window.handleFileUpload=function(input){
   let file=input.files[0];
   if(!file)return;
-  if(file.size > 2 * 1024 * 1024){
-    alert2('Fichier trop volumineux! Maximum 2MB recommandé pour le stockage local.','e');
-    input.value='';
-    return;
-  }
+  if(file.size > 2 * 1024 * 1024){ alert2('Fichier trop volumineux! Maximum 2MB recommandé.','e'); input.value=''; return; }
   let reader=new FileReader();
-  reader.onload=function(e){
-    document.getElementById('lContent').value=e.target.result;
-    alert2('Fichier chargé avec succès! Pensez à cliquer sur "Ajouter".','s');
-  };
-  reader.onerror=function(){
-    alert2('Erreur lors de la lecture du fichier.','e');
-  };
+  reader.onload=function(e){ document.getElementById('lContent').value=e.target.result; alert2('Fichier chargé avec succès! Pensez à cliquer sur "Ajouter".','s'); };
+  reader.onerror=function(){ alert2('Erreur lors de la lecture du fichier.','e'); };
   reader.readAsDataURL(file);
 }
 
@@ -634,8 +597,8 @@ window.saveCourse=function(e,cid){
     dbOp(d=>{let c=d.courses.find(x=>x.id===cid);if(c){Object.assign(c,{title,description:desc,category:cat,thumbnail:thumb,accessType:access,price,currency:cur})}});
     alert2('Cours mis à jour!','s');
   }else{
-    let r=dbOp(d=>{let c={id:uid(),teacherId:u.id,title,description:desc,category:cat,thumbnail:thumb,accessType:access,price,currency:cur,status:'draft',rating:0,studentsCount:0,createdAt:new Date().toISOString()};d.courses.push(c);d.activityLogs.push({id:uid(),userName:u.name,userRole:'teacher',action:'Cours créé',desc:u.name+' a créé "'+title+'"',timestamp:new Date().toISOString()});c._id=c.id;return{ok:c}});
-    cid=r.ok._id;alert2('Cours créé!','s');
+    let r=dbOp(d=>{let c={id:uid(),teacherId:u.id,title,description:desc,category:cat,thumbnail:thumb,accessType:access,price,currency:cur,status:'draft',rating:0,studentsCount:0,createdAt:new Date().toISOString()};d.courses.push(c);d.activityLogs.push({id:uid(),userName:u.name,userRole:'teacher',action:'Cours créé',desc:u.name+' a créé "'+title+'"',timestamp:new Date().toISOString()});return{ok:c}});
+    cid=r.ok.id;alert2('Cours créé!','s');
   }
   nav('/teacher/edit/'+cid);
 }
@@ -649,7 +612,6 @@ window.submitCourse=function(cid){
   renderEditCourse(document.getElementById('app'),'/teacher/edit/'+cid,currentUser());
 }
 
-// ==================== WALLET ====================
 function renderWallet(app,u){
   if(!u||u.role!=='teacher'){nav('/login');return}
   let d=getDB();let w=d.wallets.find(x=>x.userId===u.id)||{totalEarned:0,availableBalance:0,pendingBalance:0,totalWithdrawn:0};
@@ -663,7 +625,6 @@ window.reqWithdrawal=function(e){
   alert2('Demande de retrait soumise!','s');renderWallet(document.getElementById('app'),u);
 }
 
-// ==================== AFFILIATES ====================
 function renderAffiliates(app,u){
   if(!u||u.role!=='teacher'){nav('/login');return}
   let d=getDB();let links=d.affiliateLinks.filter(l=>l.teacherId===u.id);let courses=d.courses.filter(c=>c.teacherId===u.id);
@@ -677,7 +638,6 @@ window.genAffLink=function(){
   alert2('Lien d\'affiliation généré!','s');renderAffiliates(document.getElementById('app'),u);
 }
 
-// ==================== STUDENT SUB-PAGES ====================
 function renderStudentPayments(app,u){
   let d=getDB();let pays=d.payments.filter(p=>p.studentId===u.id);
   app.innerHTML=headerH(u)+`<div class="container" style="max-width:900px;margin:24px auto"><h2 style="margin-bottom:16px">Mes paiements</h2><div class="tbl-wrap"><table><thead><tr><th>Cours</th><th>Montant</th><th>Méthode</th><th>Transaction</th><th>Statut</th><th>Date</th></tr></thead><tbody>${pays.length?pays.map(p=>{let c=d.courses.find(x=>x.id===p.courseId);return`<tr><td>${c?esc(c.title):'-'}</td><td>${fmtCur(p.amount,p.currency)}</td><td>${p.method}</td><td><code>${esc(p.transactionId)}</code></td><td>${statusB(p.status)}</td><td>${fmtDate(p.createdAt)}</td></tr>`}).join(''):'<tr><td colspan="6" style="text-align:center;color:#999">Aucun paiement</td></tr>'}</tbody></table></div></div>`
@@ -695,13 +655,10 @@ function renderNotifs(app,u,roleLabel){
 window.markRead=function(nid){dbOp(d=>{let n=d.notifications.find(x=>x.id===nid);if(n)n.read=true});route()}
 window.markAllRead=function(){let u=currentUser();dbOp(d=>{d.notifications.filter(n=>n.userId===u.id).forEach(n=>n.read=true)});route()}
 
-// ==================== CERTIFICATE VIEW ====================
 function renderCertView(app,p,u){
   let cid=p.split('/')[2];let d=getDB();
   let cert=d.certificates.find(c=>c.courseId===cid&&u&&c.studentId===u.id);
-  if(!cert){
-    cert=d.certificates.find(c=>c.courseId===cid);
-  }
+  if(!cert) cert=d.certificates.find(c=>c.courseId===cid);
   if(!cert){app.innerHTML=headerH(u)+'<div class="container" style="padding:40px"><div class="empty"><i class="fas fa-certificate"></i><p>Certificat introuvable</p></div></div>';return}
   app.innerHTML=headerH(u)+`<div class="container" style="padding:24px 16px">${certHTML(cert)}<div style="text-align:center;margin-top:16px"><a href="#/verify-cert" class="btn bs btn-sm">Vérifier un certificat</a></div></div>`
 }
@@ -709,7 +666,6 @@ function certHTML(cert){
   return`<div class="cert"><div class="cert-h"><div class="cert-logo"><i class="fas fa-graduation-cap"></i> NOVA REACH ACADÉMIE</div><div class="cert-t">Certificat de Réussite</div><div class="cert-sub">Ce certificat est fièrement décerné à</div></div><div class="cert-body"><div class="cert-name">${esc(cert.studentName)}</div><p style="font-size:1rem;margin:12px 0">pour avoir complété avec succès la formation</p><div class="cert-course">"${esc(cert.courseName)}"</div><p style="margin-top:12px;color:#666">Date de complétion: ${fmtDate(cert.issuedAt)}</p></div><div class="cert-foot"><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:6px;margin-bottom:4px;min-width:160px"></div><div class="cert-sig-n">${esc(cert.studentName)}</div><div class="cert-sig-t">Étudiant(e)</div></div><div class="cert-sig"><div style="border-top:2px solid #333;padding-top:6px;margin-bottom:4px;min-width:160px"></div><div class="cert-sig-n">BENÊCHE JURGENS</div><div class="cert-sig-t">PDG / Signature</div></div></div><div class="cert-id">ID du Certificat: ${cert.certificateId} | NOVA REACH ACADÉMIE</div></div>`
 }
 
-// ==================== VERIFY CERTIFICATE ====================
 function renderVerifyCert(app){
   let u=currentUser();
   app.innerHTML=headerH(u)+`<div class="container" style="max-width:500px;margin:60px auto"><div class="card"><h2 style="text-align:center;margin-bottom:20px"><i class="fas fa-shield-alt"></i> Vérification de Certificat</h2><form onsubmit="verifyCert(event)"><div class="fg"><label>ID du Certificat</label><input type="text" class="fc" id="vCertId" placeholder="NRA-XXXXX-XXXXXX" required></div><button type="submit" class="btn bp" style="width:100%">Vérifier</button></form><div id="vResult" style="margin-top:16px"></div></div></div>`
@@ -725,7 +681,6 @@ window.verifyCert=function(e){
   }
 }
 
-// ==================== PROFILE ====================
 function renderProfile(app,u){
   if(!u){nav('/login');return}
   app.innerHTML=headerH(u)+`<div class="container" style="max-width:600px;margin:24px auto"><div class="card"><h2 class="card-t">Mon Profil</h2><form onsubmit="updateProfile(event)"><div class="fg"><label>Photo (URL)</label><input type="text" class="fc" id="pPhoto" value="${esc(u.profilePhoto||'')}"></div><div class="fg"><label>Nom complet</label><input type="text" class="fc" id="pName" value="${esc(u.name)}" required></div><div class="fg"><label>Email</label><input type="email" class="fc" value="${esc(u.email)}" disabled></div><div class="fg"><label>Téléphone</label><input type="tel" class="fc" id="pPhone" value="${esc(u.phone||'')}"></div><div class="fg"><label>Bio</label><textarea class="fc" id="pBio">${esc(u.bio||'')}</textarea></div><div class="fg"><label>Statut</label><input type="text" class="fc" value="${u.status}" disabled></div><div class="fg"><label>Membre depuis</label><input type="text" class="fc" value="${fmtDate(u.createdAt)}" disabled></div><button type="submit" class="btn bp">Sauvegarder</button></form><hr style="margin:20px 0"><h3>Changer le mot de passe</h3><form onsubmit="changePass(event)"><div class="fg"><label>Mot de passe actuel</label><input type="password" class="fc" id="cpOld" required></div><div class="fg"><label>Nouveau mot de passe</label><input type="password" class="fc" id="cpNew" required minlength="6"></div><button type="submit" class="btn bw">Changer</button></form></div></div>`
@@ -751,7 +706,6 @@ function renderPublicProfile(app,p){
   app.innerHTML=headerH(u)+`<div class="container" style="max-width:800px;margin:24px auto"><div class="card" style="text-align:center"><div style="width:80px;height:80px;border-radius:50%;background:#6c5ce7;color:#fff;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px">${t.profilePhoto?'<img src="'+esc(t.profilePhoto)+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover">':t.name[0].toUpperCase()}</div><h2>${esc(t.name)}</h2><p style="color:#888">${esc(t.bio||'Formateur')}</p><div style="display:flex;gap:20px;justify-content:center;margin-top:12px"><span><strong>${courses.length}</strong> cours</span><span><strong>${courses.reduce((s,c)=>s+(c.studentsCount||0),0)}</strong> étudiants</span><span><strong>${reviews.length}</strong> avis</span></div></div><h3 style="margin:16px 0">Formations</h3><div class="grid2">${courses.map(c=>courseCardH(c,d)).join('')||'<p style="color:#999">Aucune formation publiée</p>'}</div></div>`
 }
 
-// ==================== ADMIN PANEL ====================
 function renderAdmin(app){
   if(!isAdmin()){nav('/admin-login');return}
   app.innerHTML=headerH(currentUser())+`<button class="mob-tog" style="display:none;position:fixed;bottom:16px;right:16px;z-index:200;background:#6c5ce7;color:#fff;width:48px;height:48px;border-radius:50%;font-size:1.2rem;border:none;cursor:pointer" onclick="document.querySelector('.side').classList.toggle('open')"><i class="fas fa-bars"></i></button><div class="side" id="adminSide"><ul><li class="act" data-s="dash" onclick="adminTab(this,'dash')"><i class="fas fa-tachometer-alt"></i> Dashboard</li><li data-s="students" onclick="adminTab(this,'students')"><i class="fas fa-user-graduate"></i> Étudiants</li><li data-s="teachers" onclick="adminTab(this,'teachers')"><i class="fas fa-chalkboard-teacher"></i> Formateurs</li><li data-s="courses" onclick="adminTab(this,'courses')"><i class="fas fa-book"></i> Tous les cours</li><li data-s="payments" onclick="adminTab(this,'payments')"><i class="fas fa-credit-card"></i> Paiements</li><li data-s="withdrawals" onclick="adminTab(this,'withdrawals')"><i class="fas fa-money-bill-wave"></i> Retraits</li><li data-s="affiliates" onclick="adminTab(this,'affiliates')"><i class="fas fa-handshake"></i> Affiliations</li><li data-s="certs" onclick="adminTab(this,'certs')"><i class="fas fa-certificate"></i> Certificats</li><li data-s="reviews" onclick="adminTab(this,'reviews')"><i class="fas fa-star"></i> Avis</li><li data-s="notifs" onclick="adminTab(this,'notifs')"><i class="fas fa-bell"></i> Notifications</li><li data-s="announce" onclick="adminTab(this,'announce')"><i class="fas fa-bullhorn"></i> Annonces</li><li data-s="logs" onclick="adminTab(this,'logs')"><i class="fas fa-history"></i> Journaux</li><li data-s="settings" onclick="adminTab(this,'settings')"><i class="fas fa-cog"></i> Paramètres</li><li onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</li></ul></div><div class="main" id="adminMain"></div><style>@media(max-width:768px){.mob-tog{display:block!important}}</style>`;
@@ -775,13 +729,11 @@ window.adminTab=function(el,tab){
   document.querySelector('.side')?.classList.remove('open');
 }
 
-// KORIKSYON MAJE: Kalkile revni yo separe pa lajan (HTG, USD, EUR)
 function adminLoadDash(){
   let d=getDB();let m=document.getElementById('adminMain');
   let students=d.users.filter(u=>u.role==='student'),teachers=d.users.filter(u=>u.role==='teacher');
   let courses=d.courses,pays=d.payments,enrs=d.enrollments,certs=d.certificates,wds=d.withdrawals,links=d.affiliateLinks,sales=d.affiliateSales;
   
-  // Kalkile revni pa lajan
   let revenueHTG = pays.filter(p=>p.status==='approved' && p.currency==='HTG').reduce((s,p)=>s+parseFloat(p.amount||0),0);
   let revenueUSD = pays.filter(p=>p.status==='approved' && p.currency==='USD').reduce((s,p)=>s+parseFloat(p.amount||0),0);
   let revenueEUR = pays.filter(p=>p.status==='approved' && p.currency==='EUR').reduce((s,p)=>s+parseFloat(p.amount||0),0);
@@ -812,15 +764,15 @@ function adminLoadStudents(){
   m.innerHTML=`<h1 style="margin-bottom:16px">Étudiants</h1><div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Cours</th><th>Complétés</th><th>Paiements</th><th>Date</th><th>Actions</th></tr></thead><tbody>${students.length?students.map(s=>{let enrs=d.enrollments.filter(e=>e.studentId===s.id);let pays=d.payments.filter(p=>p.studentId===s.id);return`<tr><td>${esc(s.name)}</td><td>${esc(s.email)}</td><td>${statusB(s.status)}</td><td>${enrs.length}</td><td>${enrs.filter(e=>e.completed).length}</td><td>${pays.length}</td><td>${fmtDate(s.createdAt)}</td><td><button class="btn bs btn-sm" onclick="toggleStatus('${s.id}')">${s.status==='active'?'Suspendre':'Activer'}</button> <button class="btn bd btn-sm" onclick="delUser('${s.id}')">Supprimer</button></td></tr>`}).join(''):'<tr><td colspan="8" style="text-align:center;color:#999">Aucun étudiant</td></tr>'}</tbody></table></div>`
 }
 
-// KORIKSYON MAJE: Fonksyon sa a kounye a gen yon kontè ak debug pou w ka wè si done yo la
 function adminLoadTeachers(){
   let d=getDB();
   let m=document.getElementById('adminMain');
   if(!m) return;
-  let teachers=d.users.filter(u=>u.role==='teacher');
   
-  // Debug pou ede w verifye si done yo byen la
-  console.log("DEBUG ADMIN - Total Users:", d.users.length, "Teachers found:", teachers.length, teachers);
+  // DEBUG: Montre tout sa ki nan baz done a
+  console.log("=== DEBUG ADMIN: ALL USERS IN DB ===", d.users);
+  let teachers=d.users.filter(u=>u.role==='teacher');
+  console.log("=== DEBUG ADMIN: TEACHERS FOUND ===", teachers);
   
   m.innerHTML=`<h1 style="margin-bottom:16px">Formateurs (${teachers.length})</h1>
   <div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Cours</th><th>Étudiants</th><th>Gains</th><th>Solde</th><th>Actions</th></tr></thead>
