@@ -72,10 +72,6 @@ table{width:100%;border-collapse:collapse}
 th{background:#f8fafc;padding:10px 14px;text-align:left;font-weight:600;font-size:.82rem;color:#555;border-bottom:2px solid #e2e8f0}
 td{padding:10px 14px;border-bottom:1px solid #f1f1f1;font-size:.85rem}
 tr:hover{background:#fafbfc}
-.modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
-.modal-bg.on{display:flex}
-.modal{background:#fff;border-radius:14px;padding:24px;max-width:560px;width:92%;max-height:88vh;overflow-y:auto;position:relative}
-.modal-x{position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#888}
 .alert{padding:12px 16px;border-radius:8px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:.9rem;position:fixed;top:70px;right:16px;z-index:9999;min-width:280px;box-shadow:0 4px 16px rgba(0,0,0,.12);animation:slideIn .3s}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 .alert-s{background:#d1fae5;color:#065f46;border-left:4px solid #10b981}
@@ -98,20 +94,6 @@ tr:hover{background:#fafbfc}
 .sf input,.sf select{flex:1;min-width:160px}
 .empty{text-align:center;padding:40px 20px;color:#999}
 .empty i{font-size:3rem;margin-bottom:12px;opacity:.4}
-.cert{background:linear-gradient(135deg,#fefce8,#fffbeb,#fff);border:16px solid #d4af37;border-radius:10px;padding:40px;max-width:800px;margin:20px auto;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.15)}
-.cert::before{content:'';position:absolute;top:-8px;left:-8px;right:-8px;bottom:-8px;border:2px solid #d4af37;border-radius:10px;pointer-events:none}
-.cert-h{text-align:center;margin-bottom:24px}
-.cert-logo{font-size:1.6rem;font-weight:800;color:#6c5ce7;margin-bottom:8px}
-.cert-t{font-size:2rem;font-weight:700;color:#1a1a2e;margin-bottom:6px}
-.cert-sub{font-size:1.1rem;color:#666}
-.cert-body{text-align:center;margin:24px 0}
-.cert-name{font-size:1.8rem;font-weight:700;color:#6c5ce7;margin:12px 0;border-bottom:2px solid #d4af37;display:inline-block;padding-bottom:6px}
-.cert-course{font-size:1.3rem;color:#333;margin:10px 0}
-.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:32px;padding-top:20px;border-top:2px solid #d4af37}
-.cert-sig{text-align:center;min-width:180px}
-.cert-sig-n{font-weight:700;font-size:1rem;margin-bottom:2px}
-.cert-sig-t{color:#777;font-size:.8rem}
-.cert-id{text-align:center;margin-top:16px;color:#999;font-size:.8rem}
 .mob-tog{display:none;background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer}
 .lesson-content{max-width:900px;margin:0 auto}
 .video-wrap{width:100%;max-width:800px;margin:0 auto;background:#000;border-radius:10px;overflow:hidden}
@@ -121,9 +103,6 @@ tr:hover{background:#fafbfc}
 .text-wrap{max-width:800px;margin:0 auto;background:#fff;padding:28px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);line-height:1.8;white-space:pre-wrap}
 .pdf-wrap{max-width:800px;margin:0 auto;text-align:center}
 .pdf-wrap iframe{width:100%;height:600px;border:none;border-radius:10px}
-.tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #e2e8f0;overflow-x:auto}
-.tab{padding:8px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;white-space:nowrap;font-size:.88rem}
-.tab.act{border-bottom-color:#6c5ce7;color:#6c5ce7;font-weight:600}
 .lesson-layout{display:flex;min-height:calc(100vh - 52px)}
 .lesson-side{width:280px;flex-shrink:0;height:calc(100vh - 52px);position:sticky;top:52px;z-index:50;background:#fff;border-right:1px solid #eee;overflow-y:auto;padding:12px}
 @media(max-width:768px){
@@ -134,8 +113,6 @@ tr:hover{background:#fafbfc}
   .mob-tog{display:block}
   .nav{display:none}
   .nav.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:#6c5ce7;padding:12px;gap:10px}
-  .cert{padding:16px}.cert-t{font-size:1.1rem}.cert-name{font-size:1rem}
-  .cert-foot{flex-direction:column;gap:12px;align-items:center}
   .lesson-layout{flex-direction:column!important}
   .lesson-side{width:100%!important;position:relative!important;top:0!important;border-right:none!important;border-bottom:1px solid #eee!important;max-height:250px!important;height:auto!important}
   #lessonArea{padding:12px!important;width:100%!important}
@@ -174,7 +151,7 @@ window.APP_DATA = {
   users:[],courses:[],lessons:[],enrollments:[],payments:[],
   wallets:[],certificates:[],notifications:[],affiliateLinks:[],
   affiliateSales:[],reviews:[],questions:[],answers:[],
-  announcements:[],activityLogs:[],ads:[],
+  announcements:[],activityLogs:[],ads:[],withdrawals:[],
   settings:{platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'}
 };
 
@@ -186,13 +163,13 @@ async function fetchCol(name){
 }
 
 window.refreshData = async function(){
-  const [users,courses,lessons,enrollments,payments,wallets,certificates,notifications,affiliateLinks,affiliateSales,reviews,questions,answers,announcements,activityLogs,ads,settingsDocs] = await Promise.all([
+  const [users,courses,lessons,enrollments,payments,wallets,certificates,notifications,affiliateLinks,affiliateSales,reviews,questions,answers,announcements,activityLogs,ads,withdrawals,settingsDocs] = await Promise.all([
     fetchCol('users'),fetchCol('courses'),fetchCol('lessons'),
     fetchCol('enrollments'),fetchCol('payments'),fetchCol('wallets'),
     fetchCol('certificates'),fetchCol('notifications'),fetchCol('affiliateLinks'),
     fetchCol('affiliateSales'),fetchCol('reviews'),fetchCol('questions'),
     fetchCol('answers'),fetchCol('announcements'),fetchCol('activityLogs'),
-    fetchCol('ads'),fetchCol('settings')
+    fetchCol('ads'),fetchCol('withdrawals'),fetchCol('settings')
   ]);
   window.APP_DATA.users=users;window.APP_DATA.courses=courses;
   window.APP_DATA.lessons=lessons;window.APP_DATA.enrollments=enrollments;
@@ -202,6 +179,7 @@ window.refreshData = async function(){
   window.APP_DATA.reviews=reviews;window.APP_DATA.questions=questions;
   window.APP_DATA.answers=answers;window.APP_DATA.announcements=announcements;
   window.APP_DATA.activityLogs=activityLogs;window.APP_DATA.ads=ads;
+  window.APP_DATA.withdrawals=withdrawals;
   window.APP_DATA.settings=settingsDocs[0]||{platformName:'NOVA REACH ACADÉMIE',commission:10,currencies:['HTG','USD','EUR'],moncash:{number:'',name:''},natcash:{number:'33461451',name:'Darlene George'},contactEmail:'info@novareach.com'};
 };
 
@@ -234,11 +212,9 @@ window.setSession=function(uid2,role){let s={uid:uid2,role,ts:Date.now()};localS
 window.getSession=function(){let s=localStorage.getItem(SESS_KEY);if(!s)return null;try{return JSON.parse(s)}catch{return null}};
 window.clearSession=function(){localStorage.removeItem(SESS_KEY)};
 
-// KORIKSYON MAJE: Admin lokal la pa depann de Firebase
 window.currentUser = function(){
   let s = getSession();
   if(!s) return null;
-  // Admin lokal (pa bezwen Firebase)
   if(s.uid === 'admin_master') {
     return {id:'admin_master', role:'admin', name:'Administrateur', email:'admin@novareach.com', status:'active'};
   }
@@ -288,18 +264,8 @@ window.render = function(p){
   if(p.startsWith('/course/'))return window.renderCourseDetail(app,p,u);
   if(p.startsWith('/learn/'))return window.renderLearn(app,p,u);
   if(p==='/profile')return window.renderProfile(app,u);
-  if(p==='/verify-cert')return window.renderVerifyCert(app);
-  if(p.startsWith('/certificate/'))return window.renderCertView(app,p,u);
   if(p==='/teacher/create')return window.renderCreateCourse(app,u);
   if(p.startsWith('/teacher/edit/'))return window.renderEditCourse(app,p,u);
-  if(p.startsWith('/teacher/wallet'))return window.renderWallet(app,u);
-  if(p.startsWith('/teacher/affiliates'))return window.renderAffiliates(app,u);
-  if(p.startsWith('/student/payments'))return window.renderStudentPayments(app,u);
-  if(p.startsWith('/student/certificates'))return window.renderStudentCerts(app,u);
-  if(p.startsWith('/student/notifications'))return window.renderStudentNotifs(app,u);
-  if(p.startsWith('/teacher/notifications'))return window.renderTeacherNotifs(app,u);
-  if(p.startsWith('/payment/'))return window.renderPaymentPage(app,p,u);
-  if(p.startsWith('/teacher/profile/'))return window.renderPublicProfile(app,p);
   window.renderHome(app,u);
 };
 
@@ -366,9 +332,9 @@ window.doRegister = async function(e){
   }catch(err){window.alert2('Erreur: '+err.message,'e');}
 };
 
-// ===== ADMIN LOGIN - KORIKSYON MAJE =====
+// ===== ADMIN LOGIN - KORIKSYON: Retire kòd sekrè a ki te parèt =====
 window.renderAdminLogin = function(app){
-  app.innerHTML=headerH(currentUser())+`<div class="container" style="max-width:400px;margin:80px auto"><div class="card"><h2 style="text-align:center;margin-bottom:20px"><i class="fas fa-lock"></i> Accès Admin</h2><form onsubmit="window.doAdminLogin(event)"><div class="fg"><label>Code d'accès administrateur</label><input type="password" class="fc" id="aCode" required></div><button type="submit" class="btn bp" style="width:100%">Accéder</button></form><p style="text-align:center;margin-top:14px;font-size:.85rem;color:#888">Code: Bendy509</p></div></div>`;
+  app.innerHTML=headerH(currentUser())+`<div class="container" style="max-width:400px;margin:80px auto"><div class="card"><h2 style="text-align:center;margin-bottom:20px"><i class="fas fa-lock"></i> Accès Admin</h2><form onsubmit="window.doAdminLogin(event)"><div class="fg"><label>Code d'accès administrateur</label><input type="password" class="fc" id="aCode" required></div><button type="submit" class="btn bp" style="width:100%">Accéder</button></form></div></div>`;
 };
 
 window.doAdminLogin = function(e){
@@ -378,7 +344,6 @@ window.doAdminLogin = function(e){
     window.alert2('Accès refusé — Code incorrect','e');
     return;
   }
-  // Admin lokal - pa bezwen Firebase
   window.setSession('admin_master','admin');
   window.alert2('Accès administrateur autorisé ✅','s');
   nav('/admin');
@@ -569,10 +534,37 @@ window.submitCourse = async function(cid){
   window.renderEditCourse(document.getElementById('app'),'/teacher/edit/'+cid,currentUser());
 };
 
-// ===== ADMIN PANEL =====
+// ===== PROFILE =====
+window.renderProfile = function(app,u){
+  if(!u){nav('/login');return}
+  app.innerHTML=headerH(u)+`<div class="container" style="max-width:600px;margin:24px auto"><div class="card"><h2 class="card-t">Mon Profil</h2><form onsubmit="window.updateProfile(event)"><div class="fg"><label>Nom complet</label><input type="text" class="fc" id="pName" value="${window.esc(u.name)}" required></div><div class="fg"><label>Email</label><input type="email" class="fc" value="${window.esc(u.email)}" disabled></div><div class="fg"><label>Téléphone</label><input type="tel" class="fc" id="pPhone" value="${window.esc(u.phone||'')}"></div><div class="fg"><label>Bio</label><textarea class="fc" id="pBio">${window.esc(u.bio||'')}</textarea></div><button type="submit" class="btn bp">Sauvegarder</button></form></div></div>`;
+};
+window.updateProfile = async function(e){
+  e.preventDefault();let u=currentUser();
+  let name=document.getElementById('pName').value.trim(),phone=document.getElementById('pPhone').value.trim(),bio=document.getElementById('pBio').value.trim();
+  await window.updateDocInDB('users',u.id,{name,phone,bio});
+  window.alert2('Profil mis à jour!','s');
+};
+
+// ===== ADMIN PANEL - AK TOUT FONCTIONNALITÉ YO =====
 window.renderAdmin = function(app){
   if(!isAdmin()){nav('/admin-login');return}
-  app.innerHTML=headerH(currentUser())+`<button class="mob-tog" style="display:none;position:fixed;bottom:16px;right:16px;z-index:200;background:#6c5ce7;color:#fff;width:48px;height:48px;border-radius:50%;font-size:1.2rem;border:none;cursor:pointer" onclick="document.querySelector('.side').classList.toggle('open')"><i class="fas fa-bars"></i></button><div class="side" id="adminSide"><ul><li class="act" data-s="dash" onclick="window.adminTab(this,'dash')"><i class="fas fa-tachometer-alt"></i> Dashboard</li><li data-s="students" onclick="window.adminTab(this,'students')"><i class="fas fa-user-graduate"></i> Étudiants</li><li data-s="teachers" onclick="window.adminTab(this,'teachers')"><i class="fas fa-chalkboard-teacher"></i> Formateurs</li><li data-s="courses" onclick="window.adminTab(this,'courses')"><i class="fas fa-book"></i> Tous les cours</li><li data-s="payments" onclick="window.adminTab(this,'payments')"><i class="fas fa-credit-card"></i> Paiements</li><li data-s="settings" onclick="window.adminTab(this,'settings')"><i class="fas fa-cog"></i> Paramètres</li><li onclick="window.doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</li></ul></div><div class="main" id="adminMain"></div><style>@media(max-width:768px){.mob-tog{display:block!important}}</style>`;
+  app.innerHTML=headerH(currentUser())+`<button class="mob-tog" style="display:none;position:fixed;bottom:16px;right:16px;z-index:200;background:#6c5ce7;color:#fff;width:48px;height:48px;border-radius:50%;font-size:1.2rem;border:none;cursor:pointer" onclick="document.querySelector('.side').classList.toggle('open')"><i class="fas fa-bars"></i></button><div class="side" id="adminSide"><ul>
+    <li class="act" data-s="dash" onclick="window.adminTab(this,'dash')"><i class="fas fa-tachometer-alt"></i> Dashboard</li>
+    <li data-s="students" onclick="window.adminTab(this,'students')"><i class="fas fa-user-graduate"></i> Étudiants</li>
+    <li data-s="teachers" onclick="window.adminTab(this,'teachers')"><i class="fas fa-chalkboard-teacher"></i> Formateurs</li>
+    <li data-s="courses" onclick="window.adminTab(this,'courses')"><i class="fas fa-book"></i> Tous les cours</li>
+    <li data-s="payments" onclick="window.adminTab(this,'payments')"><i class="fas fa-credit-card"></i> Paiements</li>
+    <li data-s="withdrawals" onclick="window.adminTab(this,'withdrawals')"><i class="fas fa-money-bill-wave"></i> Retraits</li>
+    <li data-s="affiliates" onclick="window.adminTab(this,'affiliates')"><i class="fas fa-handshake"></i> Affiliations</li>
+    <li data-s="certs" onclick="window.adminTab(this,'certs')"><i class="fas fa-certificate"></i> Certificats</li>
+    <li data-s="reviews" onclick="window.adminTab(this,'reviews')"><i class="fas fa-star"></i> Avis</li>
+    <li data-s="notifs" onclick="window.adminTab(this,'notifs')"><i class="fas fa-bell"></i> Notifications</li>
+    <li data-s="announce" onclick="window.adminTab(this,'announce')"><i class="fas fa-bullhorn"></i> Annonces</li>
+    <li data-s="logs" onclick="window.adminTab(this,'logs')"><i class="fas fa-history"></i> Journaux</li>
+    <li data-s="settings" onclick="window.adminTab(this,'settings')"><i class="fas fa-cog"></i> Paramètres</li>
+    <li onclick="window.doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</li>
+  </ul></div><div class="main" id="adminMain"></div><style>@media(max-width:768px){.mob-tog{display:block!important}}</style>`;
   window.adminLoadDash();
 };
 
@@ -583,6 +575,13 @@ window.adminTab = function(el,tab){
   else if(tab==='teachers')window.adminLoadTeachers();
   else if(tab==='courses')window.adminLoadCourses();
   else if(tab==='payments')window.adminLoadPayments();
+  else if(tab==='withdrawals')window.adminLoadWithdrawals();
+  else if(tab==='affiliates')window.adminLoadAffiliates();
+  else if(tab==='certs')window.adminLoadCerts();
+  else if(tab==='reviews')window.adminLoadReviews();
+  else if(tab==='notifs')window.adminLoadAdminNotifs();
+  else if(tab==='announce')window.adminLoadAnnounce();
+  else if(tab==='logs')window.adminLoadLogs();
   else if(tab==='settings')window.adminLoadSettings();
   document.querySelector('.side')?.classList.remove('open');
 };
@@ -591,7 +590,7 @@ window.adminLoadDash = async function(){
   await window.refreshData();
   let d=getDB();let m=document.getElementById('adminMain');
   let students=d.users.filter(u=>u.role==='student'),teachers=d.users.filter(u=>u.role==='teacher');
-  let courses=d.courses,pays=d.payments,enrs=d.enrollments,certs=d.certificates;
+  let courses=d.courses,pays=d.payments,enrs=d.enrollments,certs=d.certificates,wds=d.withdrawals,links=d.affiliateLinks,sales=d.affiliateSales;
   let revenueHTG=pays.filter(p=>p.status==='approved'&&p.currency==='HTG').reduce((s,p)=>s+parseFloat(p.amount||0),0);
   let revenueUSD=pays.filter(p=>p.status==='approved'&&p.currency==='USD').reduce((s,p)=>s+parseFloat(p.amount||0),0);
   let revenueEUR=pays.filter(p=>p.status==='approved'&&p.currency==='EUR').reduce((s,p)=>s+parseFloat(p.amount||0),0);
@@ -605,7 +604,17 @@ window.adminLoadDash = async function(){
     <div class="scard"><div class="sicon p"><i class="fas fa-euro-sign"></i></div><div class="sinfo"><h3>${window.fmtCur(revenueEUR,'EUR')}</h3><p>Revenus (EUR)</p></div></div>
     <div class="scard"><div class="sicon r"><i class="fas fa-users"></i></div><div class="sinfo"><h3>${enrs.length}</h3><p>Inscriptions</p></div></div>
     <div class="scard"><div class="sicon o"><i class="fas fa-clock"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='pending').length}</h3><p>Paiements en attente</p></div></div>
+    <div class="scard"><div class="sicon g"><i class="fas fa-check"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='approved').length}</h3><p>Approuvés</p></div></div>
+    <div class="scard"><div class="sicon r"><i class="fas fa-times"></i></div><div class="sinfo"><h3>${pays.filter(p=>p.status==='rejected').length}</h3><p>Rejetés</p></div></div>
+    <div class="scard"><div class="sicon o"><i class="fas fa-money-bill"></i></div><div class="sinfo"><h3>${wds.filter(w=>w.status==='pending').length}</h3><p>Retraits en attente</p></div></div>
+    <div class="scard"><div class="sicon p"><i class="fas fa-handshake"></i></div><div class="sinfo"><h3>${links.length}</h3><p>Affiliés</p></div></div>
+    <div class="scard"><div class="sicon b"><i class="fas fa-shopping-cart"></i></div><div class="sinfo"><h3>${sales.length}</h3><p>Ventes affiliées</p></div></div>
     <div class="scard"><div class="sicon g"><i class="fas fa-certificate"></i></div><div class="sinfo"><h3>${certs.length}</h3><p>Certificats</p></div></div>
+  </div>
+  <div class="card"><h3 class="card-t">Activité récente</h3><div class="tbl-wrap"><table><thead><tr><th>Action</th><th>Utilisateur</th><th>Date</th></tr></thead><tbody>${d.activityLogs.slice(0,10).map(l=>`<tr><td>${window.esc(l.action)}</td><td>${window.esc(l.userName||'Système')}</td><td>${window.fmtDT(l.timestamp)}</td></tr>`).join('')||'<tr><td colspan="3" style="text-align:center">Aucune activité</td></tr>'}</tbody></table></div></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
+    <button class="btn bs btn-sm" onclick="window.exportBackup()"><i class="fas fa-download"></i> Exporter Backup</button>
+    <label class="btn bs btn-sm" style="cursor:pointer"><i class="fas fa-upload"></i> Importer Backup<input type="file" accept=".json" style="display:none" onchange="window.importBackup(event)"></label>
   </div>`;
 };
 
@@ -613,40 +622,47 @@ window.adminLoadStudents = async function(){
   await window.refreshData();
   let d=getDB();let m=document.getElementById('adminMain');
   let students=d.users.filter(u=>u.role==='student');
-  m.innerHTML=`<h1 style="margin-bottom:16px">Étudiants (${students.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody>${students.length?students.map(s=>`<tr><td>${window.esc(s.name)}</td><td>${window.esc(s.email)}</td><td>${window.statusB(s.status)}</td><td>${window.fmtDate(s.createdAt)}</td><td><button class="btn bs btn-sm" onclick="window.toggleStatus('${s.id}')">${s.status==='active'?'Suspendre':'Activer'}</button></td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:#999">Aucun étudiant</td></tr>'}</tbody></table></div>`;
+  m.innerHTML=`<h1 style="margin-bottom:16px">Étudiants (${students.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody>${students.length?students.map(s=>`<tr><td>${window.esc(s.name)}</td><td>${window.esc(s.email)}</td><td>${window.statusB(s.status)}</td><td>${window.fmtDate(s.createdAt)}</td><td><button class="btn bs btn-sm" onclick="window.toggleStatus('${s.id}')">${s.status==='active'?'Suspendre':'Activer'}</button> <button class="btn bd btn-sm" onclick="window.delUser('${s.id}')">Supprimer</button></td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:#999">Aucun étudiant</td></tr>'}</tbody></table></div>`;
 };
 
 window.adminLoadTeachers = async function(){
   await window.refreshData();
   let d=getDB();let m=document.getElementById('adminMain');
   let teachers=d.users.filter(u=>u.role==='teacher');
-  console.log("DEBUG: Teachers found:",teachers.length,teachers);
-  m.innerHTML=`<h1 style="margin-bottom:16px">Formateurs (${teachers.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Cours</th><th>Actions</th></tr></thead><tbody>${teachers.length?teachers.map(t=>{let cs=d.courses.filter(c=>c.teacherId===t.id);return`<tr><td>${window.esc(t.name)}</td><td>${window.esc(t.email)}</td><td>${window.statusB(t.status)}</td><td>${cs.length}</td><td><button class="btn bs btn-sm" onclick="window.toggleStatus('${t.id}')">${t.status==='active'?'Suspendre':'Activer'}</button></td></tr>`}).join(''):'<tr><td colspan="5" style="text-align:center;color:#999">Aucun formateur enregistré</td></tr>'}</tbody></table></div>`;
+  m.innerHTML=`<h1 style="margin-bottom:16px">Formateurs (${teachers.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Cours</th><th>Actions</th></tr></thead><tbody>${teachers.length?teachers.map(t=>{let cs=d.courses.filter(c=>c.teacherId===t.id);return`<tr><td>${window.esc(t.name)}</td><td>${window.esc(t.email)}</td><td>${window.statusB(t.status)}</td><td>${cs.length}</td><td><button class="btn bs btn-sm" onclick="window.toggleStatus('${t.id}')">${t.status==='active'?'Suspendre':'Activer'}</button> <button class="btn bd btn-sm" onclick="window.delUser('${t.id}')">Supprimer</button></td></tr>`}).join(''):'<tr><td colspan="5" style="text-align:center;color:#999">Aucun formateur</td></tr>'}</tbody></table></div>`;
 };
 
 window.toggleStatus = async function(uid2){
   let u=window.APP_DATA.users.find(x=>x.id===uid2);
   if(u) await window.updateDocInDB('users',uid2,{status:u.status==='active'?'suspended':'active'});
   window.alert2('Statut mis à jour','s');
-  window.adminLoadTeachers();
+  window.adminTab(document.querySelector('.side li.act'),document.querySelector('.side li.act').dataset.s);
+};
+
+window.delUser = async function(uid2){
+  if(!confirm('Supprimer cet utilisateur?'))return;
+  await window.deleteDocFromDB('users',uid2);
+  window.alert2('Supprimé','s');
+  window.adminTab(document.querySelector('.side li.act'),document.querySelector('.side li.act').dataset.s);
 };
 
 window.adminLoadCourses = async function(){
   await window.refreshData();
   let d=getDB();let m=document.getElementById('adminMain');
-  m.innerHTML=`<h1 style="margin-bottom:16px">Tous les cours (${d.courses.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Titre</th><th>Formateur</th><th>Prix</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${d.courses.length?d.courses.map(c=>{let t=d.users.find(u=>u.id===c.teacherId);return`<tr><td>${window.esc(c.title)}</td><td>${t?window.esc(t.name):'-'}</td><td>${c.accessType==='free'?'GRATUIT':window.fmtCur(c.price,c.currency)}</td><td>${window.statusB(c.status)}</td><td><div style="display:flex;gap:4px;flex-wrap:wrap">${c.status==='pending_review'?`<button class="btn bg btn-sm" onclick="window.adminApproveCourse('${c.id}')">Approuver</button><button class="btn bd btn-sm" onclick="window.adminRejectCourse('${c.id}')">Rejeter</button>`:''}${c.status==='approved'?`<button class="btn bp btn-sm" onclick="window.adminPublishCourse('${c.id}')">Publier</button>`:''}${c.status==='published'?`<button class="btn bw btn-sm" onclick="window.adminUnpubCourse('${c.id}')">Dépublier</button>`:''}</div></td></tr>`}).join(''):'<tr><td colspan="5" style="text-align:center;color:#999">Aucun cours</td></tr>'}</tbody></table></div>`;
+  m.innerHTML=`<h1 style="margin-bottom:16px">Tous les cours (${d.courses.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Titre</th><th>Formateur</th><th>Prix</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${d.courses.length?d.courses.map(c=>{let t=d.users.find(u=>u.id===c.teacherId);return`<tr><td>${window.esc(c.title)}</td><td>${t?window.esc(t.name):'-'}</td><td>${c.accessType==='free'?'GRATUIT':window.fmtCur(c.price,c.currency)}</td><td>${window.statusB(c.status)}</td><td><div style="display:flex;gap:4px;flex-wrap:wrap">${c.status==='pending_review'?`<button class="btn bg btn-sm" onclick="window.adminApproveCourse('${c.id}')">Approuver</button><button class="btn bd btn-sm" onclick="window.adminRejectCourse('${c.id}')">Rejeter</button>`:''}${c.status==='approved'?`<button class="btn bp btn-sm" onclick="window.adminPublishCourse('${c.id}')">Publier</button>`:''}${c.status==='published'?`<button class="btn bw btn-sm" onclick="window.adminUnpubCourse('${c.id}')">Dépublier</button>`:''}<button class="btn bd btn-sm" onclick="window.adminDelCourse('${c.id}')">Supprimer</button></div></td></tr>`}).join(''):'<tr><td colspan="5" style="text-align:center;color:#999">Aucun cours</td></tr>'}</tbody></table></div>`;
 };
 
 window.adminApproveCourse = async function(cid){await window.updateDocInDB('courses',cid,{status:'approved'});window.alert2('Approuvé','s');window.adminLoadCourses();};
 window.adminRejectCourse = async function(cid){await window.updateDocInDB('courses',cid,{status:'rejected'});window.alert2('Rejeté','s');window.adminLoadCourses();};
 window.adminPublishCourse = async function(cid){await window.updateDocInDB('courses',cid,{status:'published'});window.alert2('Publié','s');window.adminLoadCourses();};
 window.adminUnpubCourse = async function(cid){await window.updateDocInDB('courses',cid,{status:'unpublished'});window.alert2('Dépublié','s');window.adminLoadCourses();};
+window.adminDelCourse = async function(cid){if(!confirm('Supprimer?'))return;await window.deleteDocFromDB('courses',cid);await window.deleteDocFromDB('lessons',cid);window.alert2('Supprimé','s');window.adminLoadCourses();};
 
 window.adminLoadPayments = async function(){
   await window.refreshData();
   let d=getDB();let m=document.getElementById('adminMain');
   let pays=d.payments;
-  m.innerHTML=`<h1 style="margin-bottom:16px">Paiements (${pays.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Étudiant</th><th>Cours</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${pays.length?pays.map(p=>{let s=d.users.find(u=>u.id===p.studentId);let c=d.courses.find(u=>u.id===p.courseId);return`<tr><td>${s?window.esc(s.name):'-'}</td><td>${c?window.esc(c.title):'-'}</td><td>${window.fmtCur(p.amount,p.currency)}</td><td>${window.statusB(p.status)}</td><td>${p.status==='pending'?`<button class="btn bg btn-sm" onclick="window.approvePay('${p.id}')">Approuver</button> <button class="btn bd btn-sm" onclick="window.rejectPay('${p.id}')">Rejeter</button>`:'-'}</td></tr>`}).join(''):'<tr><td colspan="5" style="text-align:center;color:#999">Aucun paiement</td></tr>'}</tbody></table></div>`;
+  m.innerHTML=`<h1 style="margin-bottom:16px">Paiements (${pays.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Étudiant</th><th>Cours</th><th>Montant</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody>${pays.length?pays.map(p=>{let s=d.users.find(u=>u.id===p.studentId);let c=d.courses.find(u=>u.id===p.courseId);return`<tr><td>${s?window.esc(s.name):'-'}</td><td>${c?window.esc(c.title):'-'}</td><td>${window.fmtCur(p.amount,p.currency)}</td><td>${window.statusB(p.status)}</td><td>${window.fmtDate(p.createdAt)}</td><td>${p.status==='pending'?`<button class="btn bg btn-sm" onclick="window.approvePay('${p.id}')">Approuver</button> <button class="btn bd btn-sm" onclick="window.rejectPay('${p.id}')">Rejeter</button>`:'-'}</td></tr>`}).join(''):'<tr><td colspan="6" style="text-align:center;color:#999">Aucun paiement</td></tr>'}</tbody></table></div>`;
 };
 
 window.approvePay = async function(pid){
@@ -668,6 +684,98 @@ window.rejectPay = async function(pid){
   window.alert2('Paiement rejeté','s');window.adminLoadPayments();
 };
 
+// ===== RETRAITS =====
+window.adminLoadWithdrawals = async function(){
+  await window.refreshData();
+  let d=getDB();let m=document.getElementById('adminMain');
+  let wds=d.withdrawals;
+  m.innerHTML=`<h1 style="margin-bottom:16px">Retraits (${wds.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Formateur</th><th>Montant</th><th>Méthode</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody>${wds.length?wds.map(w=>{let t=d.users.find(u=>u.id===w.teacherId);return`<tr><td>${t?window.esc(t.name):'-'}</td><td>${window.fmtCur(w.amount,'USD')}</td><td>${w.method||'-'}</td><td>${window.statusB(w.status)}</td><td>${window.fmtDate(w.createdAt)}</td><td>${w.status==='pending'?`<button class="btn bg btn-sm" onclick="window.approveWd('${w.id}')">Approuver</button> <button class="btn bd btn-sm" onclick="window.rejectWd('${w.id}')">Rejeter</button>`:'-'}</td></tr>`}).join(''):'<tr><td colspan="6" style="text-align:center;color:#999">Aucun retrait</td></tr>'}</tbody></table></div>`;
+};
+
+window.approveWd = async function(wid){
+  let w=window.APP_DATA.withdrawals.find(x=>x.id===wid);if(!w)return;
+  await window.updateDocInDB('withdrawals',wid,{status:'approved'});
+  let wallet=window.APP_DATA.wallets.find(x=>x.userId===w.teacherId);
+  if(wallet){await window.updateDocInDB('wallets',wallet.id,{pendingBalance:(wallet.pendingBalance||0)-w.amount,totalWithdrawn:(wallet.totalWithdrawn||0)+w.amount});}
+  window.alert2('Approuvé','s');window.adminLoadWithdrawals();
+};
+
+window.rejectWd = async function(wid){
+  let w=window.APP_DATA.withdrawals.find(x=>x.id===wid);if(!w)return;
+  await window.updateDocInDB('withdrawals',wid,{status:'rejected'});
+  let wallet=window.APP_DATA.wallets.find(x=>x.userId===w.teacherId);
+  if(wallet){await window.updateDocInDB('wallets',wallet.id,{pendingBalance:(wallet.pendingBalance||0)-w.amount,availableBalance:(wallet.availableBalance||0)+w.amount});}
+  window.alert2('Rejeté','s');window.adminLoadWithdrawals();
+};
+
+// ===== AFFILIATIONS =====
+window.adminLoadAffiliates = async function(){
+  await window.refreshData();
+  let d=getDB();let m=document.getElementById('adminMain');
+  let links=d.affiliateLinks;
+  m.innerHTML=`<h1 style="margin-bottom:16px">Affiliations (${links.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Formateur</th><th>Cours</th><th>Code</th><th>Commission</th><th>Ventes</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${links.length?links.map(l=>{let t=d.users.find(u=>u.id===l.teacherId);let c=d.courses.find(u=>u.id===l.courseId);return`<tr><td>${t?window.esc(t.name):'-'}</td><td>${c?window.esc(c.title):'-'}</td><td><code>${window.esc(l.code)}</code></td><td>${l.rate}%</td><td>${l.salesCount||0}</td><td>${l.active?'<span class="badge sba">Actif</span>':'<span class="badge sbr">Désactivé</span>'}</td><td><button class="btn bs btn-sm" onclick="window.toggleAff('${l.id}')">${l.active?'Désactiver':'Activer'}</button></td></tr>`}).join(''):'<tr><td colspan="7" style="text-align:center;color:#999">Aucune affiliation</td></tr>'}</tbody></table></div>`;
+};
+
+window.toggleAff = async function(lid){
+  let l=window.APP_DATA.affiliateLinks.find(x=>x.id===lid);if(!l)return;
+  await window.updateDocInDB('affiliateLinks',lid,{active:!l.active});
+  window.alert2('Mis à jour','s');window.adminLoadAffiliates();
+};
+
+// ===== CERTIFICATS =====
+window.adminLoadCerts = async function(){
+  await window.refreshData();
+  let d=getDB();let m=document.getElementById('adminMain');
+  let certs=d.certificates;
+  m.innerHTML=`<h1 style="margin-bottom:16px">Certificats (${certs.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Étudiant</th><th>Formation</th><th>ID Certificat</th><th>Date</th></tr></thead><tbody>${certs.length?certs.map(c=>`<tr><td>${window.esc(c.studentName)}</td><td>${window.esc(c.courseName)}</td><td><code>${window.esc(c.certificateId)}</code></td><td>${window.fmtDate(c.issuedAt)}</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;color:#999">Aucun certificat</td></tr>'}</tbody></table></div>`;
+};
+
+// ===== AVIS =====
+window.adminLoadReviews = async function(){
+  await window.refreshData();
+  let d=getDB();let m=document.getElementById('adminMain');
+  m.innerHTML=`<h1 style="margin-bottom:16px">Avis (${d.reviews.length})</h1><div class="tbl-wrap"><table><thead><tr><th>Étudiant</th><th>Cours</th><th>Note</th><th>Commentaire</th><th>Date</th><th>Actions</th></tr></thead><tbody>${d.reviews.length?d.reviews.map(r=>{let s=d.users.find(u=>u.id===r.studentId);let c=d.courses.find(u=>u.id===r.courseId);return`<tr><td>${s?window.esc(s.name):'-'}</td><td>${c?window.esc(c.title):'-'}</td><td>${window.starsH(r.rating)}</td><td>${window.esc(r.text)}</td><td>${window.fmtDate(r.createdAt)}</td><td><button class="btn bd btn-sm" onclick="window.delReview('${r.id}')">Supprimer</button></td></tr>`}).join(''):'<tr><td colspan="6" style="text-align:center;color:#999">Aucun avis</td></tr>'}</tbody></table></div>`;
+};
+
+window.delReview = async function(rid){
+  if(!confirm('Supprimer?'))return;
+  await window.deleteDocFromDB('reviews',rid);
+  window.alert2('Supprimé','s');window.adminLoadReviews();
+};
+
+// ===== NOTIFICATIONS =====
+window.adminLoadAdminNotifs = async function(){
+  await window.refreshData();
+  let d=getDB();let m=document.getElementById('adminMain');
+  let notifs=d.notifications.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,50);
+  m.innerHTML=`<h1 style="margin-bottom:16px">Notifications récentes</h1><div class="card">${notifs.length?notifs.map(n=>`<div class="notif ${n.read?'':'unread'}"><strong>${window.esc(n.title)}</strong><p style="font-size:.85rem;margin-top:4px">${window.esc(n.message)}</p><small style="color:#999">${window.fmtDT(n.createdAt)}</small></div>`).join(''):'<div class="empty"><i class="fas fa-bell-slash"></i><p>Aucune notification</p></div>'}</div>`;
+};
+
+// ===== ANNONCES =====
+window.adminLoadAnnounce = function(){
+  let m=document.getElementById('adminMain');
+  m.innerHTML=`<h1 style="margin-bottom:16px">Annonces</h1><div class="card"><h3 class="card-t">Nouvelle annonce</h3><form onsubmit="window.sendAnnounce(event)"><div class="fg"><label>Titre</label><input type="text" class="fc" id="annTitle" required></div><div class="fg"><label>Message</label><textarea class="fc" id="annMsg" required></textarea></div><div class="fg"><label>Audience</label><select class="fc" id="annAud"><option value="all">Tous</option><option value="student">Étudiants</option><option value="teacher">Formateurs</option></select></div><button class="btn bp" type="submit">Envoyer</button></form></div>`;
+};
+
+window.sendAnnounce = async function(e){
+  e.preventDefault();
+  let title=document.getElementById('annTitle').value.trim(),msg=document.getElementById('annMsg').value.trim(),aud=document.getElementById('annAud').value;
+  await window.addDocToDB('announcements',{title,message:msg,audience:aud,createdAt:new Date().toISOString()});
+  let targets=window.APP_DATA.users.filter(u=>aud==='all'||u.role===aud);
+  for(let u of targets){
+    await window.addDocToDB('notifications',{id:window.uid(),userId:u.id,type:'announcement',title,message:msg,read:false,createdAt:new Date().toISOString()});
+  }
+  window.alert2('Annonce envoyée!','s');window.adminLoadAnnounce();
+};
+
+// ===== JOURNAUX =====
+window.adminLoadLogs = async function(){
+  await window.refreshData();
+  let d=getDB();let m=document.getElementById('adminMain');
+  m.innerHTML=`<h1 style="margin-bottom:16px">Journaux d'activité</h1><div class="tbl-wrap"><table><thead><tr><th>Utilisateur</th><th>Rôle</th><th>Action</th><th>Description</th><th>Date</th></tr></thead><tbody>${d.activityLogs.length?d.activityLogs.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).slice(0,100).map(l=>`<tr><td>${window.esc(l.userName||'-')}</td><td><span class="badge sbd">${l.userRole||'-'}</span></td><td>${window.esc(l.action)}</td><td>${window.esc(l.desc)}</td><td>${window.fmtDT(l.timestamp)}</td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:#999">Aucun journal</td></tr>'}</tbody></table></div>`;
+};
+
+// ===== PARAMÈTRES =====
 window.adminLoadSettings = function(){
   let d=getDB();let s=d.settings;let m=document.getElementById('adminMain');
   m.innerHTML=`<h1 style="margin-bottom:16px">Paramètres</h1><div class="card"><form onsubmit="window.saveSettings(event)"><div class="fg"><label>Nom de la plateforme</label><input type="text" class="fc" id="sName" value="${window.esc(s.platformName)}"></div><div class="fg"><label>Commission (%)</label><input type="number" class="fc" id="sComm" value="${s.commission}" min="0" max="100"></div><div class="fg"><label>Email de contact</label><input type="text" class="fc" id="sEmail" value="${window.esc(s.contactEmail||'')}"></div><h3 style="margin:16px 0 8px">MonCash</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="fg"><label>Numéro</label><input type="text" class="fc" id="sMcNum" value="${window.esc(s.moncash?.number||'')}"></div><div class="fg"><label>Nom</label><input type="text" class="fc" id="sMcName" value="${window.esc(s.moncash?.name||'')}"></div></div><button class="btn bp" type="submit">Sauvegarder</button></form></div>`;
@@ -681,19 +789,48 @@ window.saveSettings = async function(e){
   window.alert2('Paramètres sauvegardés!','s');
 };
 
-// ===== STUBS POU EVITE ERÈ =====
-window.renderStudentDash = function(app){app.innerHTML=headerH(currentUser())+`<div class="container" style="padding:24px"><h1>Tableau de bord Étudiant</h1><p>Bienvenue!</p></div>`;};
-window.renderProfile = function(app,u){app.innerHTML=headerH(u)+`<div class="container" style="padding:24px"><h1>Profil</h1></div>`;};
-window.renderVerifyCert = function(app){app.innerHTML=headerH(currentUser())+`<div class="container" style="padding:24px"><h1>Vérifier Certificat</h1></div>`;};
-window.renderCertView = function(app,p,u){app.innerHTML=headerH(u)+`<div class="container" style="padding:24px"><h1>Certificat</h1></div>`;};
-window.renderPaymentPage = function(app,p,u){app.innerHTML=headerH(u)+`<div class="container" style="padding:24px"><h1>Paiement</h1></div>`;};
-window.renderWallet = function(app,u){app.innerHTML=headerH(u)+`<div class="container" style="padding:24px"><h1>Portefeuille</h1></div>`;};
-window.renderAffiliates = function(app,u){app.innerHTML=headerH(u)+`<div class="container" style="padding:24px"><h1>Affiliation</h1></div>`;};
-window.renderStudentPayments = function(app,u){app.innerHTML=headerH(u)+`<div class="container" style="padding:24px"><h1>Paiements</h1></div>`;};
-window.renderStudentCerts = function(app,u){app.innerHTML=headerH(u)+`<div class="container" style="padding:24px"><h1>Certificats</h1></div>`;};
-window.renderStudentNotifs = function(app,u){app.innerHTML=headerH(u)+`<div class="container" style="padding:24px"><h1>Notifications</h1></div>`;};
-window.renderTeacherNotifs = function(app,u){app.innerHTML=headerH(u)+`<div class="container" style="padding:24px"><h1>Notifications</h1></div>`;};
-window.renderPublicProfile = function(app,p){app.innerHTML=headerH(currentUser())+`<div class="container" style="padding:24px"><h1>Profil Public</h1></div>`;};
+// ===== EXPORT/IMPORT BACKUP =====
+window.exportBackup = async function(){
+  await window.refreshData();
+  let d = window.APP_DATA;
+  let blob = new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  let a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'nova-reach-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  window.alert2('Backup exporté!','s');
+};
+
+window.importBackup = async function(e){
+  let f = e.target.files[0];
+  if(!f) return;
+  let r = new FileReader();
+  r.onload = async function(ev){
+    try{
+      let data = JSON.parse(ev.target.result);
+      if(!data.users) throw new Error('Fichier invalide');
+      // Import tout nan Firebase
+      for(let key of ['users','courses','lessons','enrollments','payments','wallets','certificates','notifications','affiliateLinks','affiliateSales','reviews','questions','answers','announcements','activityLogs','ads','withdrawals']){
+        if(data[key] && data[key].length){
+          for(let item of data[key]){
+            let id = item.id;
+            delete item.id;
+            try{ await db.collection(key).doc(id).set(item); }catch(e){console.error(e);}
+          }
+        }
+      }
+      if(data.settings){
+        try{ await db.collection('settings').doc('global').set(data.settings); }catch(e){console.error(e);}
+      }
+      await window.refreshData();
+      window.alert2('Backup importé avec succès!','s');
+      window.adminLoadDash();
+    }catch(err){
+      window.alert2('Erreur: '+err.message,'e');
+    }
+  };
+  r.readAsText(f);
+};
 
 // ===== INITIAL LOAD =====
 window.addEventListener('load', async () => {
